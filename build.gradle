@@ -1,0 +1,153 @@
+defaultTasks 'clean', 'build', 'install'
+
+buildscript {
+    repositories {
+        jcenter()
+        mavenLocal()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.github.ben-manes:gradle-versions-plugin:0.21.0'
+        classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.1.4.RELEASE'
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'com.github.ben-manes.versions'
+
+description = 'Spring Boot Modular Project'
+group = 'ch.frostnova'
+
+repositories {
+    jcenter()
+    mavenLocal()
+    mavenCentral()
+}
+
+java {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+}
+
+jar { duplicatesStrategy = 'exclude' }
+
+compileJava.options.encoding = 'UTF-8'
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+def dateTimeFormat = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+def buildDate = java.time.LocalDateTime.now()
+
+subprojects {
+    apply plugin: 'java-library'
+
+    group = 'ch.frostnova.mimic'
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    repositories {
+        jcenter()
+    }
+
+    jar { duplicatesStrategy = 'exclude' }
+
+    compileJava.options.encoding = 'UTF-8'
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+    }
+
+    test {
+        reports.html.enabled = false
+    }
+
+    plugins.withType(JavaPlugin) {
+        jar {
+            manifest {
+                attributes(
+                        "Name": project.name,
+                        "Version": project.version,
+                        "Build-Date": dateTimeFormat.format(buildDate)
+                )
+            }
+        }
+    }
+}
+
+task testReport(type: TestReport) {
+    destinationDir = file("$buildDir/reports/allTests")
+    reportOn subprojects*.test
+}
+
+build.dependsOn testReport
+
+dependencyUpdates.resolutionStrategy = {
+    componentSelection { rules ->
+        rules.all { ComponentSelection selection ->
+            boolean rejected = ['alpha', 'beta', 'rc', 'cr', 'm'].any { qualifier ->
+                selection.candidate.version ==~ /(?i).*[.-]${qualifier}[.\d-]*/
+            }
+            if (rejected) {
+                selection.reject('Release candidate')
+            }
+        }
+    }
+}
+
+ext {
+
+    junitVersion = '4.12'
+    mockitoVersion = '2.27.0'
+    springVersion = '2.1.4.RELEASE'
+    h2Version = '1.4.199'
+    swaggerVersion = '2.9.2'
+    jacksonVersion = '2.9.8'
+    jerseyVersion = '2.28'
+    javaValidationVersion = '2.0.1.Final'
+
+    libs = [
+            testbase          : [
+                    "junit:junit:${junitVersion}",
+                    "org.mockito:mockito-core:${mockitoVersion}"
+            ],
+            springBoot        : [
+                    "org.springframework.boot:spring-boot-starter-data-jpa:${springVersion}",
+                    "org.springframework.boot:spring-boot-starter-web:${springVersion}",
+                    "org.springframework.boot:spring-boot-starter-actuator:${springVersion}"
+            ],
+            springBootTest    : [
+                    "org.springframework.boot:spring-boot-starter-test:${springVersion}"
+            ],
+            springBootDevTools: [
+                    "org.springframework.boot:spring-boot-devtools:${springVersion}"
+            ],
+            h2Database        : [
+                    "com.h2database:h2:${h2Version}"
+            ],
+            swagger           : [
+                    "io.springfox:springfox-swagger2:${swaggerVersion}",
+                    "io.springfox:springfox-swagger-ui:${swaggerVersion}"
+            ],
+            json              : [
+                    "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}",
+                    "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}",
+                    "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonVersion}"
+            ],
+            jaxrsClient       : [
+                    "org.glassfish.jersey.core:jersey-client:${jerseyVersion}",
+                    "org.glassfish.jersey.media:jersey-media-json-jackson:${jerseyVersion}",
+                    "org.glassfish.jersey.inject:jersey-hk2:${jerseyVersion}"
+            ],
+            javaValidation    : [
+                    "javax.validation:validation-api:${javaValidationVersion}"
+            ],
+
+    ]
+}
+
+task start(dependsOn: ['assemble', ':app:bootRun']) {
+    group = 'Start/Run'
+    description = 'Start the boot app'
+}

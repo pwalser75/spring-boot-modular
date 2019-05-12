@@ -1,0 +1,12 @@
+description = 'Module 1 API'
+
+dependencies {
+    
+    api libs.swagger
+    api libs.javaValidation
+    api libs.json
+
+    testCompile libs.testbase
+    testCompile libs.springBoot
+    testCompile libs.springBootTest
+}

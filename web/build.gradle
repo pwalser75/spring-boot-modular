@@ -1,0 +1,17 @@
+description = 'Module1 Web'
+
+dependencies {
+    compile project(':api')
+
+    compile libs.springBoot
+    compile libs.swagger
+
+    testCompile libs.testbase
+    testCompile libs.springBootTest
+    testCompile libs.jaxrsClient
+
+    runtime libs.h2Database
+
+    testCompile project(':platform')
+    testCompile project(':service')
+}

@@ -1,0 +1,9 @@
+description = 'Platform Service'
+
+dependencies {
+
+    compile libs.springBoot
+    compile libs.swagger
+
+    testCompile libs.testbase
+}

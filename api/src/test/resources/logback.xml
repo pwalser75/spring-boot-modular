@@ -1,0 +1,15 @@
+<configuration>
+
+    <!-- console appender -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level [%thread] | %logger{40} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- root logger: log everything with level info and above to console and file -->
+    <root level="info">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+</configuration>

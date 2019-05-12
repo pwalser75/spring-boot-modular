@@ -1,0 +1,25 @@
+apply plugin: 'org.springframework.boot'
+
+description = 'Multi Module App'
+
+configurations {
+    dev
+}
+
+dependencies {
+
+    compile libs.springBoot
+    compile libs.swagger
+
+    testCompile libs.testbase
+    testCompile libs.springBootTest
+    testCompile libs.jaxrsClient
+
+    runtime libs.h2Database
+
+    dev libs.springBootDevTools
+
+    compile project(':platform')
+    compile project(':service')
+    compile project(':web')
+}

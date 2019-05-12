@@ -1,0 +1,9 @@
+rootProject.name = 'Spring Multi Module App'
+
+include ':api'
+include ':service'
+include ':web'
+
+include ':platform'
+
+include ':app'

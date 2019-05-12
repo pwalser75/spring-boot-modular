@@ -1,0 +1,56 @@
+info:
+  app:
+    name: "spring-multi-module"
+    description: "Spring Boot Multi Module Project"
+    version: "1.0.0-SNAPSHOT"
+
+spring.profiles.active: performance-logging
+
+# TLS configuration - enable HTTPS
+server:
+  port: 8443
+  ssl: &serverssl
+    enabled: true
+    protocol: TLSv1.2
+    enabled-protocols: TLSv1.1+TLSv1.2
+    ciphers: TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384,TLS_DHE_RSA_WITH_AES_256_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,TLS_DHE_RSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_DHE_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_DHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_DHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_DHE_RSA_WITH_AES_128_GCM_SHA256
+    key-alias: "test-server"
+    key-store: "classpath:server-keystore.jks"
+    key-store-password: "keystore"
+    key-password: "keystore"
+
+# HTTP port for redirection to HTTPS - uncomment to activate
+# http.server.port: 80
+
+# Persistence: datasource/JPA configuration
+spring.datasource:
+  url: jdbc:h2:mem:testdb;DB_CLOSE_ON_EXIT=FALSE
+  username: sa
+  password:
+  driver-class-name: org.h2.Driver
+
+spring.jpa:
+  hibernate.hbm2ddl.auto: create
+  hibernate.dialect: org.hibernate.dialect.H2Dialect
+  open-in-view: false
+
+# Actuator configuration, expose /health, /info and /metrics endpoints
+management:
+  endpoints:
+    web:
+      base-path: /
+      exposure.include: health,info,metrics
+  endpoint.health.show-details: always
+
+# Custom application properties
+app:
+  test:
+    a: 123
+    b: 123.456
+    c: true
+    d: Test
+    e: [ONE,TWO, THREE]
+    f:
+      - first
+      - second
+      - third

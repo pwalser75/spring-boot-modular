@@ -1,0 +1,75 @@
+<configuration>
+
+    <!-- console appender -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level [%thread] | %logger{40} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- rolling file appender: create one file per day, keep logs of last 30 days, max. 100 MB -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/server.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/archive/test.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>100MB</totalSizeCap>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] | %logger{40} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- log access info to another file -->
+    <appender name="ACCESS" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/access.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/archive/access.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>100MB</totalSizeCap>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+
+    <!-- log performance info to another file -->
+    <appender name="PERFORMANCE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/performance.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/archive/performance.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>10</maxHistory>
+            <totalSizeCap>100MB</totalSizeCap>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- log level configurations per package or class -->
+    <logger name="org.hibernate" level="warn"/>
+    <!--
+    <logger name="org.hibernate.SQL" level="debug"/>
+    -->
+
+    <logger name="ch.frostnova.app.boot.platform.web.filter.AccessLogFilter" level="info" additivity="false">
+        <appender-ref ref="ACCESS"/>
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+
+    <logger name="ch.frostnova.app.boot.platform.aspect.PerformanceLoggingAspect" level="info" additivity="false">
+        <appender-ref ref="PERFORMANCE"/>
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+
+    <!-- root logger: log everything with level info and above to console and file -->
+    <root level="info">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </root>
+
+</configuration>
