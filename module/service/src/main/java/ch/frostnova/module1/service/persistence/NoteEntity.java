@@ -8,10 +8,10 @@ import javax.persistence.Table;
  * Note Entity
  */
 @Entity
-@Table(name = "note")
+@Table(name = "NOTE")
 public class NoteEntity extends BaseEntity {
 
-    @Column(name = "text", length = 2048, nullable = false)
+    @Column(name = "TEXT", length = 2048, nullable = false)
     private String text;
 
     public String getText() {

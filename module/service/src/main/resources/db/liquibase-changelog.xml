@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <property name="clob.type" value="clob" dbms="oracle"/>
+    <property name="clob.type" value="text" dbms="postgresql"/>
+    <property name="clob.type" value="longtext" dbms="mysql"/>
+    <property name="clob.type" value="clob" dbms="h2"/>
+
+    <changeSet id="1" author="pwalser" runAlways="true">
+        <sql dbms="h2">CREATE SCHEMA IF NOT EXISTS TEST;</sql>
+        <sql dbms="oracle">ALTER SESSION SET NLS_LENGTH_SEMANTICS = 'CHAR';</sql>
+    </changeSet>
+
+    <include file="changelog/create-schema.xml" relativeToChangelogFile="true"/>
+    <include file="changelog/initial-data.xml" relativeToChangelogFile="true"/>
+
+</databaseChangeLog>

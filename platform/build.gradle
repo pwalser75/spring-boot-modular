@@ -4,6 +4,7 @@ dependencies {
 
     compile libs.springBoot
     compile libs.swagger
+    compile libs.liquibase
 
     testCompile libs.testbase
 }

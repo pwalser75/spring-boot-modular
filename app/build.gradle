@@ -8,9 +8,6 @@ configurations {
 
 dependencies {
 
-    compile libs.springBoot
-    compile libs.swagger
-
     testCompile libs.testbase
     testCompile libs.springBootTest
     testCompile libs.jaxrsClient

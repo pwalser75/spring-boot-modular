@@ -7,6 +7,9 @@
 # Ignore logs
 **/logs/
 
+# Ignore H2 DB
+app/db/
+
 # Ignore IDE files
 .idea
 *.iml

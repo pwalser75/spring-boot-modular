@@ -12,17 +12,17 @@ public class BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "id", unique = true, nullable = false)
+    @Column(name = "ID", unique = true, nullable = false)
     private Long id;
 
-    @Column(name = "created_on", nullable = false)
+    @Column(name = "CREATED_ON", nullable = false)
     private LocalDateTime creationDate;
 
-    @Column(name = "updated_on", nullable = false)
+    @Column(name = "UPDATED_ON", nullable = false)
     private LocalDateTime lastModifiedDate;
 
     @Version
-    @Column(name = "vesion", nullable = false)
+    @Column(name = "VERSION", nullable = false)
     private long version;
 
     public Long getId() {
