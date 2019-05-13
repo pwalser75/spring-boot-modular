@@ -75,7 +75,7 @@ public class NotesController {
             @ApiResponse(code = 200, message = "ok"),
             @ApiResponse(code = 400, message = "bad request")
     })
-    public Note create(@RequestBody Note note) {
+    public Note create(@ApiParam(value = "Note to create", required = true) @RequestBody Note note) {
         note.setId(null);
         return noteService.save(note);
     }
@@ -94,7 +94,8 @@ public class NotesController {
             @ApiResponse(code = 400, message = "bad request"),
             @ApiResponse(code = 404, message = "not found")
     })
-    public void update(@ApiParam(value = "ID of the note to update", required = true) @PathVariable("id") long id, @RequestBody Note note) {
+    public void update(@ApiParam(value = "ID of the note to update", required = true) @PathVariable("id") long id,
+                       @ApiParam(value = "Note data to update", required = true) @RequestBody Note note) {
         note.setId(id);
         noteService.save(note);
     }

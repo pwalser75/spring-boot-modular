@@ -51,6 +51,7 @@
     </appender>
 
     <!-- log level configurations per package or class -->
+    <logger name="io.swagger" level="error"/>
     <logger name="org.hibernate" level="warn"/>
     <!--
     <logger name="org.hibernate.SQL" level="debug"/>

@@ -4,6 +4,9 @@
 **/out/
 **/target/
 
+# Ignore logs
+**/logs/
+
 # Ignore IDE files
 .idea
 *.iml
