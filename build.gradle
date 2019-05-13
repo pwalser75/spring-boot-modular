@@ -9,12 +9,14 @@ buildscript {
     dependencies {
         classpath 'com.github.ben-manes:gradle-versions-plugin:0.21.0'
         classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.1.4.RELEASE'
+        classpath 'com.netflix.nebula:gradle-aggregate-javadocs-plugin:3.0.1'
     }
 }
 
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'com.github.ben-manes.versions'
+apply plugin: 'nebula-aggregate-javadocs'
 
 description = 'Spring Boot Modular Project'
 group = 'ch.frostnova'
@@ -76,11 +78,12 @@ subprojects {
     }
 }
 
+task listAllDependencies(type: DependencyReportTask) {}
+
 task testReport(type: TestReport) {
     destinationDir = file("$buildDir/reports/allTests")
     reportOn subprojects*.test
 }
-
 build.dependsOn testReport
 
 dependencyUpdates.resolutionStrategy = {

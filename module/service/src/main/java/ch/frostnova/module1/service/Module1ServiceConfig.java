@@ -1,4 +1,4 @@
-package ch.frostnova.module1;
+package ch.frostnova.module1.service;
 
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.ComponentScan;

@@ -1,7 +1,8 @@
-package ch.frostnova.module1.persistence;
+package ch.frostnova.module1.service.persistence;
 
-import javax.persistence.*;
-import java.time.LocalDateTime;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 /**
  * Note Entity

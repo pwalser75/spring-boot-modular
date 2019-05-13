@@ -1,4 +1,4 @@
-package ch.frostnova.module1;
+package ch.frostnova.module1.web;
 
 
 import ch.frostnova.module1.api.model.Note;

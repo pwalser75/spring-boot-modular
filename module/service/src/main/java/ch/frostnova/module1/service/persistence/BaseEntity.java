@@ -1,6 +1,4 @@
-package ch.frostnova.module1.persistence;
-
-import ch.frostnova.module1.api.model.BaseResource;
+package ch.frostnova.module1.service.persistence;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -20,7 +18,7 @@ public class BaseEntity {
     @Column(name = "created_on", nullable = false)
     private LocalDateTime creationDate;
 
-    @Column(name = "updated_on",  nullable = false)
+    @Column(name = "updated_on", nullable = false)
     private LocalDateTime lastModifiedDate;
 
     @Version

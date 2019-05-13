@@ -1,4 +1,4 @@
-package ch.frostnova.module1.persistence;
+package ch.frostnova.module1.service.persistence;
 
 import org.springframework.data.repository.CrudRepository;
 
