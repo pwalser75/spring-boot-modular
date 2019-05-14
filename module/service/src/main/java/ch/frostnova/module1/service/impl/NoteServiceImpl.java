@@ -1,4 +1,4 @@
-package ch.frostnova.module1.service;
+package ch.frostnova.module1.service.impl;
 
 import ch.frostnova.module1.api.exception.ResourceNotFoundException;
 import ch.frostnova.module1.api.model.Note;
@@ -13,7 +13,6 @@ import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Spliterator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -51,8 +50,7 @@ public class NoteServiceImpl implements NoteService {
     @Override
     @Transactional(readOnly = true)
     public List<Note> list() {
-        Spliterator<NoteEntity> spliterator = repository.findAll().spliterator();
-        Stream<NoteEntity> stream = StreamSupport.stream(spliterator, false);
+        Stream<NoteEntity> stream = StreamSupport.stream(repository.findAll().spliterator(), false);
         return stream.map(this::convert).collect(Collectors.toList());
     }
 

@@ -15,7 +15,21 @@ import java.math.RoundingMode;
 import java.util.Optional;
 
 /**
- * Servlet filter logging HTTP access (method, URI) with response code and execution time.
+ * Servlet filter logging HTTP access (method, URI) with response code and execution time.<p>
+ * Example output:
+ * <br><pre><code>
+ * 2020-12-31 12:32:16.611 - GET /info -&gt; 200 OK, 146.46 ms
+ * 2020-12-31 12:32:44.769 - GET /info -&gt; 200 OK, 6.39 ms
+ * 2020-12-31 12:32:44.887 - GET /health -&gt; 200 OK, 49.44 ms
+ * 2020-12-31 12:32:44.992 - GET /metrics/process.uptime -&gt; 200 OK, 38.37 ms
+ * 2020-12-31 12:32:45.317 - POST /api/notes -&gt; 201 CREATED, 270.38 ms
+ * 2020-12-31 12:32:45.404 - GET /api/notes/1 -&gt; 200 OK, 32.93 ms
+ * 2020-12-31 12:32:45.729 - GET /api/notes -&gt; 200 OK, 266.04 ms
+ * 2020-12-31 12:32:45.837 - PUT /api/notes/1 -&gt; 204 NO_CONTENT, 22.62 ms
+ * 2020-12-31 12:32:45.916 - GET /api/notes/1 -&gt; 200 OK, 14.32 ms
+ * 2020-12-31 12:32:46.034 - DELETE /api/notes/1 -&gt; 204 NO_CONTENT, 70.01 ms
+ * 2020-12-31 12:32:46.114 - GET /api/notes/1 -&gt; 404 NOT_FOUND, 15.62 ms
+ * </code></pre>
  */
 @Component
 @Order(1)

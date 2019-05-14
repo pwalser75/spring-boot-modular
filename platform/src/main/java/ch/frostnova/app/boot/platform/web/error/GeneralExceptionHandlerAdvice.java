@@ -1,9 +1,9 @@
 package ch.frostnova.app.boot.platform.web.error;
 
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -16,7 +16,6 @@ import java.util.NoSuchElementException;
  * Exception handler advice.
  */
 @ControllerAdvice
-@Order
 public class GeneralExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(NoSuchElementException.class)
@@ -34,6 +33,13 @@ public class GeneralExceptionHandlerAdvice extends ResponseEntityExceptionHandle
     @ExceptionHandler(ConstraintViolationException.class)
     protected ResponseEntity<Object> handleBadRequest(ConstraintViolationException ex, WebRequest request) {
         ValidationErrors errors = new ValidationErrors(ex);
+        return handleExceptionInternal(ex, errors.getErrors(), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+                                                                  HttpHeaders headers, HttpStatus status, WebRequest request) {
+        ValidationErrors errors = new ValidationErrors(ex.getBindingResult());
         return handleExceptionInternal(ex, errors.getErrors(), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 }

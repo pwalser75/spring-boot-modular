@@ -29,14 +29,14 @@ import java.util.stream.Collectors;
  * </ul>
  * Example log output:
  * <pre><code>
- * 15:12:22.316 INFO  [main] | PerformanceLoggingAspect - Test.a() &rarr; 211.20 ms, self: 51.30 ms
- * &nbsp;&nbsp;&lfloor; Test.b() &rarr; java.lang.IllegalArgumentException, 134.04 ms, self: 102.04 ms
- * &nbsp;&nbsp;&nbsp;&nbsp;&lfloor; 5x Test.c() &rarr; 51.94 ms
- * &nbsp;&nbsp;&nbsp;&nbsp;&lfloor; Test.d() &rarr; java.lang.ArithmeticException, 0.03 ms
- * &nbsp;&nbsp;&lfloor; Test.e() &rarr; 25.86 ms
- * 15:12:22.339 INFO  [main] | PerformanceLoggingAspect - Other.x() &rarr; 12.55 ms, self: 2.57 ms
- * &nbsp;&nbsp;&lfloor; Other.y() &rarr; 9.98 ms, self: 7.92 ms
- * &nbsp;&nbsp;&nbsp;&nbsp;&lfloor; Other.z() &rarr; 2.06 ms
+ * 15:12:22.316 INFO  [main] | PerformanceLoggingAspect - Test.a() -&gt; 211.20 ms, self: 51.30 ms
+ * &nbsp;&nbsp;+ Test.b() -&gt; java.lang.IllegalArgumentException, 134.04 ms, self: 102.04 ms
+ * &nbsp;&nbsp;&nbsp;&nbsp;+ 5x Test.c() -&gt; 51.94 ms
+ * &nbsp;&nbsp;&nbsp;&nbsp;+ Test.d() -&gt; java.lang.ArithmeticException, 0.03 ms
+ * &nbsp;&nbsp;+ Test.e() -&gt; 25.86 ms
+ * 15:12:22.339 INFO  [main] | PerformanceLoggingAspect - Other.x() -&gt; 12.55 ms, self: 2.57 ms
+ * &nbsp;&nbsp;+ Other.y() -&gt; 9.98 ms, self: 7.92 ms
+ * &nbsp;&nbsp;&nbsp;&nbsp;+ Other.z() -&gt; 2.06 ms
  * </code></pre>
  */
 @Aspect
