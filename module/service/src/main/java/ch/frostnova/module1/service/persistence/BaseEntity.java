@@ -1,7 +1,8 @@
 package ch.frostnova.module1.service.persistence;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 /**
@@ -16,10 +17,10 @@ public class BaseEntity {
     private Long id;
 
     @Column(name = "CREATED_ON", nullable = false)
-    private LocalDateTime creationDate;
+    private ZonedDateTime creationDate;
 
     @Column(name = "UPDATED_ON", nullable = false)
-    private LocalDateTime lastModifiedDate;
+    private ZonedDateTime lastModifiedDate;
 
     @Version
     @Column(name = "VERSION", nullable = false)
@@ -33,19 +34,19 @@ public class BaseEntity {
         this.id = id;
     }
 
-    public LocalDateTime getCreationDate() {
+    public ZonedDateTime getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(LocalDateTime creationDate) {
+    public void setCreationDate(ZonedDateTime creationDate) {
         this.creationDate = creationDate;
     }
 
-    public LocalDateTime getLastModifiedDate() {
+    public ZonedDateTime getLastModifiedDate() {
         return lastModifiedDate;
     }
 
-    public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
+    public void setLastModifiedDate(ZonedDateTime lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
     }
 
@@ -63,12 +64,16 @@ public class BaseEntity {
 
     @PrePersist
     private void createAudit() {
-        creationDate = lastModifiedDate = LocalDateTime.now();
+        creationDate = lastModifiedDate = now();
     }
 
     @PreUpdate
     private void updateAuditDates() {
-        lastModifiedDate = LocalDateTime.now();
+        lastModifiedDate = now();
+    }
+
+    private ZonedDateTime now() {
+        return ZonedDateTime.now().truncatedTo(ChronoUnit.SECONDS);
     }
 
     @Override

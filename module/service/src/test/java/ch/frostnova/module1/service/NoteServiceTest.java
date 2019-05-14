@@ -11,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.validation.ValidationException;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
@@ -33,9 +33,9 @@ public class NoteServiceTest {
         Note saved = noteService.save(note);
         Assert.assertNotNull(saved.getId());
         Assert.assertNotNull(saved.getCreationDate());
-        Assert.assertFalse(saved.getCreationDate().isAfter(LocalDateTime.now()));
+        Assert.assertFalse(saved.getCreationDate().isAfter(ZonedDateTime.now()));
         Assert.assertNotNull(saved.getModificationDate());
-        Assert.assertFalse(saved.getModificationDate().isAfter(LocalDateTime.now()));
+        Assert.assertFalse(saved.getModificationDate().isAfter(ZonedDateTime.now()));
         Assert.assertFalse(saved.getModificationDate().isAfter(saved.getCreationDate()));
 
         Assert.assertEquals(note.getText(), saved.getText());

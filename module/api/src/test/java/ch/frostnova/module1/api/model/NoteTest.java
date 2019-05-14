@@ -10,7 +10,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import javax.validation.*;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -56,8 +57,8 @@ public class NoteTest {
 
         // dates not in the future
         note.setText("Hello World");
-        note.setCreationDate(LocalDateTime.now().plusMinutes(1));
-        note.setModificationDate(LocalDateTime.now().plusDays(1));
+        note.setCreationDate(ZonedDateTime.now().plusMinutes(1));
+        note.setModificationDate(ZonedDateTime.now().plusDays(1));
         validate(note, "creationDate", "modificationDate");
     }
 
@@ -67,8 +68,8 @@ public class NoteTest {
         Note note = new Note();
         note.setText("Hello World");
         note.setId(12345L);
-        note.setCreationDate(LocalDateTime.now().minusDays(1));
-        note.setModificationDate(LocalDateTime.now().minusHours(1));
+        note.setCreationDate(ZonedDateTime.now().truncatedTo(ChronoUnit.SECONDS).minusDays(1));
+        note.setModificationDate(ZonedDateTime.now().truncatedTo(ChronoUnit.SECONDS).minusHours(1));
 
         String json = NoteTest.objectMapper().writeValueAsString(note);
         System.out.println(json);
@@ -76,9 +77,8 @@ public class NoteTest {
         Note restored = NoteTest.objectMapper().readValue(json, Note.class);
         Assert.assertEquals(note.getText(), restored.getText());
         Assert.assertEquals(note.getId(), restored.getId());
-        Assert.assertEquals(note.getCreationDate(), restored.getCreationDate());
-        Assert.assertEquals(note.getModificationDate(), restored.getModificationDate());
-
+        Assert.assertTrue(note.getCreationDate().isEqual(restored.getCreationDate()));
+        Assert.assertTrue(note.getModificationDate().isEqual(restored.getModificationDate()));
     }
 
     private void validate(Object obj, String... expectedErrorPropertyPaths) {
@@ -96,11 +96,11 @@ public class NoteTest {
     }
 
     private static ObjectMapper objectMapper() {
-       return new ObjectMapper()
-        .setAnnotationIntrospector(new JacksonAnnotationIntrospector())
-        .registerModule(new JavaTimeModule())
-        .setDateFormat(new StdDateFormat())
-        .enable(SerializationFeature.INDENT_OUTPUT)
-        .disable(SerializationFeature.CLOSE_CLOSEABLE.WRITE_DATES_AS_TIMESTAMPS);
+        return new ObjectMapper()
+                .setAnnotationIntrospector(new JacksonAnnotationIntrospector())
+                .registerModule(new JavaTimeModule())
+                .setDateFormat(new StdDateFormat())
+                .enable(SerializationFeature.INDENT_OUTPUT)
+                .disable(SerializationFeature.CLOSE_CLOSEABLE.WRITE_DATES_AS_TIMESTAMPS);
     }
 }

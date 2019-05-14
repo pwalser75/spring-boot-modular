@@ -5,23 +5,29 @@ import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.PastOrPresent;
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Objects;
 
+import static io.swagger.annotations.ApiModelProperty.AccessMode.READ_ONLY;
+
 public class BaseResource implements Serializable {
-    @ApiModelProperty(notes = "identifier (generated)")
+
+    protected final String EXAMPLE_ID = "12345";
+    protected final String EXAMPLE_ZONED_DATE_TIME = "2019-08-07T16:54:32+01:00";
+
+    @ApiModelProperty(notes = "identifier (generated)", accessMode = READ_ONLY, example = EXAMPLE_ID)
     @JsonProperty("id")
     private Long id;
 
-    @ApiModelProperty(notes = "creation date (generated)")
+    @ApiModelProperty(notes = "creation date (generated)", accessMode = READ_ONLY, example = EXAMPLE_ZONED_DATE_TIME)
     @JsonProperty("creationDate")
     @PastOrPresent
-    private LocalDateTime creationDate;
+    private ZonedDateTime creationDate;
 
-    @ApiModelProperty(notes = "last modification date (generated)")
+    @ApiModelProperty(notes = "last modification date (generated)", accessMode = READ_ONLY, example = EXAMPLE_ZONED_DATE_TIME)
     @JsonProperty("modificationDate")
     @PastOrPresent
-    private LocalDateTime modificationDate;
+    private ZonedDateTime modificationDate;
 
     public Long getId() {
         return id;
@@ -31,19 +37,19 @@ public class BaseResource implements Serializable {
         this.id = id;
     }
 
-    public LocalDateTime getCreationDate() {
+    public ZonedDateTime getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(LocalDateTime creationDate) {
+    public void setCreationDate(ZonedDateTime creationDate) {
         this.creationDate = creationDate;
     }
 
-    public LocalDateTime getModificationDate() {
+    public ZonedDateTime getModificationDate() {
         return modificationDate;
     }
 
-    public void setModificationDate(LocalDateTime modificationDate) {
+    public void setModificationDate(ZonedDateTime modificationDate) {
         this.modificationDate = modificationDate;
     }
 

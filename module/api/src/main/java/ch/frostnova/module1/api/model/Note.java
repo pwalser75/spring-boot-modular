@@ -17,7 +17,7 @@ public class Note extends BaseResource {
     @NotNull
     @NotBlank
     @Size(max = 2048)
-    @ApiModelProperty(notes = "text of the note, up to 2048 characters")
+    @ApiModelProperty(notes = "text of the note, up to 2048 characters", example = "Si vis pacem para bellum")
     @JsonProperty("text")
     private String text;
 
