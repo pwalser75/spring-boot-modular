@@ -16,11 +16,10 @@ public class JacksonConfig {
 
     @Bean
     public ObjectMapper objectMapper() {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.setAnnotationIntrospector(new JacksonAnnotationIntrospector());
-        mapper.registerModule(new JavaTimeModule());
-        mapper.disable(SerializationFeature.CLOSE_CLOSEABLE.WRITE_DATES_AS_TIMESTAMPS);
-        mapper.setDateFormat(new StdDateFormat());
-        return mapper;
+        return new ObjectMapper()
+                .setAnnotationIntrospector(new JacksonAnnotationIntrospector())
+                .registerModule(new JavaTimeModule())
+                .setDateFormat(new StdDateFormat())
+                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
 }
