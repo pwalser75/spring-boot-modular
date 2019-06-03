@@ -10,7 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import javax.validation.*;
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Locale;
 import java.util.Set;
@@ -57,9 +57,9 @@ public class NoteTest {
 
         // dates not in the future
         note.setText("Hello World");
-        note.setCreationDate(ZonedDateTime.now().plusMinutes(1));
-        note.setModificationDate(ZonedDateTime.now().plusDays(1));
-        validate(note, "creationDate", "modificationDate");
+        note.setCreatedOn(OffsetDateTime.now().plusMinutes(1));
+        note.setUpdatedOn(OffsetDateTime.now().plusDays(1));
+        validate(note, "createdOn", "updatedOn");
     }
 
     @Test
@@ -68,8 +68,8 @@ public class NoteTest {
         Note note = new Note();
         note.setText("Hello World");
         note.setId(12345L);
-        note.setCreationDate(ZonedDateTime.now().truncatedTo(ChronoUnit.SECONDS).minusDays(1));
-        note.setModificationDate(ZonedDateTime.now().truncatedTo(ChronoUnit.SECONDS).minusHours(1));
+        note.setCreatedOn(OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS).minusDays(1));
+        note.setUpdatedOn(OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS).minusHours(1));
 
         String json = NoteTest.objectMapper().writeValueAsString(note);
         System.out.println(json);
@@ -77,8 +77,8 @@ public class NoteTest {
         Note restored = NoteTest.objectMapper().readValue(json, Note.class);
         Assert.assertEquals(note.getText(), restored.getText());
         Assert.assertEquals(note.getId(), restored.getId());
-        Assert.assertTrue(note.getCreationDate().isEqual(restored.getCreationDate()));
-        Assert.assertTrue(note.getModificationDate().isEqual(restored.getModificationDate()));
+        Assert.assertTrue(note.getCreatedOn().isEqual(restored.getCreatedOn()));
+        Assert.assertTrue(note.getUpdatedOn().isEqual(restored.getUpdatedOn()));
     }
 
     private void validate(Object obj, String... expectedErrorPropertyPaths) {
@@ -101,6 +101,6 @@ public class NoteTest {
                 .registerModule(new JavaTimeModule())
                 .setDateFormat(new StdDateFormat())
                 .enable(SerializationFeature.INDENT_OUTPUT)
-                .disable(SerializationFeature.CLOSE_CLOSEABLE.WRITE_DATES_AS_TIMESTAMPS);
+                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
 }

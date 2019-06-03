@@ -68,8 +68,8 @@ public class NoteServiceImpl implements NoteService {
         Note dto = new Note();
         dto.setId(entity.getId());
         dto.setText(entity.getText());
-        dto.setCreationDate(entity.getCreationDate());
-        dto.setModificationDate(entity.getLastModifiedDate());
+        dto.setCreatedOn(entity.getCreatedOn());
+        dto.setUpdatedOn(entity.getLastUpdatedOn());
         return dto;
     }
 

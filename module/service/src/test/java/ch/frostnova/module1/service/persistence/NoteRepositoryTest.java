@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.NoSuchElementException;
 
 /**
@@ -22,14 +24,23 @@ public class NoteRepositoryTest {
     @Test
     public void testCRUD() {
 
+
         // create
         NoteEntity note = new NoteEntity();
         note.setText("Aloha");
 
         Assert.assertFalse(note.isPersistent());
+        OffsetDateTime before = OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS);
         note = repository.save(note);
         Assert.assertTrue(note.isPersistent());
         Assert.assertNotNull(note.getId());
+        Assert.assertNotNull(note.getCreatedOn());
+        Assert.assertFalse(note.getCreatedOn().isBefore(before));
+        Assert.assertFalse(note.getCreatedOn().isAfter(OffsetDateTime.now()));
+        Assert.assertNotNull(note.getLastUpdatedOn());
+        Assert.assertFalse(note.getLastUpdatedOn().isBefore(before));
+        Assert.assertFalse(note.getLastUpdatedOn().isAfter(OffsetDateTime.now()));
+        OffsetDateTime creationDate = note.getCreatedOn();
 
         // read
         note = repository.findById(note.getId()).orElseThrow(NoSuchElementException::new);
@@ -38,6 +49,11 @@ public class NoteRepositoryTest {
         // update
         note.setText("Lorem ipsum dolor sit amet");
         note = repository.save(note);
+        before = OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+        Assert.assertEquals(creationDate, note.getCreatedOn());
+        Assert.assertNotNull(note.getLastUpdatedOn());
+        Assert.assertFalse(note.getLastUpdatedOn().isBefore(before));
+        Assert.assertFalse(note.getLastUpdatedOn().isAfter(OffsetDateTime.now()));
 
         // delete
         repository.deleteById(note.getId());

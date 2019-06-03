@@ -1,7 +1,9 @@
 package ch.frostnova.module1.service.persistence;
 
+import org.springframework.data.annotation.CreatedDate;
+
 import javax.persistence.*;
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
@@ -16,11 +18,12 @@ public class BaseEntity {
     @Column(name = "ID", unique = true, nullable = false)
     private Long id;
 
+    @CreatedDate
     @Column(name = "CREATED_ON", nullable = false)
-    private ZonedDateTime creationDate;
+    private OffsetDateTime createdOn;
 
     @Column(name = "UPDATED_ON", nullable = false)
-    private ZonedDateTime lastModifiedDate;
+    private OffsetDateTime lastUpdatedOn;
 
     @Version
     @Column(name = "VERSION", nullable = false)
@@ -34,20 +37,20 @@ public class BaseEntity {
         this.id = id;
     }
 
-    public ZonedDateTime getCreationDate() {
-        return creationDate;
+    public OffsetDateTime getCreatedOn() {
+        return createdOn;
     }
 
-    public void setCreationDate(ZonedDateTime creationDate) {
-        this.creationDate = creationDate;
+    public void setCreatedOn(OffsetDateTime createdOn) {
+        this.createdOn = createdOn;
     }
 
-    public ZonedDateTime getLastModifiedDate() {
-        return lastModifiedDate;
+    public OffsetDateTime getLastUpdatedOn() {
+        return lastUpdatedOn;
     }
 
-    public void setLastModifiedDate(ZonedDateTime lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
+    public void setLastUpdatedOn(OffsetDateTime lastUpdatedOn) {
+        this.lastUpdatedOn = lastUpdatedOn;
     }
 
     public long getVersion() {
@@ -64,16 +67,16 @@ public class BaseEntity {
 
     @PrePersist
     private void createAudit() {
-        creationDate = lastModifiedDate = now();
+        lastUpdatedOn = createdOn = now();
     }
 
     @PreUpdate
     private void updateAuditDates() {
-        lastModifiedDate = now();
+        lastUpdatedOn = now();
     }
 
-    private ZonedDateTime now() {
-        return ZonedDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+    private OffsetDateTime now() {
+        return OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS);
     }
 
     @Override

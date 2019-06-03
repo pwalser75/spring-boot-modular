@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.PastOrPresent;
 import java.io.Serializable;
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 import static io.swagger.annotations.ApiModelProperty.AccessMode.READ_ONLY;
@@ -20,14 +20,14 @@ public class BaseResource implements Serializable {
     private Long id;
 
     @ApiModelProperty(notes = "creation date (generated)", accessMode = READ_ONLY, example = EXAMPLE_ZONED_DATE_TIME)
-    @JsonProperty("creationDate")
+    @JsonProperty("createdOn")
     @PastOrPresent
-    private ZonedDateTime creationDate;
+    private OffsetDateTime createdOn;
 
     @ApiModelProperty(notes = "last modification date (generated)", accessMode = READ_ONLY, example = EXAMPLE_ZONED_DATE_TIME)
-    @JsonProperty("modificationDate")
+    @JsonProperty("updatedOn")
     @PastOrPresent
-    private ZonedDateTime modificationDate;
+    private OffsetDateTime updatedOn;
 
     public Long getId() {
         return id;
@@ -37,20 +37,20 @@ public class BaseResource implements Serializable {
         this.id = id;
     }
 
-    public ZonedDateTime getCreationDate() {
-        return creationDate;
+    public OffsetDateTime getCreatedOn() {
+        return createdOn;
     }
 
-    public void setCreationDate(ZonedDateTime creationDate) {
-        this.creationDate = creationDate;
+    public void setCreatedOn(OffsetDateTime createdOn) {
+        this.createdOn = createdOn;
     }
 
-    public ZonedDateTime getModificationDate() {
-        return modificationDate;
+    public OffsetDateTime getUpdatedOn() {
+        return updatedOn;
     }
 
-    public void setModificationDate(ZonedDateTime modificationDate) {
-        this.modificationDate = modificationDate;
+    public void setUpdatedOn(OffsetDateTime updatedOn) {
+        this.updatedOn = updatedOn;
     }
 
     @Override
