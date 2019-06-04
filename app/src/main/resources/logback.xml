@@ -53,8 +53,12 @@
     <!-- log level configurations per package or class -->
     <logger name="io.swagger" level="error"/>
     <logger name="org.hibernate" level="warn"/>
+    <logger name="liquibase" level="warn"/>
+    <logger name="springfox" level="warn"/>
+    <logger name="com.zaxxer.hikari" level="warn"/>
     <!--
-    <logger name="org.hibernate.SQL" level="debug"/>
+    <logger name="org.springframework.boot.autoconfigure" level="debug"/>
+    <logger name="org.hibernate.SQL" level="debug"/>liquibase
     -->
 
     <logger name="ch.frostnova.app.boot.platform.web.filter.AccessLogFilter" level="info" additivity="false">

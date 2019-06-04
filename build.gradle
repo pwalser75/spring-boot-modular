@@ -35,8 +35,7 @@ tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
-def dateTimeFormat = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-def buildDate = java.time.LocalDateTime.now()
+def buildDate = java.time.OffsetDateTime.now().truncatedTo(java.time.temporal.ChronoUnit.SECONDS)
 
 subprojects {
     apply plugin: 'java-library'
@@ -61,7 +60,7 @@ subprojects {
                 attributes(
                         "Name": project.name,
                         "Version": project.version,
-                        "Build-Date": dateTimeFormat.format(buildDate)
+                        "Build-Date": buildDate
                 )
             }
         }
