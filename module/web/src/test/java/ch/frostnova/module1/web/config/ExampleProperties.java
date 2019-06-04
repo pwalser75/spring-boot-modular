@@ -1,4 +1,4 @@
-package ch.frostnova.app.boot.config;
+package ch.frostnova.module1.web.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;

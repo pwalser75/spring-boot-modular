@@ -5,7 +5,10 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 
 import javax.validation.ConstraintViolation;
+import javax.validation.Path;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -13,6 +16,8 @@ import java.util.stream.Stream;
  * Validation error
  */
 public class ValidationError {
+
+    private final static Pattern STANDARD_MESSAGE = Pattern.compile("\\{javax.validation.constraints.(\\w+).message\\}");
 
     @JsonProperty("path")
     private final String path;
@@ -35,9 +40,17 @@ public class ValidationError {
 
     public ValidationError(ConstraintViolation<?> constraintViolation) {
 
-        path = constraintViolation.getPropertyPath().toString();
-        errorCode = constraintViolation.getMessageTemplate();
+        Matcher matcher = ValidationError.STANDARD_MESSAGE.matcher(constraintViolation.getMessageTemplate());
+        errorCode = matcher.matches() ? matcher.group(1) : constraintViolation.getMessageTemplate();
+
         message = constraintViolation.getMessage();
+
+        String type = constraintViolation.getLeafBean().getClass().getSimpleName();
+        String field = null;
+        for (Path.Node node : constraintViolation.getPropertyPath()) {
+            field = node.getName();
+        }
+        path = type + "." + field;
 
     }
 

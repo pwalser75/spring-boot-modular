@@ -8,7 +8,7 @@
 **/logs/
 
 # Ignore H2 DB
-app/db/
+**/db/*.db
 
 # Ignore IDE files
 .idea

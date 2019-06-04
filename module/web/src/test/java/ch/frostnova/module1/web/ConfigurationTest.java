@@ -1,5 +1,6 @@
-package ch.frostnova.app.boot.config;
+package ch.frostnova.module1.web;
 
+import ch.frostnova.module1.web.config.ExampleProperties;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

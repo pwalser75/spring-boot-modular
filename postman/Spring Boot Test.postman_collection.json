@@ -224,8 +224,8 @@
 									"    \r",
 									"    var content=note.content;\r",
 									"    tests[\"has id\"] = note.id;\r",
-									"    tests[\"has creationDate\"] = note.creationDate;\r",
-									"    tests[\"has modificationDate\"] = note.modificationDate;\r",
+									"    tests[\"has createdOn\"] = note.createdOn;\r",
+									"    tests[\"has updatedOn\"] = note.updatedOn;\r",
 									"    tests[\"has text\"] = note.text;\r",
 									"    tests[\"has correct text\"] = note.text === pm.globals.get(\"note-text\");\r",
 									"    \r",
@@ -243,8 +243,8 @@
 							{
 								"key": "Content-Type",
 								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
+								"type": "text",
+								"value": "application/json"
 							}
 						],
 						"body": {
@@ -289,8 +289,9 @@
 									"    var note = pm.response.json();\r",
 									"    \r",
 									"    var content=note.content;\r",
-									"    tests[\"has correct id\"] = note.id ===  pm.globals.get(\"note-id\")\r",
-									"    tests[\"has creationDate\"] = note.creationDate;\r",
+									"    tests[\"has correct id\"] = note.id ===  pm.globals.get(\"note-id\");\r",
+									"    tests[\"has createdOn\"] = note.createdOn;\r",
+									"    tests[\"has updatedOn\"] = note.updatedOn;\r",
 									"    tests[\"has correct text\"] = note.text === pm.globals.get(\"note-text\");\r",
 									"}\r",
 									""
@@ -354,7 +355,8 @@
 									"    tests[\"contains note:\"] = note;\r",
 									"    if (note) {\r",
 									"      tests[\"has correct id\"] = note.id ===  pm.globals.get(\"note-id\")\r",
-									"      tests[\"has creationDate\"] = note.creationDate;\r",
+									"      tests[\"has createdOn\"] = note.createdOn;\r",
+									"      tests[\"has updatedOn\"] = note.updatedOn;\r",
 									"      tests[\"has text\"] = note.text;\r",
 									"      tests[\"has correct text\"] = note.text === pm.globals.get(\"note-text\");\r",
 									"    }\r",
@@ -470,8 +472,8 @@
 									"    \r",
 									"    var content=note.content;\r",
 									"    tests[\"has correct id\"] = note.id ===  pm.globals.get(\"note-id\")\r",
-									"    tests[\"has creationDate\"] = note.creationDate;\r",
-									"    tests[\"has modificationDate\"] = note.modificationDate;\r",
+									"    tests[\"has createdOn\"] = note.createdOn;\r",
+									"    tests[\"has updatedOn\"] = note.updatedOn;\r",
 									"    tests[\"has correct text\"] = note.text === pm.globals.get(\"note-text\");\r",
 									"}\r",
 									""
@@ -523,10 +525,6 @@
 					"request": {
 						"method": "DELETE",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{HOST}}/api/notes/{{note-id}}",
 							"host": [
@@ -671,8 +669,7 @@
 									"if (responseCode.code === expectedStatus){\r",
 									"    var errors = pm.response.json();\r",
 									"    \r",
-									"    tests[\"NotNull\"] = errors.find(e => e.code.indexOf('NotNull') > 0);\r",
-									"    tests[\"NotBlank\"] = errors.find(e => e.code.indexOf('NotBlank') > 0);\r",
+									"    tests[\"NotBlank\"] = errors.find(e => e.code.indexOf('NotBlank') >= 0);\r",
 									"}\r",
 									""
 								],
@@ -731,7 +728,7 @@
 									"if (responseCode.code === expectedStatus){\r",
 									"    var errors = pm.response.json();\r",
 									"    \r",
-									"    tests[\"NotBlank\"] = errors.find(e => e.code.indexOf('NotBlank') > 0);\r",
+									"    tests[\"NotBlank\"] = errors.find(e => e.code.indexOf('NotBlank') >= 0);\r",
 									"}\r",
 									""
 								],
@@ -751,7 +748,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"text\": \"\"\n}"
+							"raw": "{\n\t\"text\": \"  \"\n}"
 						},
 						"url": {
 							"raw": "{{HOST}}/api/notes",
@@ -790,8 +787,7 @@
 									"if (responseCode.code === expectedStatus){\r",
 									"    var errors = pm.response.json();\r",
 									"    \r",
-									"    tests[\"no NotBlank\"] = !errors.find(e => e.code.indexOf('NotBlank') > 0);\r",
-									"    tests[\"Size\"] = errors.find(e => e.code.indexOf('Size') > 0);\r",
+									"    tests[\"Size\"] = errors.find(e => e.code.indexOf('Size') >= 0);\r",
 									"}\r",
 									""
 								],

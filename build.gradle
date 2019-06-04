@@ -115,33 +115,28 @@ ext {
                     "org.springframework.boot:spring-boot-devtools:${springVersion}"
             ],
             liquibase         : [
-                    "org.liquibase:liquibase-core:${liquibaseVersion}"
+                    dependencies.create("org.liquibase:liquibase-core:${liquibaseVersion}") {
+                        exclude module: 'snakeyaml' // 1.18 clashes with 1.23 from spring boot 2.1.5
+                    }
             ],
-            h2Database        :
-                    [
-                            "com.h2database:h2:${h2Version}"
-                    ],
-            swagger           :
-                    [
-                            "io.springfox:springfox-swagger2:${swaggerVersion}",
-                            "io.springfox:springfox-swagger-ui:${swaggerVersion}"
-                    ],
-            json              :
-                    [
-                            "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}",
-                            "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}",
-                            "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonVersion}"
-                    ],
-            jaxrsClient       :
-                    [
-                            "org.glassfish.jersey.core:jersey-client:${jerseyVersion}",
-                            "org.glassfish.jersey.media:jersey-media-json-jackson:${jerseyVersion}",
-                            "org.glassfish.jersey.inject:jersey-hk2:${jerseyVersion}"
-                    ],
-            javaValidation    :
-                    [
-                            "javax.validation:validation-api:${javaValidationVersion}"
-                    ],
+            h2Database        : [
+                    "com.h2database:h2:${h2Version}"
+            ],
+            swagger           : [
+                    "io.springfox:springfox-swagger2:${swaggerVersion}",
+                    "io.springfox:springfox-swagger-ui:${swaggerVersion}"
+            ],
+            json              : [
+                    "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}",
+                    "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}",
+                    "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonVersion}"
+            ],
+            jaxrsClient       : [
+                    "org.glassfish.jersey.core:jersey-client:${jerseyVersion}",
+                    "org.glassfish.jersey.media:jersey-media-json-jackson:${jerseyVersion}",
+                    "org.glassfish.jersey.inject:jersey-hk2:${jerseyVersion}"
+            ],
+            javaValidation    : "javax.validation:validation-api:${javaValidationVersion}"
 
     ]
 }
