@@ -7,7 +7,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.validation.ValidationException;
@@ -18,7 +19,8 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@DataJpaTest
+@ContextConfiguration(classes = TestConfig.class)
 public class NoteServiceTest {
 
     @Autowired

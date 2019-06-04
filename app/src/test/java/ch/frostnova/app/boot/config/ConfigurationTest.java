@@ -1,11 +1,12 @@
 package ch.frostnova.app.boot.config;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import static org.junit.Assert.*;
 
 /**
  * Test for {@link ExampleProperties}
@@ -22,31 +23,31 @@ public class ConfigurationTest {
     @Test
     public void testConfigurationProperties() {
 
-        Assert.assertNotNull(exampleProperties);
-        Assert.assertEquals(123, exampleProperties.getA());
-        Assert.assertEquals(123.456, exampleProperties.getB(), ConfigurationTest.EPSILON);
-        Assert.assertTrue(exampleProperties.isC());
-        Assert.assertEquals("Test", exampleProperties.getD());
+        assertNotNull(exampleProperties);
+        assertEquals(123, exampleProperties.getA());
+        assertEquals(123.456, exampleProperties.getB(), ConfigurationTest.EPSILON);
+        assertTrue(exampleProperties.isC());
+        assertEquals("Test", exampleProperties.getD());
 
-        Assert.assertNotNull(exampleProperties.getE());
-        Assert.assertEquals(3, exampleProperties.getE().size());
-        Assert.assertTrue(exampleProperties.getE().contains("ONE"));
-        Assert.assertTrue(exampleProperties.getE().contains("TWO"));
-        Assert.assertTrue(exampleProperties.getE().contains("THREE"));
+        assertNotNull(exampleProperties.getE());
+        assertEquals(3, exampleProperties.getE().size());
+        assertTrue(exampleProperties.getE().contains("ONE"));
+        assertTrue(exampleProperties.getE().contains("TWO"));
+        assertTrue(exampleProperties.getE().contains("THREE"));
 
-        Assert.assertNotNull(exampleProperties.getF());
-        Assert.assertEquals(3, exampleProperties.getF().size());
-        Assert.assertEquals("first", exampleProperties.getF().get(0));
-        Assert.assertEquals("second", exampleProperties.getF().get(1));
-        Assert.assertEquals("third", exampleProperties.getF().get(2));
+        assertNotNull(exampleProperties.getF());
+        assertEquals(3, exampleProperties.getF().size());
+        assertEquals("first", exampleProperties.getF().get(0));
+        assertEquals("second", exampleProperties.getF().get(1));
+        assertEquals("third", exampleProperties.getF().get(2));
     }
 
     @Test
     public void testDefaultProperties() {
 
-        Assert.assertNotNull(exampleProperties);
-        Assert.assertEquals(5, exampleProperties.getX());
-        Assert.assertEquals(6.7, exampleProperties.getY(), ConfigurationTest.EPSILON);
-        Assert.assertEquals("Aloha", exampleProperties.getZ());
+        assertNotNull(exampleProperties);
+        assertEquals(5, exampleProperties.getX());
+        assertEquals(6.7, exampleProperties.getY(), ConfigurationTest.EPSILON);
+        assertEquals("Aloha", exampleProperties.getZ());
     }
 }

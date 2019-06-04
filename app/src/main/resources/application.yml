@@ -9,7 +9,7 @@ spring.profiles.active: performance-logging
 # TLS configuration - enable HTTPS
 server:
   port: 8443
-  ssl: &serverssl
+  ssl:
     enabled: true
     protocol: TLSv1.2
     enabled-protocols: TLSv1.1+TLSv1.2
@@ -29,16 +29,17 @@ spring:
     username: test
     password: test
     driver-class-name: org.h2.Driver
-    removeAbandoned: true
-    removeAbandonedTimeout: 120
-    logAbandoned: true
-    maxActive: 50
-    maxIdle: 5
-    maxWait: 1000
-    validationQuery: "select 1"
-    testOnBorrow: true
-    testOnConnect: true
-    testWhileIdle: true
+    tomcat:
+      removeAbandoned: true
+      removeAbandonedTimeout: 120
+      logAbandoned: true
+      maxActive: 50
+      maxIdle: 5
+      maxWait: 1000
+      validationQuery: "select 1"
+      testOnBorrow: true
+      testOnConnect: true
+      testWhileIdle: true
   jpa:
     open-in-view: false
     hibernate:
@@ -47,7 +48,7 @@ spring:
       hibernate:
         default_schema: TEST
   liquibase:
-    change-log: classpath:db/liquibase-changelog.xml
+    change-log: classpath:db/changelog/db.changelog-master.xml
 
 # Actuator configuration, expose /health, /info and /metrics endpoints
 management:
