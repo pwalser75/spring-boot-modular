@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "0d02387b-bce8-4eb8-bf87-708598f3eed0",
+		"_postman_id": "fde95426-e4a5-4c82-a64c-5c336cafd479",
 		"name": "Spring Boot Test",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -667,9 +667,13 @@
 									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
 									"\r",
 									"if (responseCode.code === expectedStatus){\r",
-									"    var errors = pm.response.json();\r",
+									"    var error = pm.response.json();\r",
 									"    \r",
-									"    tests[\"NotBlank\"] = errors.find(e => e.code.indexOf('NotBlank') >= 0);\r",
+									"    tests[\"errorCode\"] = error.errorCode === 'BAD_REQUEST';\r",
+									"    tests[\"error\"] = error.error === 'CONSTRAINT_VIOLATION_EXCEPTION';\r",
+									"    tests[\"reason\"] = error.reason !== undefined;\r",
+									"    \r",
+									"    tests[\"NotBlank\"] = error.reason.find(e => e.code.indexOf('NotBlank') >= 0);\r",
 									"}\r",
 									""
 								],
@@ -726,9 +730,13 @@
 									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
 									"\r",
 									"if (responseCode.code === expectedStatus){\r",
-									"    var errors = pm.response.json();\r",
+									"    var error = pm.response.json();\r",
 									"    \r",
-									"    tests[\"NotBlank\"] = errors.find(e => e.code.indexOf('NotBlank') >= 0);\r",
+									"    tests[\"errorCode\"] = error.errorCode === 'BAD_REQUEST';\r",
+									"    tests[\"error\"] = error.error === 'CONSTRAINT_VIOLATION_EXCEPTION';\r",
+									"    tests[\"reason\"] = error.reason !== undefined;\r",
+									"    \r",
+									"    tests[\"NotBlank\"] = error.reason.find(e => e.code.indexOf('NotBlank') >= 0);\r",
 									"}\r",
 									""
 								],
@@ -785,9 +793,13 @@
 									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
 									"\r",
 									"if (responseCode.code === expectedStatus){\r",
-									"    var errors = pm.response.json();\r",
+									"    var error = pm.response.json();\r",
 									"    \r",
-									"    tests[\"Size\"] = errors.find(e => e.code.indexOf('Size') >= 0);\r",
+									"    tests[\"errorCode\"] = error.errorCode === 'BAD_REQUEST';\r",
+									"    tests[\"error\"] = error.error === 'CONSTRAINT_VIOLATION_EXCEPTION';\r",
+									"    tests[\"reason\"] = error.reason !== undefined;\r",
+									"    \r",
+									"    tests[\"Size\"] = error.reason.find(e => e.code.indexOf('Size') >= 0);\r",
 									"}\r",
 									""
 								],
@@ -817,6 +829,186 @@
 							"path": [
 								"api",
 								"notes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Error handling - no JSON",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "24b3a4eb-ac1d-44d6-8f72-845ea88d0f1a",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "60b1c26b-ddb9-4a53-aff0-2980fbcd0862",
+								"exec": [
+									"var expectedStatus=400;\r",
+									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
+									"\r",
+									"if (responseCode.code === expectedStatus){\r",
+									"    var error = pm.response.json();\r",
+									"    \r",
+									"    tests[\"errorCode\"] = error.errorCode === 'BAD_REQUEST';\r",
+									"    tests[\"error\"] = error.error === \"HTTP_MESSAGE_NOT_READABLE_EXCEPTION\";\r",
+									"    tests[\"message\"] = error.message.indexOf(\"Required request body is missing\")>=0;\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{HOST}}/api/notes",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"notes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Error handling - broken JSON",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "24b3a4eb-ac1d-44d6-8f72-845ea88d0f1a",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "60b1c26b-ddb9-4a53-aff0-2980fbcd0862",
+								"exec": [
+									"var expectedStatus=400;\r",
+									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
+									"\r",
+									"if (responseCode.code === expectedStatus){\r",
+									"    var error = pm.response.json();\r",
+									"    \r",
+									"    tests[\"errorCode\"] = error.errorCode === 'BAD_REQUEST';\r",
+									"    tests[\"error\"] = error.error === \"HTTP_MESSAGE_NOT_READABLE_EXCEPTION\";\r",
+									"    tests[\"message\"] = error.message.indexOf(\"JSON parse error\")>=0;\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "<json>\nBroken by design"
+						},
+						"url": {
+							"raw": "{{HOST}}/api/notes",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"notes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Error handling - resource not found",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "24b3a4eb-ac1d-44d6-8f72-845ea88d0f1a",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "60b1c26b-ddb9-4a53-aff0-2980fbcd0862",
+								"exec": [
+									"var expectedStatus=404;\r",
+									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
+									"\r",
+									"if (responseCode.code === expectedStatus){\r",
+									"    var error = pm.response.json();\r",
+									"    \r",
+									"    tests[\"errorCode\"] = error.errorCode === 'NOT_FOUND';\r",
+									"    tests[\"error\"] = error.error === \"RESOURCE_NOT_FOUND_EXCEPTION\";\r",
+									"    tests[\"message\"] = error.message.indexOf(\"Not found\")>=0;\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{HOST}}/api/notes/99999999999",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"notes",
+								"99999999999"
 							]
 						}
 					},

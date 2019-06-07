@@ -15,7 +15,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
  * Exception handler advice.
  */
 @ControllerAdvice
-@Order(value = Ordered.HIGHEST_PRECEDENCE)
+@Order(value = Ordered.LOWEST_PRECEDENCE)
 public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
