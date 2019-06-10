@@ -93,14 +93,7 @@ public class NoteEndpointTest {
         final String baseURL = "https://localhost:" + port + "/api/notes";
         log.info("BASE URL: " + baseURL);
         try (final NoteClient noteClient = new NoteClient(baseURL)) {
-
-            Note note = new Note();
-
-            try {
-                noteClient.create(note);
-            } catch (BadRequestException ex) {
-                throw ex;
-            }
+            noteClient.create(new Note());
         }
     }
 }

@@ -11,6 +11,6 @@ import org.springframework.context.annotation.Import;
  */
 @SpringBootApplication
 @Import({PlatformConfig.class, Module1ServiceConfig.class})
-public class TestApp {
+class TestApp {
 
 }

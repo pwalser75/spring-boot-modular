@@ -44,12 +44,11 @@ public final class RestClientConfig {
         }
     }
 
-    public static ObjectMapper objectMapper() {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.setAnnotationIntrospector(new JacksonAnnotationIntrospector());
-        mapper.registerModule(new JavaTimeModule());
-        mapper.setDateFormat(new StdDateFormat());
-        mapper.disable(SerializationFeature.CLOSE_CLOSEABLE.WRITE_DATES_AS_TIMESTAMPS);
-        return mapper;
+    private static ObjectMapper objectMapper() {
+        return new ObjectMapper()
+                .setAnnotationIntrospector(new JacksonAnnotationIntrospector())
+                .registerModule(new JavaTimeModule())
+                .setDateFormat(new StdDateFormat())
+                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
 }

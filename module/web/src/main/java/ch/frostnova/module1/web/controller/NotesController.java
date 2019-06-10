@@ -22,7 +22,7 @@ import java.util.NoSuchElementException;
         allowCredentials = "true",
         methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS, RequestMethod.HEAD},
         maxAge = 1209600)
-@Api(value = "Notes resource", produces = "application/json", description = "Endpoints for reading/writing notes")
+@Api(value = "Notes resource", produces = "application/json")
 public class NotesController {
 
     @Autowired

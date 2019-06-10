@@ -1,3 +1,6 @@
+import java.time.OffsetDateTime
+import java.time.temporal.ChronoUnit
+
 defaultTasks 'clean', 'build', 'install'
 
 buildscript {
@@ -35,7 +38,7 @@ tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
-def buildDate = java.time.OffsetDateTime.now().truncatedTo(java.time.temporal.ChronoUnit.SECONDS)
+def buildDate = OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS)
 
 subprojects {
     apply plugin: 'java-library'

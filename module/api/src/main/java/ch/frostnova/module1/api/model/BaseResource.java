@@ -14,10 +14,10 @@ import static io.swagger.annotations.ApiModelProperty.AccessMode.READ_ONLY;
 @JsonPropertyOrder({"id", "createdOn", "updatedOn"})
 public class BaseResource implements Serializable {
 
-    protected final String EXAMPLE_ID = "12345";
-    protected final String EXAMPLE_OFFSET_DATE_TIME = "2019-08-07T16:54:32+01:00";
+    private final String EXAMPLE_ID = "12345";
+    private final String EXAMPLE_OFFSET_DATE_TIME = "2019-08-07T16:54:32+01:00";
 
-    @ApiModelProperty(position = 0, notes = "identifier (generated)", accessMode = READ_ONLY, example = EXAMPLE_ID)
+    @ApiModelProperty(notes = "identifier (generated)", accessMode = READ_ONLY, example = EXAMPLE_ID)
     @JsonProperty("id")
     private Long id;
 

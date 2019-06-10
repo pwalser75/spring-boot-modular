@@ -17,7 +17,7 @@ import java.util.stream.Stream;
  */
 public class ValidationError {
 
-    private final static Pattern STANDARD_MESSAGE = Pattern.compile("\\{javax.validation.constraints.(\\w+).message\\}");
+    private final static Pattern STANDARD_MESSAGE = Pattern.compile("\\{javax.validation.constraints.(\\w+).message}");
 
     @JsonProperty("path")
     private final String path;

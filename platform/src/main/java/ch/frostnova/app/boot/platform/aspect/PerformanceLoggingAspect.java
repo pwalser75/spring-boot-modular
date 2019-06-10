@@ -44,7 +44,7 @@ import java.util.stream.Collectors;
 @Profile("performance-logging")
 public class PerformanceLoggingAspect {
 
-    private static Logger log = LoggerFactory.getLogger(PerformanceLoggingAspect.class);
+    private static final Logger log = LoggerFactory.getLogger(PerformanceLoggingAspect.class);
 
     private final static String SYMBOL_INDENTATION = "+"; // unicode alternative: "\u2937"
     private final static String SYMBOL_RIGHT_ARROW = "->"; // unicode alternative: "\u2192"

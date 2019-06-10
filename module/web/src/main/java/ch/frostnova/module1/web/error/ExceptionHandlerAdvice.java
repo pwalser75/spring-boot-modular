@@ -1,7 +1,6 @@
 package ch.frostnova.module1.web.error;
 
 import ch.frostnova.module1.api.exception.ResourceNotFoundException;
-import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -15,8 +14,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
  * Exception handler advice.
  */
 @ControllerAdvice
-@Order(value = Ordered.LOWEST_PRECEDENCE)
-public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
+@Order
+class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
     protected ResponseEntity<Object> handleNotFound(RuntimeException ex, WebRequest request) {

@@ -36,10 +36,9 @@ public final class ResponseExceptionMapper {
      * Check the response: map error status codes to exceptions.
      *
      * @param response response from web service call
-     * @return response
      * @throws WebApplicationException if the response status indicates an error (400 or higher).
      */
-    public static Response check(Response response) throws WebApplicationException {
+    private static void check(Response response) throws WebApplicationException {
         if (response == null) {
             throw new NullPointerException("response must not be null");
         }
@@ -65,6 +64,5 @@ public final class ResponseExceptionMapper {
             }
             throw new RuntimeException("Unexpected response: " + status + ", " + response.readEntity(String.class));
         }
-        return response;
     }
 }
