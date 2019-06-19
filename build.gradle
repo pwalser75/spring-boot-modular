@@ -39,13 +39,12 @@ tasks.withType(JavaCompile) {
 def buildDate = OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS)
 
 allprojects {
-    apply plugin: 'maven'
-    apply plugin: 'maven-publish'
-
     group = 'ch.frostnova.spring-multimodule'
 }
 subprojects {
     apply plugin: 'java-library'
+    apply plugin: 'maven'
+    apply plugin: 'maven-publish'
 
     repositories {
         jcenter()
