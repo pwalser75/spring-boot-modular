@@ -4,6 +4,7 @@ import ch.frostnova.module1.web.config.ExampleProperties;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -13,7 +14,8 @@ import static org.junit.Assert.*;
  * Test for {@link ExampleProperties}
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(classes = ExampleProperties.class)
+@EnableConfigurationProperties
 public class ConfigurationTest {
 
     private final static double EPSILON = 1e-23;
