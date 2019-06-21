@@ -1,10 +1,10 @@
 description = 'Module1 Web'
 
 dependencies {
-    compile project(':module:api')
+    api project(':module:api')
 
-    compile libs.springBoot
-    compile libs.swagger
+    api libs.springBoot
+    api libs.swagger
 
     testCompile libs.testbase
     testCompile libs.springBootTest
