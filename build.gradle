@@ -101,6 +101,7 @@ ext {
     jacksonVersion = '2.9.9'
     jerseyVersion = '2.28'
     javaValidationVersion = '2.0.1.Final'
+	mysqlDriverVersion = '8.0.16'
 
     libs = [
             testbase          : [
@@ -126,6 +127,9 @@ ext {
             h2Database        : [
                     "com.h2database:h2:${h2Version}"
             ],
+			mysql        : [
+                    "mysql:mysql-connector-java:${mysqlDriverVersion}"
+            ],
             swagger           : [
                     "io.springfox:springfox-swagger2:${swaggerVersion}",
                     "io.springfox:springfox-swagger-ui:${swaggerVersion}"
@@ -148,4 +152,32 @@ ext {
 task start(dependsOn: ['assemble', ':app:bootRun']) {
     group = 'Start/Run'
     description = 'Start the boot app'
+}
+
+task dockerStart(type: Exec){
+    group = 'Docker'
+    description = 'Start the docker containers'
+    workingDir 'docker'
+    commandLine 'docker-compose', 'up'
+}
+
+task dockerStop(type: Exec){
+    group = 'Docker'
+    description = 'Stop the docker containers'
+    workingDir 'docker'
+    commandLine 'docker-compose', 'down', '-v', '--rmi', 'local'
+}
+
+task dockerInit(type: Exec){
+    group = 'Docker'
+    description = 'Rebuild and start the docker containers'
+    workingDir 'docker'
+    commandLine 'docker-compose', 'up', '--build'
+}
+
+task dockerRm(type: Exec){
+    group = 'Docker'
+    description = 'Shutdown docker containers and remove the images and volumes'
+    workingDir 'docker'
+    commandLine 'docker-compose', 'down', '-v', '--rmi', 'local'
 }

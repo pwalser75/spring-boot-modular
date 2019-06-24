@@ -13,6 +13,7 @@ dependencies {
     testCompile libs.jaxrsClient
 
     runtime libs.h2Database
+	compile libs.mysql
 
     dev libs.springBootDevTools
 

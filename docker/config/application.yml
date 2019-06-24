@@ -8,27 +8,26 @@ spring.profiles.active: performance-logging
 
 # TLS configuration - enable HTTPS
 server:
-  port: 8443
+  port: 443
   ssl:
     enabled: true
     protocol: TLSv1.2
     enabled-protocols: TLSv1.1+TLSv1.2
     ciphers: TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384,TLS_DHE_RSA_WITH_AES_256_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,TLS_DHE_RSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_DHE_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_DHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_DHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_DHE_RSA_WITH_AES_128_GCM_SHA256
     key-alias: "test-server"
-    key-store: "classpath:server-keystore.jks"
+    key-store: "/config/server-keystore.jks"
     key-store-password: "keystore"
     key-password: "keystore"
 
 # HTTP port for redirection to HTTPS - uncomment to activate
-# http.server.port: 80
+http.server.port: 80
 
 # Persistence: datasource/JPA configuration
 spring:
   datasource:
-    url: jdbc:h2:file:./db/h2-database
-    username: test
-    password: test
-    driver-class-name: org.h2.Driver
+    url: jdbc:mysql://spring-boot-modular-db:3306/prod_db
+    username: prod-user
+    password: prod-secret
     tomcat:
       removeAbandoned: true
       removeAbandonedTimeout: 120
@@ -46,11 +45,13 @@ spring:
       ddl-auto: none
     properties:
       hibernate:
-        default_schema: TEST
+        default_schema: prod_db
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
+    user: root
+    password: root-secret
     parameters:
-      schema: TEST
+      schema: prod_db
 
 # Actuator configuration, expose /health, /info and /metrics endpoints
 management:

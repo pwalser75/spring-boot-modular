@@ -5,9 +5,9 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
 
-    <changeSet id="1" author="pwalser">
+    <changeSet id="0003" author="pwalser">
 
-        <insert schemaName="TEST" tableName="NOTE">
+        <insert schemaName="${schema}" tableName="NOTE">
             <column name="ID" value="1234567"/>
             <column name="VERSION" valueNumeric="1"/>
             <column name="CREATED_ON" valueComputed="CURRENT_TIMESTAMP"/>

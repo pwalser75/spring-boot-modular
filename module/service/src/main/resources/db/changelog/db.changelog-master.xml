@@ -13,11 +13,12 @@
     <property name="autoIncrement" value="true" dbms="mysql,h2,postgresql,oracle,mssql"/>
 
     <changeSet id="1" author="pwalser" runAlways="true">
-        <sql dbms="h2">CREATE SCHEMA IF NOT EXISTS TEST;</sql>
+        <sql dbms="h2">CREATE SCHEMA IF NOT EXISTS ${schema};</sql>
         <sql dbms="oracle">ALTER SESSION SET NLS_LENGTH_SEMANTICS = 'CHAR';</sql>
     </changeSet>
 
-    <include file="include/create-schema.xml" relativeToChangelogFile="true"/>
-    <include file="include/initial-data.xml" relativeToChangelogFile="true"/>
+    <include file="include/0001-create-hibernate-sequence.xml" relativeToChangelogFile="true"/>
+    <include file="include/0002-create-note-table.xml" relativeToChangelogFile="true"/>
+    <include file="include/0003-notes-initial-data.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

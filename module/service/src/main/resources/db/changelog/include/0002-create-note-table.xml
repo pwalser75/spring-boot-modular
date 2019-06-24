@@ -5,13 +5,9 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
 
-    <changeSet id="0" author="pwalser" dbms="h2,postgresql,oracle">
-        <createSequence schemaName="TEST" sequenceName="HIBERNATE_SEQUENCE" startValue="1" incrementBy="20"/>
-    </changeSet>
+    <changeSet id="0001" author="pwalser">
 
-    <changeSet id="1" author="pwalser">
-
-        <createTable schemaName="TEST" tableName="NOTE">
+        <createTable schemaName="${schema}" tableName="NOTE">
             <column name="ID" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>

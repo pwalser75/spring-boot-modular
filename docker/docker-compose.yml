@@ -1,0 +1,24 @@
+version: '2'
+services:
+  spring-boot-modular:
+    container_name: "spring-boot-modular"
+    build: '..'
+    restart: always
+    ports:
+     - "443:443"
+     - "80:80"
+    volumes:
+      - ./config:/config
+  mysql:
+    container_name: spring-boot-modular-db
+    restart: always
+    image: mysql:latest
+    ports:
+     - "13306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 'root-secret'
+      MYSQL_DATABASE: 'prod_db'
+      MYSQL_USER: 'prod-user'
+      MYSQL_PASSWORD: 'prod-secret'
+    volumes:
+      - ./database:/var/lib/mysql 
