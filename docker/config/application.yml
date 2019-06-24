@@ -25,9 +25,9 @@ http.server.port: 80
 # Persistence: datasource/JPA configuration
 spring:
   datasource:
-    url: jdbc:mysql://spring-boot-modular-db:3306/prod_db
-    username: prod-user
-    password: prod-secret
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USER}
+    password: ${DATABASE_PASSWORD}
     tomcat:
       removeAbandoned: true
       removeAbandonedTimeout: 120
@@ -43,15 +43,16 @@ spring:
     open-in-view: false
     hibernate:
       ddl-auto: none
+      naming.physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     properties:
       hibernate:
-        default_schema: prod_db
+        default_schema: ${DATABASE_SCHEMA}
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
-    user: root
-    password: root-secret
+    user: ${DATABASE_ADMIN_USER}
+    password: ${DATABASE_ADMIN_PASSWORD}
     parameters:
-      schema: prod_db
+      schema: ${DATABASE_SCHEMA}
 
 # Actuator configuration, expose /health, /info and /metrics endpoints
 management:

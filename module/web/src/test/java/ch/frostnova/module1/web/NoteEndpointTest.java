@@ -15,6 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
+import java.util.Objects;
 
 /**
  * Note endpoint test
@@ -45,7 +46,7 @@ public class NoteEndpointTest {
             Assert.assertNotNull(created);
             Assert.assertNotNull(created.getId());
             Assert.assertEquals(note.getText(), created.getText());
-            long id = created.getId();
+            String id = created.getId();
             note = created;
 
             // read
@@ -57,7 +58,7 @@ public class NoteEndpointTest {
 
             // list
 
-            Assert.assertTrue(noteClient.list().stream().anyMatch(p -> p.getId() == id));
+            Assert.assertTrue(noteClient.list().stream().anyMatch(p -> Objects.equals(p.getId(), id)));
 
             // update
 
@@ -77,7 +78,7 @@ public class NoteEndpointTest {
             noteClient.delete(id);
 
             // must not be found afterwards
-            Assert.assertFalse(noteClient.list().stream().anyMatch(p -> p.getId() == id));
+            Assert.assertFalse(noteClient.list().stream().anyMatch(p -> Objects.equals(p.getId(), id)));
 
             try {
                 noteClient.get(id);

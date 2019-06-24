@@ -8,7 +8,7 @@
     <changeSet id="0001" author="pwalser">
 
         <createTable schemaName="${schema}" tableName="NOTE">
-            <column name="ID" type="bigint" autoIncrement="${autoIncrement}">
+            <column name="ID" type="varchar(64)">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="VERSION" type="bigint">

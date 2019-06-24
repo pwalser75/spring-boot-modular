@@ -54,7 +54,7 @@ public class NotesController {
             @ApiResponse(code = 200, message = "ok"),
             @ApiResponse(code = 404, message = "not found")
     })
-    public Note get(@ApiParam(value = "ID of the note to fetch", required = true) @PathVariable("id") long id) {
+    public Note get(@ApiParam(value = "ID of the note to fetch", required = true) @PathVariable("id") String id) {
         Note result = noteService.get(id);
         if (result != null) {
             return result;
@@ -94,7 +94,7 @@ public class NotesController {
             @ApiResponse(code = 400, message = "bad request"),
             @ApiResponse(code = 404, message = "not found")
     })
-    public void update(@ApiParam(value = "ID of the note to update", required = true) @PathVariable("id") long id,
+    public void update(@ApiParam(value = "ID of the note to update", required = true) @PathVariable("id") String id,
                        @ApiParam(value = "Note data to update", required = true) @RequestBody Note note) {
         note.setId(id);
         noteService.save(note);
@@ -108,7 +108,7 @@ public class NotesController {
     @DeleteMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiOperation(value = "Delete a note", response = Note.class)
-    public void delete(@ApiParam(value = "ID of the note to delete", required = true) @PathVariable("id") long id) {
+    public void delete(@ApiParam(value = "ID of the note to delete", required = true) @PathVariable("id") String id) {
         noteService.delete(id);
     }
 }

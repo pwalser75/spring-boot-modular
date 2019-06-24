@@ -110,7 +110,7 @@ public class NoteServiceTest {
     public void testDelete() {
 
         Note note = new Note(UUID.randomUUID().toString());
-        Long id = noteService.save(note).getId();
+        String id = noteService.save(note).getId();
 
         noteService.delete(id);
         try {

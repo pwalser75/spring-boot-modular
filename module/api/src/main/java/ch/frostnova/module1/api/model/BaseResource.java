@@ -19,7 +19,7 @@ public class BaseResource implements Serializable {
 
     @ApiModelProperty(notes = "identifier (generated)", accessMode = READ_ONLY, example = EXAMPLE_ID)
     @JsonProperty("id")
-    private Long id;
+    private String id;
 
     @ApiModelProperty(position = 1, notes = "creation date (generated)", accessMode = READ_ONLY, example = EXAMPLE_OFFSET_DATE_TIME)
     @JsonProperty("createdOn")
@@ -31,11 +31,11 @@ public class BaseResource implements Serializable {
     @PastOrPresent
     private OffsetDateTime updatedOn;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

@@ -67,7 +67,7 @@ public class NoteTest {
 
         Note note = new Note();
         note.setText("Hello World");
-        note.setId(12345L);
+        note.setId("ABC12345");
         note.setCreatedOn(OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS).minusDays(1));
         note.setUpdatedOn(OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS).minusHours(1));
 

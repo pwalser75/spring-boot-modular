@@ -5,10 +5,19 @@ services:
     build: '..'
     restart: always
     ports:
-     - "443:443"
-     - "80:80"
+     - "8443:443"
+     - "8080:80"
+    environment:
+      DATABASE_URL: 'jdbc:mysql://spring-boot-modular-db:3306/prod_db'
+      DATABASE_SCHEMA: 'prod_db'
+      DATABASE_ADMIN_USER: 'root'
+      DATABASE_ADMIN_PASSWORD: 'root-secret'
+      DATABASE_USER: 'prod-user'
+      DATABASE_PASSWORD: 'prod-secret'
     volumes:
-      - ./config:/config
+      - ./config:/config:ro
+      - ./wait_for_it.sh:/wait_for_it.sh:ro
+    command: /wait_for_it.sh spring-boot-modular-db:3306 -t 0 --strict && java -Djava.security.egd=file:/dev/./urandom -jar app.jar --spring.config.location=/config/application.yml
   mysql:
     container_name: spring-boot-modular-db
     restart: always

@@ -51,7 +51,7 @@ public class NoteClient implements AutoCloseable {
      * @param id id
      * @return note.
      */
-    public Note get(long id) {
+    public Note get(String id) {
         Invocation invocation = client
                 .target(baseURL + "/" + id)
                 .request()
@@ -101,7 +101,7 @@ public class NoteClient implements AutoCloseable {
      *
      * @param id id of the record
      */
-    public void delete(long id) {
+    public void delete(String id) {
 
         Invocation invocation = client
                 .target(baseURL + "/" + id)

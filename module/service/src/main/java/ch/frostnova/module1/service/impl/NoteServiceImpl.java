@@ -31,11 +31,11 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     @Transactional(readOnly = true)
-    public Note get(long id) {
+    public Note get(String id) {
         return convert(load(id));
     }
 
-    private NoteEntity load(long id) {
+    private NoteEntity load(String id) {
         return repository.findById(id).orElseThrow(ResourceNotFoundException::new);
     }
 
@@ -54,7 +54,7 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public void delete(long id) {
+    public void delete(String id) {
         if (repository.existsById(id)) {
             repository.deleteById(id);
         }

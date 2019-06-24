@@ -11,12 +11,12 @@ import java.util.List;
  */
 public interface NoteService {
 
-    Note get(long id);
+    Note get(String id);
 
     Note save(@NotNull @Valid Note note);
 
     List<Note> list();
 
-    void delete(long id);
+    void delete(String id);
 
 }

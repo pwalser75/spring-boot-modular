@@ -1,5 +1,6 @@
 package ch.frostnova.module1.service.persistence;
 
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
@@ -14,9 +15,10 @@ import java.util.Objects;
 public class BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(generator = "generated-id")
+    @GenericGenerator(name = "generated-id", strategy = "ch.frostnova.module1.service.persistence.IdGenerator")
     @Column(name = "ID", unique = true, nullable = false)
-    private Long id;
+    private String id;
 
     @CreatedDate
     @Column(name = "CREATED_ON", nullable = false)
@@ -29,11 +31,11 @@ public class BaseEntity {
     @Column(name = "VERSION", nullable = false)
     private long version;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
