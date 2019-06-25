@@ -39,7 +39,6 @@ public class AppInfoController {
     })
     public AppInfo info() {
 
-
         AppInfo appInfo = new AppInfo();
 
         Map<String, Object> info = infoEndpoint.info();

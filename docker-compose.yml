@@ -1,12 +1,12 @@
-version: '2'
+version: '3.0'
 services:
   spring-boot-modular:
     container_name: "spring-boot-modular"
     build: '..'
     restart: always
     ports:
-     - "8443:443"
-     - "8080:80"
+      - "8443:443"
+      - "8080:80"
     environment:
       DATABASE_URL: 'jdbc:mysql://spring-boot-modular-db:3306/prod_db'
       DATABASE_SCHEMA: 'prod_db'
@@ -14,20 +14,20 @@ services:
       DATABASE_ADMIN_PASSWORD: 'root-secret'
       DATABASE_USER: 'prod-user'
       DATABASE_PASSWORD: 'prod-secret'
+    depends_on:
+      - mysql
     volumes:
-      - ./config:/config:ro
-      - ./wait_for_it.sh:/wait_for_it.sh:ro
-    command: /wait_for_it.sh spring-boot-modular-db:3306 -t 0 --strict && java -Djava.security.egd=file:/dev/./urandom -jar app.jar --spring.config.location=/config/application.yml
+      - ./docker/config:/config:ro
   mysql:
     container_name: spring-boot-modular-db
     restart: always
     image: mysql:latest
     ports:
-     - "13306:3306"
+      - "13306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: 'root-secret'
       MYSQL_DATABASE: 'prod_db'
       MYSQL_USER: 'prod-user'
       MYSQL_PASSWORD: 'prod-secret'
     volumes:
-      - ./database:/var/lib/mysql 
+      - ./docker/database:/var/lib/mysql
