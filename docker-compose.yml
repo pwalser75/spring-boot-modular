@@ -1,9 +1,17 @@
 version: '3.0'
+
+networks:
+  elk:
+
+volumes:
+  elasticsearch:
+    driver: local
+
 services:
   spring-boot-modular:
     container_name: "spring-boot-modular"
     build: '.'
-    restart: always
+    restart: unless-stopped
     ports:
       - "8443:443"
       - "8080:80"
@@ -16,11 +24,15 @@ services:
       DATABASE_PASSWORD: 'prod-secret'
     depends_on:
       - mysql
+      - elasticsearch
+      - logstash
+      - kibana
     volumes:
       - ./docker/config:/config:ro
+
   mysql:
     container_name: spring-boot-modular-db
-    restart: always
+    restart: unless-stopped
     image: mysql:latest
     ports:
       - "13306:3306"
@@ -31,3 +43,40 @@ services:
       MYSQL_PASSWORD: 'prod-secret'
     volumes:
       - ./docker/database:/var/lib/mysql
+
+  elasticsearch:
+    environment:
+      http.host: 0.0.0.0
+      transport.host: 127.0.0.1
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.2.1
+    networks:
+      elk: null
+    ports:
+      - 9200:9200
+    restart: unless-stopped
+    volumes:
+      - ./docker/elasticsearch:/usr/share/elasticsearch/data:rw
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash-oss:6.2.1
+    depends_on:
+      - elasticsearch
+    networks:
+      elk: null
+    ports:
+      - 5044:5044
+    restart: unless-stopped
+
+  kibana:
+    depends_on:
+      - elasticsearch
+    environment:
+      ELASTICSEARCH_PASSWORD: changeme
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      ELASTICSEARCH_USERNAME: elastic
+    image: docker.elastic.co/kibana/kibana-oss:6.2.1
+    networks:
+      elk: null
+    ports:
+      - 5601:5601
+    restart: unless-stopped
