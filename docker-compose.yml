@@ -3,10 +3,6 @@ version: '3.0'
 networks:
   elk:
 
-volumes:
-  elasticsearch:
-    driver: local
-
 services:
   spring-boot-modular:
     container_name: "spring-boot-modular"
