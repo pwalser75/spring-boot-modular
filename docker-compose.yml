@@ -2,7 +2,7 @@ version: '3.0'
 services:
   spring-boot-modular:
     container_name: "spring-boot-modular"
-    build: '..'
+    build: '.'
     restart: always
     ports:
       - "8443:443"
