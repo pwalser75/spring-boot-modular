@@ -1,8 +1,5 @@
 version: '3.0'
 
-networks:
-  elk:
-
 services:
   spring-boot-modular:
     container_name: "spring-boot-modular"
@@ -25,6 +22,11 @@ services:
       - kibana
     volumes:
       - ./docker/config:/config:ro
+    links:
+      - logstash
+    networks:
+      - front-tier
+      - back-tier
 
   mysql:
     container_name: spring-boot-modular-db
@@ -39,40 +41,67 @@ services:
       MYSQL_PASSWORD: 'prod-secret'
     volumes:
       - ./docker/database:/var/lib/mysql
+    networks:
+      - front-tier
+      - back-tier
 
   elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.2.2
+    container_name: elasticsearch
     environment:
-      http.host: 0.0.0.0
-      transport.host: 127.0.0.1
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.2.1
-    networks:
-      elk: null
-    ports:
-      - 9200:9200
-    restart: unless-stopped
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    cap_add:
+      - IPC_LOCK
     volumes:
-      - ./docker/elasticsearch:/usr/share/elasticsearch/data:rw
+      - ./docker/elasticsearch/data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - back-tier
+    restart: unless-stopped
 
   logstash:
-    image: docker.elastic.co/logstash/logstash-oss:6.2.1
-    depends_on:
+    image: docker.elastic.co/logstash/logstash:6.2.2
+    container_name: logstash
+    command: logstash -f /etc/logstash/conf.d/logstash.conf
+    volumes:
+      - ./docker/logstash/config:/etc/logstash/conf.d
+    ports:
+      - "5000:5000"
+    links:
       - elasticsearch
     networks:
-      elk: null
-    ports:
-      - 5044:5044
+      - front-tier
+      - back-tier
     restart: unless-stopped
 
   kibana:
-    depends_on:
-      - elasticsearch
+    image: docker.elastic.co/kibana/kibana:6.2.2
+    container_name: kibana
     environment:
-      ELASTICSEARCH_PASSWORD: changeme
       ELASTICSEARCH_URL: http://elasticsearch:9200
       ELASTICSEARCH_USERNAME: elastic
-    image: docker.elastic.co/kibana/kibana-oss:6.2.1
-    networks:
-      elk: null
+      ELASTICSEARCH_PASSWORD: changeme
     ports:
-      - 5601:5601
+      - "5601:5601"
+    links:
+      - elasticsearch
+    networks:
+      - back-tier
     restart: unless-stopped
+
+networks:
+  front-tier:
+  back-tier:
+    driver: bridge

@@ -1,5 +1,11 @@
 <configuration>
 
+	<shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook"/>
+
+	<springProperty scope="context" name="LOGSTASH" source="logstash.servers"/>
+    <springProperty scope="context" name="APP_NAME" source="info.app.name"/>
+    <springProperty scope="context" name="APP_VERSION" source="info.app.version"/>
+
     <!-- console appender -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -44,11 +50,54 @@
             <maxHistory>10</maxHistory>
             <totalSizeCap>100MB</totalSizeCap>
         </rollingPolicy>
-
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} - %msg%n</pattern>
         </encoder>
     </appender>
+	
+	<if condition='isDefined("logstash.servers")'>
+        <then>
+			<appender name="STASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+				<keepAliveDuration>5 minutes</keepAliveDuration>
+				<reconnectionDelay>10 second</reconnectionDelay>
+				<waitStrategyType>sleeping</waitStrategyType>
+				<ringBufferSize>16384</ringBufferSize>
+				<destination>${LOGSTASH}</destination>
+				<encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+					<providers>
+						<mdc/> <!-- MDC variables on the Thread will be written as JSON fields-->
+						<context/> <!--Outputs entries from logback's context -->
+						<logLevel/>
+						<loggerName/>
+
+						<pattern>
+							<pattern>
+								{
+								"appName": "${APP_NAME}",
+								"appVersion": "${APP_VERSION}"
+								}
+							</pattern>
+						</pattern>
+
+						<threadName/>
+						<message/>
+
+						<logstashMarkers/> <!-- Useful so we can add extra information for specific log lines as Markers-->
+						<arguments/> <!--or through StructuredArguments-->
+
+						<stackTrace>
+							<fieldName>stackTrace</fieldName>
+							<throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+								<exclude>net\.sf\.cglib\..*</exclude>
+								<maxDepthPerThrowable>30</maxDepthPerThrowable>
+								<rootCauseFirst>true</rootCauseFirst>
+							</throwableConverter>
+						</stackTrace>
+					</providers>
+				</encoder>
+			</appender>
+        </then>
+    </if>
 
     <!-- log level configurations per package or class -->
     <logger name="io.swagger" level="error"/>
@@ -75,6 +124,11 @@
     <root level="info">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>
+		<if condition='isDefined("logstash.servers")'>
+			<then>
+				<appender-ref ref="STASH"/>
+			</then>
+		</if>
     </root>
 
 </configuration>

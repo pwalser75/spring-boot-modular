@@ -3,7 +3,7 @@ info:
     name: "spring-multi-module"
     description: "Spring Boot Multi Module Project"
     version: "1.0.0-SNAPSHOT"
-
+   
 spring.profiles.active: performance-logging
 
 # TLS configuration - enable HTTPS
@@ -61,3 +61,7 @@ management:
       base-path: /
       exposure.include: health,info,metrics
   endpoint.health.show-details: always
+  
+logstash:
+  servers: logstash:5000
+

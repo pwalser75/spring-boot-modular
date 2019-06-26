@@ -83,11 +83,13 @@ ext {
     springBootVersion = '2.1.6.RELEASE'
     junitVersion = '4.12'
     mockitoVersion = '2.28.2'
+    logstashLogbackVersion = '6.1'
+	janinoVersion = '3.0.6'
     h2Version = '1.4.199'
     liquibaseVersion = '3.6.3'
     swaggerVersion = '2.9.2'
     jacksonVersion = '2.9.9'
-    jerseyVersion = '2.28'
+    jerseyVersion = '2.29'
     javaValidationVersion = '2.0.1.Final'
 	mysqlDriverVersion = '8.0.16'
 
@@ -99,7 +101,9 @@ ext {
             springBoot        : [
                     "org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}",
                     "org.springframework.boot:spring-boot-starter-web:${springBootVersion}",
-                    "org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}"
+                    "org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}",
+                    "net.logstash.logback:logstash-logback-encoder:${logstashLogbackVersion}",
+					"org.codehaus.janino:janino:${janinoVersion}"
             ],
             springBootTest    : [
                     "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
