@@ -7,8 +7,6 @@ plugins {
     id 'com.avast.gradle.docker-compose' version '0.9.4'
 }
 
-apply plugin: 'java'
-
 description = 'Spring Boot Modular Project'
 
 defaultTasks 'clean', 'build', 'install', 'publishToMavenLocal'
@@ -19,15 +17,6 @@ repositories {
     mavenCentral()
 }
 
-java {
-    sourceCompatibility JavaVersion.VERSION_1_8
-    targetCompatibility JavaVersion.VERSION_1_8
-}
-
-compileJava.options.encoding = 'UTF-8'
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-}
 
 def buildDate = OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS)
 

@@ -5,8 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -30,13 +28,6 @@ public class GeneralExceptionHandlerAdvice extends ResponseEntityExceptionHandle
     private final static Pattern exceptionNamePattern = Pattern.compile("([A-Z][a-z0-9]+)");
 
     private final static Logger logger = LoggerFactory.getLogger(GeneralExceptionHandlerAdvice.class);
-
-    public static void main(String[] args) {
-
-        System.out.println(toErrorCode(new NullPointerException()));
-        System.out.println(toErrorCode(new ArrayIndexOutOfBoundsException()));
-        System.out.println(toErrorCode(new OutOfMemoryError()));
-    }
 
     @ExceptionHandler(NoSuchElementException.class)
     protected ResponseEntity<Object> handleNotFound(NoSuchElementException ex, WebRequest request) {
@@ -67,9 +58,8 @@ public class GeneralExceptionHandlerAdvice extends ResponseEntityExceptionHandle
     }
 
     @Override
-    @Nullable
-    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, @Nullable Object body, HttpHeaders headers,
-                                                             HttpStatus status, @NonNull WebRequest request) {
+    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers,
+                                                             HttpStatus status, WebRequest request) {
         ErrorResponse errorResponse = new ErrorResponse(status.name(), toErrorCode(ex), ex.getLocalizedMessage(), body);
         String logMessage = ex.getClass().getSimpleName() + ": " + ex.getMessage();
         if (status.is5xxServerError()) {
