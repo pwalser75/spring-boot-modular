@@ -1,0 +1,109 @@
+version: '2.0'
+
+services:
+  spring-boot-modular:
+    container_name: "spring-boot-modular"
+    build: '.'
+    restart: unless-stopped
+    ports:
+      - "8443:443"
+      - "8080:80"
+    environment:
+      DATABASE_URL: 'jdbc:mysql://spring-boot-modular-db:3306/prod_db'
+      DATABASE_SCHEMA: 'prod_db'
+      DATABASE_ADMIN_USER: 'root'
+      DATABASE_ADMIN_PASSWORD: 'root-secret'
+      DATABASE_USER: 'prod-user'
+      DATABASE_PASSWORD: 'prod-secret'
+      LOGSTASH_HOST_PORT: logstash:5000
+    depends_on:
+      - mysql
+      - elasticsearch
+      - logstash
+      - kibana
+    volumes:
+      - ./docker/config:/config:ro
+    networks:
+      - front-tier
+      - back-tier
+    mem_reservation: 50m
+    mem_limit: 200m
+
+  mysql:
+    container_name: spring-boot-modular-db
+    restart: unless-stopped
+    image: mysql:latest
+    ports:
+      - "13306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 'root-secret'
+      MYSQL_DATABASE: 'prod_db'
+      MYSQL_USER: 'prod-user'
+      MYSQL_PASSWORD: 'prod-secret'
+    volumes:
+      - ./docker/database:/var/lib/mysql
+    networks:
+      - front-tier
+      - back-tier
+    mem_reservation: 50m
+    mem_limit: 200m
+    
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.2.2
+    container_name: elasticsearch
+    environment:
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    cap_add:
+      - IPC_LOCK
+    volumes:
+      - ./docker/elasticsearch/data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - back-tier
+    restart: unless-stopped
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:6.2.2
+    container_name: logstash
+    command: logstash -f /etc/logstash/conf.d/logstash.conf
+    volumes:
+      - ./docker/logstash/config:/etc/logstash/conf.d
+    ports:
+      - "5000:5000"
+    links:
+      - elasticsearch
+    networks:
+      - front-tier
+      - back-tier
+    restart: unless-stopped
+    
+  kibana:
+    image: docker.elastic.co/kibana/kibana:6.2.2
+    container_name: kibana
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      ELASTICSEARCH_USERNAME: elastic
+      ELASTICSEARCH_PASSWORD: changeme
+    ports:
+      - "5601:5601"
+    links:
+      - elasticsearch
+    networks:
+      - back-tier
+    restart: unless-stopped
+    
+networks:
+  front-tier:
+  back-tier:
+    driver: bridge

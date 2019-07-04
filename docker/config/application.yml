@@ -63,5 +63,5 @@ management:
   endpoint.health.show-details: always
   
 logstash:
-  servers: logstash:5000
+  servers: ${LOGSTASH_HOST_PORT:""}
 
