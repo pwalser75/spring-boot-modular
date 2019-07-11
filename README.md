@@ -38,6 +38,9 @@ API documentation reachable at [https://localhost:8443/swagger-ui.html](https://
 
 ## Actuator Endpoints
 
-* Info: [https://localhost:8443/info](https://localhost/info)
-* Health: [https://localhost:8443/info](https://localhost/health)
-* Metrics: [https://localhost:8443/info](https://localhost/metrics)
+* Info: https://localhost:8443/info
+* Health: https://localhost:8443/health
+* Metrics: https://localhost/metrics
+* HTTP request metrics: https://localhost:8443/metrics/http.server.requests
+* HTTP request metrics for a specific endpoint: [Example: POST /api/notes](https://localhost:8443/metrics/http.server.requests?tag=uri:/api/notes&tag=method:POST)
+
