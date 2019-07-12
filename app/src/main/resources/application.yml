@@ -57,5 +57,5 @@ management:
   endpoints:
     web:
       base-path: /
-      exposure.include: health,info,metrics
+      exposure.include: health,info,metrics,prometheus
   endpoint.health.show-details: always

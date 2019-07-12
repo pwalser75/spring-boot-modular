@@ -3,14 +3,11 @@ description = 'Module1 Web'
 dependencies {
     api project(':module:api')
 
+    api libs.api
     api libs.springBoot
-    api libs.swagger
 
     testCompile libs.testbase
     testCompile libs.springBootTest
-    testCompile libs.jaxrsClient
-
-    runtime libs.h2Database
 
     testCompile project(':platform')
     testCompile project(':module:service')

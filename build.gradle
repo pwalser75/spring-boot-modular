@@ -3,7 +3,7 @@ import java.time.temporal.ChronoUnit
 
 plugins {
     id 'com.github.ben-manes.versions' version '0.21.0'
-    id 'org.kordamp.gradle.apidoc' version '0.22.0'
+    id 'org.kordamp.gradle.apidoc' version '0.24.0'
     id 'com.avast.gradle.docker-compose' version '0.9.4'
 }
 
@@ -50,7 +50,7 @@ subprojects {
 }
 
 task testReport(type: TestReport) {
-    destinationDir = file("$buildDir/reports/allTests")
+    destinationDir = file("$buildDir/reports/tests")
     reportOn subprojects*.test
 }
 build.dependsOn testReport
@@ -59,7 +59,7 @@ dependencyUpdates.resolutionStrategy = {
     componentSelection { rules ->
         rules.all { ComponentSelection selection ->
             boolean rejected = ['alpha', 'beta', 'rc', 'cr', 'm'].any { qualifier ->
-                selection.candidate.version ==~ /(?i).*[.-]${qualifier}[.\d-]*/
+                selection.candidate.version ==~ /(?i).*[.-]$qualifier[.\d-]*/
             }
             if (rejected) {
                 selection.reject('Release candidate')
@@ -71,9 +71,10 @@ dependencyUpdates.resolutionStrategy = {
 ext {
     springBootVersion = '2.1.6.RELEASE'
     junitVersion = '4.12'
-    mockitoVersion = '2.28.2'
+    mockitoVersion = '3.0.0'
     logstashLogbackVersion = '6.1'
-	janinoVersion = '3.0.6'
+	janinoVersion = '3.0.13'
+    micrometerVersion = '1.2.0'
     h2Version = '1.4.199'
     liquibaseVersion = '3.6.3'
     swaggerVersion = '2.9.2'
@@ -83,50 +84,43 @@ ext {
 	mysqlDriverVersion = '8.0.16'
 
     libs = [
+            api : [
+                    "com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion",
+                    "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion",
+                    "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion",
+                    "javax.validation:validation-api:$javaValidationVersion",
+                    "io.springfox:springfox-swagger2:$swaggerVersion",
+            ],
             testbase          : [
-                    "junit:junit:${junitVersion}",
-                    "org.mockito:mockito-core:${mockitoVersion}"
+                    "junit:junit:$junitVersion",
+                    "org.mockito:mockito-core:$mockitoVersion",
+                    "org.glassfish.jersey.core:jersey-client:$jerseyVersion",
+                    "org.glassfish.jersey.media:jersey-media-json-jackson:$jerseyVersion",
+                    "org.glassfish.jersey.inject:jersey-hk2:$jerseyVersion"
             ],
             springBoot        : [
-                    "org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}",
-                    "org.springframework.boot:spring-boot-starter-web:${springBootVersion}",
-                    "org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}",
-                    "net.logstash.logback:logstash-logback-encoder:${logstashLogbackVersion}",
-					"org.codehaus.janino:janino:${janinoVersion}"
+                    "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion",
+                    "org.springframework.boot:spring-boot-starter-web:$springBootVersion",
+                    "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion",
+                    "net.logstash.logback:logstash-logback-encoder:$logstashLogbackVersion",
+					"org.codehaus.janino:janino:$janinoVersion",
+                    "io.micrometer:micrometer-registry-prometheus:$micrometerVersion",
+                    "io.springfox:springfox-swagger-ui:$swaggerVersion",
+                    "mysql:mysql-connector-java:$mysqlDriverVersion",
+                    "com.h2database:h2:$h2Version"
+
             ],
             springBootTest    : [
-                    "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
+                    "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
             ],
             springBootDevTools: [
-                    "org.springframework.boot:spring-boot-devtools:${springBootVersion}"
+                    "org.springframework.boot:spring-boot-devtools:$springBootVersion"
             ],
             liquibase         : [
-                    dependencies.create("org.liquibase:liquibase-core:${liquibaseVersion}") {
+                    dependencies.create("org.liquibase:liquibase-core:$liquibaseVersion") {
                         exclude module: 'snakeyaml' // 1.18 clashes with 1.23 from spring boot 2.1.5
                     }
-            ],
-            h2Database        : [
-                    "com.h2database:h2:${h2Version}"
-            ],
-			mysql        : [
-                    "mysql:mysql-connector-java:${mysqlDriverVersion}"
-            ],
-            swagger           : [
-                    "io.springfox:springfox-swagger2:${swaggerVersion}",
-                    "io.springfox:springfox-swagger-ui:${swaggerVersion}"
-            ],
-            json              : [
-                    "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}",
-                    "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}",
-                    "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonVersion}"
-            ],
-            jaxrsClient       : [
-                    "org.glassfish.jersey.core:jersey-client:${jerseyVersion}",
-                    "org.glassfish.jersey.media:jersey-media-json-jackson:${jerseyVersion}",
-                    "org.glassfish.jersey.inject:jersey-hk2:${jerseyVersion}"
-            ],
-            javaValidation    : "javax.validation:validation-api:${javaValidationVersion}"
-
+            ]
     ]
 }
 

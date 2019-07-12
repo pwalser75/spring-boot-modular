@@ -2,8 +2,8 @@ description = 'Platform Service'
 
 dependencies {
 
+    compile libs.api
     compile libs.springBoot
-    compile libs.swagger
     compile libs.liquibase
 
     testCompile libs.testbase

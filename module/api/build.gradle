@@ -2,9 +2,7 @@ description = 'Module 1 API'
 
 dependencies {
     
-    api libs.swagger
-    api libs.javaValidation
-    api libs.json
+    api libs.api
 
     testCompile libs.testbase
     testCompile libs.springBoot

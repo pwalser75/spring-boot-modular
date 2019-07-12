@@ -44,3 +44,11 @@ API documentation reachable at [https://localhost:8443/swagger-ui.html](https://
 * HTTP request metrics: https://localhost:8443/metrics/http.server.requests
 * HTTP request metrics for a specific endpoint: [Example: POST /api/notes](https://localhost:8443/metrics/http.server.requests?tag=uri:/api/notes&tag=method:POST)
 
+## Housekeeping
+
+### Dependency management
+To check for dependency updates, run:
+
+    gradle dependencyUpdates
+    
+This will report all available newer versions of the dependencies, so you can update them in the `build.gradle`.
