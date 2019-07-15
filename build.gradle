@@ -11,13 +11,6 @@ description = 'Spring Boot Modular Project'
 
 defaultTasks 'clean', 'build', 'install', 'publishToMavenLocal'
 
-repositories {
-    jcenter()
-    mavenLocal()
-    mavenCentral()
-}
-
-
 def buildDate = OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS)
 
 allprojects {
@@ -30,6 +23,8 @@ subprojects {
 
     repositories {
         jcenter()
+        mavenLocal()
+        mavenCentral()
     }
     tasks.withType(JavaCompile) {
         options.encoding = 'UTF-8'
@@ -46,6 +41,20 @@ subprojects {
                 )
             }
         }
+    }
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
+
+    task javadocJar(type: Jar, dependsOn: javadoc) {
+        classifier = 'javadoc'
+        from javadoc.destinationDir
+    }
+
+    artifacts {
+        archives sourcesJar
+        archives javadocJar
     }
 }
 
@@ -73,7 +82,7 @@ ext {
     junitVersion = '4.12'
     mockitoVersion = '3.0.0'
     logstashLogbackVersion = '6.1'
-	janinoVersion = '3.0.13'
+    janinoVersion = '3.0.14'
     micrometerVersion = '1.2.0'
     h2Version = '1.4.199'
     liquibaseVersion = '3.6.3'
@@ -81,10 +90,10 @@ ext {
     jacksonVersion = '2.9.9'
     jerseyVersion = '2.29'
     javaValidationVersion = '2.0.1.Final'
-	mysqlDriverVersion = '8.0.16'
+    mysqlDriverVersion = '8.0.16'
 
     libs = [
-            api : [
+            api               : [
                     "com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion",
                     "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion",
                     "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion",
@@ -103,7 +112,7 @@ ext {
                     "org.springframework.boot:spring-boot-starter-web:$springBootVersion",
                     "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion",
                     "net.logstash.logback:logstash-logback-encoder:$logstashLogbackVersion",
-					"org.codehaus.janino:janino:$janinoVersion",
+                    "org.codehaus.janino:janino:$janinoVersion",
                     "io.micrometer:micrometer-registry-prometheus:$micrometerVersion",
                     "io.springfox:springfox-swagger-ui:$swaggerVersion",
                     "mysql:mysql-connector-java:$mysqlDriverVersion",

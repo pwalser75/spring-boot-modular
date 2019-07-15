@@ -45,8 +45,12 @@ public class AppInfoController {
 
         Object app = info.get("app");
         if (app instanceof Map) {
-            Map appMap = (Map) app;
-            Function<Object, String> getInfo = key -> appMap.getOrDefault(key, "unknown").toString();
+            Map<?, ?> appMap = (Map) app;
+            Function<Object, String> getInfo = key ->
+                    Optional.ofNullable(key)
+                            .map(appMap::get)
+                            .map(String::valueOf)
+                            .orElse("unknown");
 
             appInfo.setName(getInfo.apply("name"));
             appInfo.setDescription(getInfo.apply("description"));
