@@ -19,7 +19,7 @@ import java.util.stream.Stream;
  * App Info controller
  */
 @RestController
-@RequestMapping(path = "app-info")
+@RequestMapping(path = "info")
 @CrossOrigin(origins = "*",
         allowedHeaders = "origin, content-type, accept, authorization",
         allowCredentials = "true",

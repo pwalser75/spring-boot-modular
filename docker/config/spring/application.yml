@@ -3,27 +3,11 @@ info:
     name: "spring-multi-module"
     description: "Spring Boot Multi Module Project"
     version: "1.0.0-SNAPSHOT"
-   
-spring.profiles.active: performance-logging
 
-# TLS configuration - enable HTTPS
-server:
-  port: 443
-  ssl:
-    enabled: true
-    protocol: TLSv1.2
-    enabled-protocols: TLSv1.1+TLSv1.2
-    ciphers: TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384,TLS_DHE_RSA_WITH_AES_256_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,TLS_DHE_RSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_DHE_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_DHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_DHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_DHE_RSA_WITH_AES_128_GCM_SHA256
-    key-alias: "test-server"
-    key-store: "/config/server-keystore.jks"
-    key-store-password: "keystore"
-    key-password: "keystore"
-
-# HTTP port for redirection to HTTPS - uncomment to activate
-http.server.port: 80
-
-# Persistence: datasource/JPA configuration
+# Spring configuration
 spring:
+  application.name: "spring-multi-module"
+  profiles.active: performance-logging
   datasource:
     url: ${DATABASE_URL}
     username: ${DATABASE_USER}
@@ -54,14 +38,30 @@ spring:
     parameters:
       schema: ${DATABASE_SCHEMA}
 
+# TLS configuration - enable HTTPS
+server:
+  port: 443
+  ssl:
+    enabled: true
+    protocol: TLSv1.2
+    enabled-protocols: TLSv1.1+TLSv1.2
+    ciphers: TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384,TLS_DHE_RSA_WITH_AES_256_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,TLS_DHE_RSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_DHE_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_DHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_DHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_DHE_RSA_WITH_AES_128_GCM_SHA256
+    key-alias: "test-server"
+    key-store: "/config/server-keystore.jks"
+    key-store-password: "keystore"
+    key-password: "keystore"
+
+# HTTP port for redirection to HTTPS - uncomment to activate
+http.server.port: 80
+
 # Actuator configuration, expose /health, /info and /metrics endpoints
 management:
   endpoints:
     web:
-      base-path: /
+      base-path: /actuator
       exposure.include: health,info,metrics,prometheus
   endpoint.health.show-details: always
-  
+
 logstash:
   servers: ${LOGSTASH_HOST_PORT:""}
 

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "021259f5-1ec4-4b57-8a22-988b28bb5fb0",
+		"_postman_id": "b3ab6999-35f8-4bb8-85c3-6eb024e21c16",
 		"name": "Spring Boot Test",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -9,7 +9,70 @@
 			"name": "App",
 			"item": [
 				{
-					"name": "Get App Info",
+					"name": "Get App Info CPU Memory",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "24b3a4eb-ac1d-44d6-8f72-845ea88d0f1a",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "60b1c26b-ddb9-4a53-aff0-2980fbcd0862",
+								"exec": [
+									"var expectedStatus=200;\r",
+									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
+									"\r",
+									"if (responseCode.code === expectedStatus){\r",
+									"    \r",
+									"    var info = pm.response.json();\r",
+									"    var notBlank = s => s && s.trim().length > 0;\r",
+									"    \r",
+									"    tests[\"name: \"+info.name] = notBlank(info.name);\r",
+									"    tests[\"description: \"+info.description] =  notBlank(info.description);\r",
+									"    tests[\"version: \"+info.version] =  notBlank(info.version);\r",
+									"    \r",
+									"    tests[\"cpu usage\"] = info.cpu && info.cpu.usage !== undefined;\r",
+									"    tests[\"memory usage\"] = info.memory && info.memory.usage !== undefined;\r",
+									"    tests[\"memory used\"] = info.memory && info.memory.used !== undefined;\r",
+									"    tests[\"memory allocated\"] = info.memory && info.memory.allocated !== undefined;\r",
+									"    \r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{HOST}}/info",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"info"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Actuator App Info",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -56,11 +119,12 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{HOST}}/info",
+							"raw": "{{HOST}}/actuator/info",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
+								"actuator",
 								"info"
 							]
 						}
@@ -68,7 +132,7 @@
 					"response": []
 				},
 				{
-					"name": "Get App Health",
+					"name": "Get Actuator Health",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -123,11 +187,12 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{HOST}}/health",
+							"raw": "{{HOST}}/actuator/health",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
+								"actuator",
 								"health"
 							]
 						}
@@ -135,7 +200,7 @@
 					"response": []
 				},
 				{
-					"name": "Get App Metrics Uptime",
+					"name": "Get Actuator Metrics Uptime",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -178,11 +243,12 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{HOST}}/metrics/process.uptime",
+							"raw": "{{HOST}}/actuator/metrics/process.uptime",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
+								"actuator",
 								"metrics",
 								"process.uptime"
 							]
@@ -191,7 +257,7 @@
 					"response": []
 				},
 				{
-					"name": "Get App Info CPU Memory",
+					"name": "Get Actuator Prometheus",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -213,17 +279,7 @@
 									"\r",
 									"if (responseCode.code === expectedStatus){\r",
 									"    \r",
-									"    var info = pm.response.json();\r",
-									"    \r",
-									"    tests[\"name\"] = info.name !== undefined;\r",
-									"    tests[\"description\"] = info.description !== undefined;\r",
-									"    tests[\"version\"] = info.version !== undefined;\r",
-									"    \r",
-									"    tests[\"cpu usage\"] = info.cpu && info.cpu.usage !== undefined;\r",
-									"    tests[\"memory usage\"] = info.memory && info.memory.usage !== undefined;\r",
-									"    tests[\"memory used\"] = info.memory && info.memory.used !== undefined;\r",
-									"    tests[\"memory allocated\"] = info.memory && info.memory.allocated !== undefined;\r",
-									"    \r",
+									"    var prometheusData = pm.response.text();\r",
 									"}"
 								],
 								"type": "text/javascript"
@@ -241,12 +297,13 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{HOST}}/app-info",
+							"raw": "{{HOST}}/actuator/prometheus",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
-								"app-info"
+								"actuator",
+								"prometheus"
 							]
 						}
 					},
