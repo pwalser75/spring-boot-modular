@@ -56,13 +56,18 @@ subprojects {
         archives sourcesJar
         archives javadocJar
     }
+
+	clean {
+		delete "./out"
+		delete "./logs"
+		delete "./db"
+	}
 }
 
 task testReport(type: TestReport) {
     destinationDir = file("$buildDir/reports/tests")
     reportOn subprojects*.test
 }
-build.dependsOn testReport
 
 dependencyUpdates.resolutionStrategy = {
     componentSelection { rules ->
@@ -76,6 +81,8 @@ dependencyUpdates.resolutionStrategy = {
         }
     }
 }
+
+build.dependsOn testReport
 
 ext {
     springBootVersion = '2.1.6.RELEASE'
