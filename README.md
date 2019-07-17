@@ -48,24 +48,18 @@ API documentation reachable at [https://localhost:8443/swagger-ui.html](https://
 ## Docker
 
 This project is dockerized using Docker Compose. The docker configuation resides in the `docker/config` 
-directory. 
- 
-To deploy it on a docker host, run:
+directory. Common tasks and docker-compose commands 
+(some tasks can be executed using the docker-compose gradle plugin):
 
-    docker-compose up -d
-    
-To follow the log output of the application, use:
+| Task          | with docker-compose | with gradle |
+| -------------:|:---------------------|------------|
+| **Deploy/Start**      | `docker-compose up -d` | `gradle composeup` |
+| Build images      | `docker-compose build` | `gradle composebuild` |
+| Follow logs | `docker logs -f spring-boot-modular` | - |
+| Download logs | - | `gradle composelogs` |
+| **Stop/undeploy**      | `docker-compose down` |  `gradle composedown` |
+| Stop/undeploy, <br>remove volumes<br>and images | `docker-compose down -v --rmi local` | - |
 
-    docker logs -f spring-boot-modular
-    
-To rebuild and redeploy the application, use:
-
-    gradle
-    docker-compose up --detach --build
-    
-To stop and undeploy, run:
-
-    docker-compose down -v --rmi local
     
 ### Monitoring
 
