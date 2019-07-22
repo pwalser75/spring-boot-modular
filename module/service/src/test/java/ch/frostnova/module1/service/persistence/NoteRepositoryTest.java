@@ -11,6 +11,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 
 /**
@@ -26,7 +27,6 @@ public class NoteRepositoryTest {
 
     @Test
     public void testCRUD() {
-
 
         // create
         NoteEntity note = new NoteEntity();
@@ -62,5 +62,21 @@ public class NoteRepositoryTest {
         repository.deleteById(note.getId());
         note = repository.findById(note.getId()).orElse(null);
         Assert.assertNull(note);
+    }
+
+    @Test
+    public void testFind() {
+
+        NoteEntity note = new NoteEntity();
+        note.setText("Lorem ipsum dolor sit amet");
+        repository.save(note);
+
+        for (String positive : Arrays.asList("Lorem", "IPSUM", "oLo", "dolor ips", "sit, lo", "'sit amet'", "'em IP")) {
+            Assert.assertTrue("query: " + positive, repository.findAll(NoteRepository.fulltextSearch(positive)).contains(note));
+        }
+
+        for (String negative : Arrays.asList("L0rem", "QUIPSUM", "foo", "dolor ups", "sit# lo", "'sitamet'", "'lorem dolor")) {
+            Assert.assertFalse("query: " + negative, repository.findAll(NoteRepository.fulltextSearch(negative)).contains(note));
+        }
     }
 }
