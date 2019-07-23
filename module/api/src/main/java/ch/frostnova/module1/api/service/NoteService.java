@@ -3,6 +3,7 @@ package ch.frostnova.module1.api.service;
 import ch.frostnova.module1.api.model.Note;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -18,5 +19,7 @@ public interface NoteService {
     List<Note> list();
 
     void delete(String id);
+
+    List<Note> find(@NotBlank String searchQuery);
 
 }

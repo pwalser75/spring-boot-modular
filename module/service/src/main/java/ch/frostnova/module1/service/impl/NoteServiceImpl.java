@@ -6,16 +6,18 @@ import ch.frostnova.module1.api.service.NoteService;
 import ch.frostnova.module1.service.persistence.NoteEntity;
 import ch.frostnova.module1.service.persistence.NoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 /**
  * Implementation of the NoteService
@@ -49,8 +51,10 @@ public class NoteServiceImpl implements NoteService {
     @Override
     @Transactional(readOnly = true)
     public List<Note> list() {
-        Stream<NoteEntity> stream = StreamSupport.stream(repository.findAll().spliterator(), false);
-        return stream.map(this::convert).collect(Collectors.toList());
+        return repository.findAll()
+                .stream()
+                .map(this::convert)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -79,5 +83,17 @@ public class NoteServiceImpl implements NoteService {
         entity.setId(dto.getId());
         entity.setText(dto.getText());
         return entity;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Note> find(@NotBlank String searchQuery) {
+        // return max. 10 matches, ordered by latest created
+        PageRequest pageRequest = new PageRequest(0, 10, Sort.Direction.DESC, "createdOn");
+        Specification<NoteEntity> fulltextSearch = NoteRepository.fulltextSearch(searchQuery);
+        return repository.findAll(fulltextSearch, pageRequest)
+                .stream()
+                .map(this::convert)
+                .collect(Collectors.toList());
     }
 }

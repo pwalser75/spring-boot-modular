@@ -46,6 +46,23 @@ public class NoteClient implements AutoCloseable {
     }
 
     /**
+     * Find notes
+     *
+     * @return search result
+     */
+    public List<Note> find(String query) {
+        Invocation invocation = client
+                .target(baseURL)
+                .queryParam("query", query)
+                .request()
+                .buildGet();
+
+        Response response = ResponseExceptionMapper.check(invocation.invoke(), 200);
+        return response.readEntity(new GenericType<List<Note>>() {
+        });
+    }
+
+    /**
      * Get a note by id. Throws a {@link javax.ws.rs.NotFoundException} if the note wasn't found.
      *
      * @param id id

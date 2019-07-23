@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -34,11 +35,15 @@ public class NotesController {
      * @return list of notes (never null)
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ApiOperation(value = "Lists all notes", response = Note.class)
+    @ApiOperation(value = "Lists all notes, or find by query (fulltext search)", response = Note.class)
     @ApiResponses({
             @ApiResponse(code = 200, message = "ok")
     })
-    public List<Note> list() {
+    public List<Note> list(@ApiParam(value = "optional query text (space or comma-separated tokens, single/double quoting supported")
+                           @RequestParam(value = "query", required = false) @NotBlank String query) {
+        if (query != null) {
+            return noteService.find(query);
+        }
         return noteService.list();
     }
 

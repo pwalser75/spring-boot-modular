@@ -15,7 +15,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
+import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Note endpoint test
@@ -86,6 +88,32 @@ public class NoteEndpointTest {
             } catch (NotFoundException expected) {
                 //
             }
+        }
+    }
+
+    @Test
+    public void testFind() {
+        final String baseURL = "https://localhost:" + port + "/api/notes";
+        log.info("BASE URL: " + baseURL);
+        try (final NoteClient noteClient = new NoteClient(baseURL)) {
+
+            // create
+
+            Note note = new Note();
+            String time = LocalDateTime.now().toString();
+            String random = UUID.randomUUID().toString();
+            note.setText("Welcome to Switzerland " + time + ", " + random);
+            note = noteClient.create(note);
+
+            Assert.assertTrue(noteClient.find("welcome").contains(note));
+            Assert.assertFalse(noteClient.find("aloha").contains(note));
+
+            Assert.assertTrue(noteClient.find(time).contains(note));
+            Assert.assertTrue(noteClient.find(random).contains(note));
+            Assert.assertTrue(noteClient.find(note.getText()).contains(note));
+            Assert.assertTrue(noteClient.find("\"" + note.getText().substring(0, note.getText().length() / 2) + "\"").contains(note));
+
+            Assert.assertFalse(noteClient.find(UUID.randomUUID().toString()).contains(note));
         }
     }
 

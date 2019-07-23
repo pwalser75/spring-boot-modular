@@ -13,6 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.validation.ValidationException;
 import java.time.OffsetDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
@@ -122,5 +123,17 @@ public class NoteServiceTest {
         Assert.assertFalse(noteService.list().stream().anyMatch(n -> n.getId().equals(id)));
     }
 
+    @Test
+    public void testFind() {
 
+        Note note = noteService.save(new Note("Lorem ipsum dolor sit amet"));
+
+        for (String positive : Arrays.asList("Lorem", "IPSUM", "oLo", "dolor ips", "sit, lo", "'sit amet'", "'em IP")) {
+            Assert.assertTrue("query: " + positive, noteService.find(positive).contains(note));
+        }
+
+        for (String negative : Arrays.asList("L0rem", "QUIPSUM", "foo", "dolor ups", "sit# lo", "'sitamet'", "'lorem dolor")) {
+            Assert.assertFalse("query: " + negative, noteService.find(negative).contains(note));
+        }
+    }
 }
