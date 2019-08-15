@@ -30,8 +30,9 @@ public class NotesController {
     private NoteService noteService;
 
     /**
-     * List notes
+     * Lists all notes, or find by query (fulltext search)
      *
+     * @param query optional query text (space or comma-separated tokens, single/double quoting supported
      * @return list of notes (never null)
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
