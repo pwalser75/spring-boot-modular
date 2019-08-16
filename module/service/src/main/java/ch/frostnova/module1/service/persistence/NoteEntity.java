@@ -1,5 +1,7 @@
 package ch.frostnova.module1.service.persistence;
 
+import ch.frostnova.module1.service.persistence.core.BaseEntity;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;

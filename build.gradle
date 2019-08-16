@@ -2,8 +2,8 @@ import java.time.OffsetDateTime
 import java.time.temporal.ChronoUnit
 
 plugins {
-    id 'com.github.ben-manes.versions' version '0.21.0'
-    id 'org.kordamp.gradle.apidoc' version '0.24.0'
+    id 'com.github.ben-manes.versions' version '0.22.0'
+    id 'org.kordamp.gradle.apidoc' version '0.25.0'
     id 'com.avast.gradle.docker-compose' version '0.9.4'
 }
 
@@ -72,7 +72,7 @@ task testReport(type: TestReport) {
 dependencyUpdates.resolutionStrategy = {
     componentSelection { rules ->
         rules.all { ComponentSelection selection ->
-            boolean rejected = ['alpha', 'beta', 'rc', 'cr', 'm'].any { qualifier ->
+            boolean rejected = ['alpha', 'beta', 'rc', 'cr', 'pr', 'm'].any { qualifier ->
                 selection.candidate.version ==~ /(?i).*[.-]$qualifier[.\d-]*/
             }
             if (rejected) {
@@ -85,19 +85,19 @@ dependencyUpdates.resolutionStrategy = {
 build.dependsOn testReport
 
 ext {
-    springBootVersion = '2.1.6.RELEASE'
+    springBootVersion = '2.1.7.RELEASE'
     junitVersion = '4.12'
     mockitoVersion = '3.0.0'
     logstashLogbackVersion = '6.1'
-    janinoVersion = '3.0.14'
+    janinoVersion = '3.1.0'
     micrometerVersion = '1.2.0'
     h2Version = '1.4.199'
-    liquibaseVersion = '3.6.3'
+    liquibaseVersion = '3.7.0'
     swaggerVersion = '2.9.2'
     jacksonVersion = '2.9.9'
     jerseyVersion = '2.29'
     javaValidationVersion = '2.0.1.Final'
-    mysqlDriverVersion = '8.0.16'
+    mysqlDriverVersion = '8.0.17'
 
     libs = [
             api               : [

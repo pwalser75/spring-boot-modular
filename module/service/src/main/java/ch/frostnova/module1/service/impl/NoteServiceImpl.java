@@ -89,7 +89,7 @@ public class NoteServiceImpl implements NoteService {
     @Transactional(readOnly = true)
     public List<Note> find(@NotBlank String searchQuery) {
         // return max. 10 matches, ordered by latest created
-        PageRequest pageRequest = new PageRequest(0, 10, Sort.Direction.DESC, "createdOn");
+        PageRequest pageRequest = PageRequest.of(0, 10, Sort.Direction.DESC, "createdOn");
         Specification<NoteEntity> fulltextSearch = NoteRepository.fulltextSearch(searchQuery);
         return repository.findAll(fulltextSearch, pageRequest)
                 .stream()

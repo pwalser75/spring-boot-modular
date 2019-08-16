@@ -1,4 +1,4 @@
-package ch.frostnova.module1.service.persistence;
+package ch.frostnova.module1.service.persistence.core;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
@@ -16,7 +16,7 @@ public class BaseEntity {
 
     @Id
     @GeneratedValue(generator = "generated-id")
-    @GenericGenerator(name = "generated-id", strategy = "ch.frostnova.module1.service.persistence.IdGenerator")
+    @GenericGenerator(name = "generated-id", strategy = "ch.frostnova.module1.service.persistence.core.IdGenerator")
     @Column(name = "ID", unique = true, nullable = false)
     private String id;
 

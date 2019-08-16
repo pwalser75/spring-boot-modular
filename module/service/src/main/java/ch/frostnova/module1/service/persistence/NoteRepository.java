@@ -1,5 +1,6 @@
 package ch.frostnova.module1.service.persistence;
 
+import ch.frostnova.module1.service.util.SearchQueryTokenizer;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;

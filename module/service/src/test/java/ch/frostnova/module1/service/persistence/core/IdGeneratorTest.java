@@ -1,4 +1,4 @@
-package ch.frostnova.module1.service.persistence;
+package ch.frostnova.module1.service.persistence.core;
 
 import org.junit.Assert;
 import org.junit.Test;

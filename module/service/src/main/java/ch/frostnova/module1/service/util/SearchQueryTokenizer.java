@@ -1,4 +1,4 @@
-package ch.frostnova.module1.service.persistence;
+package ch.frostnova.module1.service.util;
 
 import java.util.Collections;
 import java.util.LinkedList;
