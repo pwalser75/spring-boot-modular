@@ -2,7 +2,7 @@ import java.time.OffsetDateTime
 import java.time.temporal.ChronoUnit
 
 plugins {
-    id 'com.github.ben-manes.versions' version '0.22.0'
+    id 'com.github.ben-manes.versions' version '0.24.0'
     id 'org.kordamp.gradle.apidoc' version '0.25.0'
     id 'com.avast.gradle.docker-compose' version '0.9.4'
 }
@@ -42,26 +42,31 @@ subprojects {
             }
         }
     }
-    task sourcesJar(type: Jar, dependsOn: classes) {
-        classifier = 'sources'
-        from sourceSets.main.allSource
+
+    if (!project.hasProperty('quick')) {
+        task sourcesJar(type: Jar, dependsOn: classes) {
+            classifier = 'sources'
+            from sourceSets.main.allSource
+        }
+
+        task javadocJar(type: Jar, dependsOn: javadoc) {
+            classifier = 'javadoc'
+            from javadoc.destinationDir
+        }
+
+        artifacts {
+            archives sourcesJar
+            archives javadocJar
+        }
     }
 
-    task javadocJar(type: Jar, dependsOn: javadoc) {
-        classifier = 'javadoc'
-        from javadoc.destinationDir
+    clean {
+        delete "./out"
+        delete "./logs"
+        delete "./db"
     }
 
-    artifacts {
-        archives sourcesJar
-        archives javadocJar
-    }
-
-	clean {
-		delete "./out"
-		delete "./logs"
-		delete "./db"
-	}
+    javadoc.onlyIf { !project.hasProperty('quick') }
 }
 
 task testReport(type: TestReport) {
@@ -85,14 +90,14 @@ dependencyUpdates.resolutionStrategy = {
 build.dependsOn testReport
 
 ext {
-    springBootVersion = '2.1.7.RELEASE'
+    springBootVersion = '2.1.8.RELEASE'
     junitVersion = '4.12'
     mockitoVersion = '3.0.0'
-    logstashLogbackVersion = '6.1'
+    logstashLogbackVersion = '6.2'
     janinoVersion = '3.1.0'
-    micrometerVersion = '1.2.0'
+    micrometerVersion = '1.2.1'
     h2Version = '1.4.199'
-    liquibaseVersion = '3.7.0'
+    liquibaseVersion = '3.8.0'
     swaggerVersion = '2.9.2'
     jacksonVersion = '2.9.9'
     jerseyVersion = '2.29'
