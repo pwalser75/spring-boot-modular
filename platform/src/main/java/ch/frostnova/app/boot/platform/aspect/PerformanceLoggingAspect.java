@@ -46,6 +46,11 @@ public class PerformanceLoggingAspect {
 
     private static final Logger log = LoggerFactory.getLogger(PerformanceLoggingAspect.class);
 
+    /**
+     * Threshold (in nanoseconds) under which calls are no longer reported in detail.
+     */
+    private static final long DETAIL_THRESHOLD_NS = 1_000_000; // 1 ms
+
     private final static String SYMBOL_INDENTATION = "+"; // unicode alternative: "\u2937"
     private final static String SYMBOL_RIGHT_ARROW = "->"; // unicode alternative: "\u2192"
 
@@ -58,11 +63,11 @@ public class PerformanceLoggingAspect {
      */
     @Around("@within(org.springframework.stereotype.Service) " +
             "|| @within(org.springframework.stereotype.Controller) " +
-            "|| @within(org.springframework.web.bind.annotation.RestController) " +
-            "|| this(org.springframework.data.repository.Repository)")
+            "|| @within(org.springframework.web.bind.annotation.RestController)")
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
 
         String invocation = joinPoint.getSignature().toShortString();
+
         PerformanceLoggingContext.current().enter(invocation);
 
         Throwable error = null;
@@ -75,6 +80,22 @@ public class PerformanceLoggingAspect {
         }
     }
 
+    /**
+     * Bind aspect to intermediate invocations. Only log such invocations if we passed an entry point already.
+     *
+     * @param joinPoint aspect join point
+     * @return invocation result
+     * @throws Throwable invocation exception
+     */
+    @Around("@within(org.springframework.stereotype.Component) "+
+            "|| this(org.springframework.data.repository.Repository)")
+    public Object aroundIntermediate(ProceedingJoinPoint joinPoint) throws Throwable {
+        if (PerformanceLoggingContext.current().isIntermediateInvocation()) {
+            return around(joinPoint);
+        }
+        return joinPoint.proceed();
+    }
+
     static class PerformanceLoggingContext {
 
         private final static ThreadLocal<PerformanceLoggingContext> current = new ThreadLocal<>();
@@ -84,12 +105,16 @@ public class PerformanceLoggingAspect {
         private final Deque<AtomicLong> nestedTime = new LinkedList<>();
 
         public static PerformanceLoggingContext current() {
-            PerformanceLoggingContext context = PerformanceLoggingContext.current.get();
+            PerformanceLoggingContext context = current.get();
             if (context == null) {
                 context = new PerformanceLoggingContext();
-                PerformanceLoggingContext.current.set(context);
+                current.set(context);
             }
             return context;
+        }
+
+        public boolean isIntermediateInvocation() {
+            return invocationStack.size() > 0;
         }
 
         public void enter(String invocation) {
@@ -128,10 +153,30 @@ public class PerformanceLoggingAspect {
                         previous = invocationInfo;
                     }
                 }
+                iterator = invocations.iterator();
+                Integer skipFromLevel = null;
+                while (iterator.hasNext()) {
+                    InvocationInfo invocationInfo = iterator.next();
+                    if (skipFromLevel != null) {
+                        if (invocationInfo.level > skipFromLevel) {
+                            iterator.remove();
+                        } else {
+                            skipFromLevel = null;
+                        }
+                    }
+                    if (skipFromLevel == null && invocationInfo.getElapsedTimeNs() < DETAIL_THRESHOLD_NS && invocationInfo.level > 1) {
+                        skipFromLevel = invocationInfo.level;
+                        if (invocationInfo.nestedTimeNs > 0) {
+                            invocationInfo.nestedBelowThreshold = true;
+                        }
+                    }
+                }
 
-                PerformanceLoggingAspect.log.info(invocations.stream().map(InvocationInfo::toString).collect(Collectors.joining("\n")));
+                log.info(invocations.stream()
+                        .map(InvocationInfo::toString)
+                        .collect(Collectors.joining("\n")));
                 invocations.clear();
-                PerformanceLoggingContext.current.remove();
+                current.remove();
             }
         }
     }
@@ -145,6 +190,7 @@ public class PerformanceLoggingAspect {
         private final String invocation;
         private String result;
         private long nestedTimeNs;
+        private boolean nestedBelowThreshold;
 
         InvocationInfo(int level, String invocation, long startTimeNs) {
             this.level = level;
@@ -204,6 +250,9 @@ public class PerformanceLoggingAspect {
             if (nestedTimeNs > 0) {
                 builder.append(", self: ");
                 builder.append(formatTimeMs(durationNs - nestedTimeNs));
+            }
+            if (nestedBelowThreshold) {
+                builder.append(", nested calls below threshold");
             }
             return builder.toString();
         }

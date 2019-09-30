@@ -2,9 +2,9 @@ import java.time.OffsetDateTime
 import java.time.temporal.ChronoUnit
 
 plugins {
-    id 'com.github.ben-manes.versions' version '0.24.0'
+    id 'com.github.ben-manes.versions' version '0.25.0'
     id 'org.kordamp.gradle.apidoc' version '0.25.0'
-    id 'com.avast.gradle.docker-compose' version '0.9.4'
+    id 'com.avast.gradle.docker-compose' version '0.9.5'
 }
 
 description = 'Spring Boot Modular Project'
@@ -99,8 +99,8 @@ ext {
     h2Version = '1.4.199'
     liquibaseVersion = '3.8.0'
     swaggerVersion = '2.9.2'
-    jacksonVersion = '2.9.9'
-    jerseyVersion = '2.29'
+    jacksonVersion = '2.10.0'
+    jerseyVersion = '2.29.1'
     javaValidationVersion = '2.0.1.Final'
     mysqlDriverVersion = '8.0.17'
 
