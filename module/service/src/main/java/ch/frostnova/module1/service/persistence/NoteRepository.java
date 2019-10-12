@@ -26,7 +26,7 @@ public interface NoteRepository extends JpaRepository<NoteEntity, String>, JpaSp
             }
             List<Predicate> predicates = new LinkedList<>();
             for (String token : tokens) {
-                predicates.add(cb.like(cb.lower(root.get("text")), NoteRepository.contains(token)));
+                predicates.add(cb.like(cb.lower(root.get(NoteEntity_.text)), NoteRepository.contains(token)));
             }
             return cb.and(predicates.toArray(new Predicate[0]));
         };

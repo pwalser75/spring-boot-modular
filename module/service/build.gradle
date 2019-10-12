@@ -6,6 +6,8 @@ dependencies {
     api libs.api
     api libs.springBoot
 
+    annotationProcessor libs.jpaAnnotationProcessor
+
     testCompile libs.testbase
     testCompile libs.springBootTest
 
