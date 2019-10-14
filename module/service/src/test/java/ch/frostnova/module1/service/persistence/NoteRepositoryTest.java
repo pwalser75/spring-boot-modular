@@ -1,7 +1,6 @@
 package ch.frostnova.module1.service.persistence;
 
 import ch.frostnova.module1.service.TestConfig;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +12,8 @@ import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
+
+import static org.junit.Assert.*;
 
 /**
  * Test JPA repository
@@ -32,36 +33,36 @@ public class NoteRepositoryTest {
         NoteEntity note = new NoteEntity();
         note.setText("Aloha");
 
-        Assert.assertFalse(note.isPersistent());
+        assertFalse(note.isPersistent());
         OffsetDateTime before = OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS);
         note = repository.save(note);
-        Assert.assertTrue(note.isPersistent());
-        Assert.assertNotNull(note.getId());
-        Assert.assertNotNull(note.getCreatedOn());
-        Assert.assertFalse(note.getCreatedOn().isBefore(before));
-        Assert.assertFalse(note.getCreatedOn().isAfter(OffsetDateTime.now()));
-        Assert.assertNotNull(note.getLastUpdatedOn());
-        Assert.assertFalse(note.getLastUpdatedOn().isBefore(before));
-        Assert.assertFalse(note.getLastUpdatedOn().isAfter(OffsetDateTime.now()));
+        assertTrue(note.isPersistent());
+        assertNotNull(note.getId());
+        assertNotNull(note.getCreatedOn());
+        assertFalse(note.getCreatedOn().isBefore(before));
+        assertFalse(note.getCreatedOn().isAfter(OffsetDateTime.now()));
+        assertNotNull(note.getLastUpdatedOn());
+        assertFalse(note.getLastUpdatedOn().isBefore(before));
+        assertFalse(note.getLastUpdatedOn().isAfter(OffsetDateTime.now()));
         OffsetDateTime creationDate = note.getCreatedOn();
 
         // read
         note = repository.findById(note.getId()).orElseThrow(NoSuchElementException::new);
-        Assert.assertEquals("Aloha", note.getText());
+        assertEquals("Aloha", note.getText());
 
         // update
         note.setText("Lorem ipsum dolor sit amet");
         note = repository.save(note);
         before = OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS);
-        Assert.assertEquals(creationDate, note.getCreatedOn());
-        Assert.assertNotNull(note.getLastUpdatedOn());
-        Assert.assertFalse(note.getLastUpdatedOn().isBefore(before));
-        Assert.assertFalse(note.getLastUpdatedOn().isAfter(OffsetDateTime.now()));
+        assertEquals(creationDate, note.getCreatedOn());
+        assertNotNull(note.getLastUpdatedOn());
+        assertFalse(note.getLastUpdatedOn().isBefore(before));
+        assertFalse(note.getLastUpdatedOn().isAfter(OffsetDateTime.now()));
 
         // delete
         repository.deleteById(note.getId());
         note = repository.findById(note.getId()).orElse(null);
-        Assert.assertNull(note);
+        assertNull(note);
     }
 
     @Test
@@ -72,11 +73,11 @@ public class NoteRepositoryTest {
         repository.save(note);
 
         for (String positive : Arrays.asList("Lorem", "IPSUM", "oLo", "dolor ips", "sit, lo", "'sit amet'", "'em IP")) {
-            Assert.assertTrue("query: " + positive, repository.findAll(NoteRepository.fulltextSearch(positive)).contains(note));
+            assertTrue("query: " + positive, repository.findAll(NoteRepository.fulltextSearch(positive)).contains(note));
         }
 
         for (String negative : Arrays.asList("L0rem", "QUIPSUM", "foo", "dolor ups", "sit# lo", "'sitamet'", "'lorem dolor")) {
-            Assert.assertFalse("query: " + negative, repository.findAll(NoteRepository.fulltextSearch(negative)).contains(note));
+            assertFalse("query: " + negative, repository.findAll(NoteRepository.fulltextSearch(negative)).contains(note));
         }
     }
 }

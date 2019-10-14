@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import com.fasterxml.jackson.databind.util.StdDateFormat;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,6 +15,9 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests for Note model
@@ -75,13 +77,13 @@ public class NoteTest {
         System.out.println(json);
 
         Note restored = NoteTest.objectMapper().readValue(json, Note.class);
-        Assert.assertEquals(note.getText(), restored.getText());
-        Assert.assertEquals(note.getId(), restored.getId());
-        Assert.assertTrue(note.getCreatedOn().isEqual(restored.getCreatedOn()));
-        Assert.assertTrue(note.getUpdatedOn().isEqual(restored.getUpdatedOn()));
+        assertEquals(note.getText(), restored.getText());
+        assertEquals(note.getId(), restored.getId());
+        assertTrue(note.getCreatedOn().isEqual(restored.getCreatedOn()));
+        assertTrue(note.getUpdatedOn().isEqual(restored.getUpdatedOn()));
     }
 
-    private void validate(Object obj, String... expectedErrorPropertyPaths) {
+    private static void validate(Object obj, String... expectedErrorPropertyPaths) {
 
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
@@ -91,8 +93,8 @@ public class NoteTest {
         errors.forEach(e -> System.out.println("- " + e.getPropertyPath() + ": " + e.getMessage()));
 
         Stream.of(expectedErrorPropertyPaths).forEach(property ->
-                Assert.assertTrue("expected validation error in " + property, errorProperties.contains(property)));
-        Assert.assertEquals(expectedErrorPropertyPaths.length, errorProperties.size());
+                assertTrue("expected validation error in " + property, errorProperties.contains(property)));
+        assertEquals(expectedErrorPropertyPaths.length, errorProperties.size());
     }
 
     private static ObjectMapper objectMapper() {

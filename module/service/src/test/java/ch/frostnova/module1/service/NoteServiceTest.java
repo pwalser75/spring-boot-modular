@@ -3,7 +3,6 @@ package ch.frostnova.module1.service;
 import ch.frostnova.module1.api.exception.ResourceNotFoundException;
 import ch.frostnova.module1.api.model.Note;
 import ch.frostnova.module1.api.service.NoteService;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +17,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
+
+import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
@@ -34,14 +36,14 @@ public class NoteServiceTest {
         Note note = new Note(text);
 
         Note saved = noteService.save(note);
-        Assert.assertNotNull(saved.getId());
-        Assert.assertNotNull(saved.getCreatedOn());
-        Assert.assertFalse(saved.getCreatedOn().isAfter(OffsetDateTime.now()));
-        Assert.assertNotNull(saved.getUpdatedOn());
-        Assert.assertFalse(saved.getUpdatedOn().isAfter(OffsetDateTime.now()));
-        Assert.assertFalse(saved.getUpdatedOn().isAfter(saved.getCreatedOn()));
+        assertNotNull(saved.getId());
+        assertNotNull(saved.getCreatedOn());
+        assertFalse(saved.getCreatedOn().isAfter(OffsetDateTime.now()));
+        assertNotNull(saved.getUpdatedOn());
+        assertFalse(saved.getUpdatedOn().isAfter(OffsetDateTime.now()));
+        assertFalse(saved.getUpdatedOn().isAfter(saved.getCreatedOn()));
 
-        Assert.assertEquals(note.getText(), saved.getText());
+        assertEquals(note.getText(), saved.getText());
     }
 
     @Test(expected = ValidationException.class)
@@ -79,8 +81,8 @@ public class NoteServiceTest {
 
         Note loaded = noteService.get(note.getId());
 
-        Assert.assertEquals(note, loaded);
-        Assert.assertEquals(note.getText(), loaded.getText());
+        assertEquals(note, loaded);
+        assertEquals(note.getText(), loaded.getText());
     }
 
     @Test
@@ -90,7 +92,7 @@ public class NoteServiceTest {
         note = noteService.save(note);
 
         List<Note> list = noteService.list();
-        Assert.assertTrue(list.contains(note));
+        assertTrue(list.contains(note));
     }
 
     @Test
@@ -103,8 +105,8 @@ public class NoteServiceTest {
         noteService.save(note);
 
         Note updated = noteService.get(note.getId());
-        Assert.assertEquals(note, updated);
-        Assert.assertEquals(note.getText(), updated.getText());
+        assertEquals(note, updated);
+        assertEquals(note.getText(), updated.getText());
     }
 
     @Test
@@ -114,13 +116,9 @@ public class NoteServiceTest {
         String id = noteService.save(note).getId();
 
         noteService.delete(id);
-        try {
-            noteService.get(id);
-            Assert.fail("Expected " + ResourceNotFoundException.class.getName());
-        } catch (ResourceNotFoundException expected) {
 
-        }
-        Assert.assertFalse(noteService.list().stream().anyMatch(n -> n.getId().equals(id)));
+        assertThrows(ResourceNotFoundException.class, () -> noteService.get(id));
+        assertFalse(noteService.list().stream().anyMatch(n -> n.getId().equals(id)));
     }
 
     @Test
@@ -129,11 +127,11 @@ public class NoteServiceTest {
         Note note = noteService.save(new Note("Lorem ipsum dolor sit amet"));
 
         for (String positive : Arrays.asList("Lorem", "IPSUM", "oLo", "dolor ips", "sit, lo", "'sit amet'", "'em IP")) {
-            Assert.assertTrue("query: " + positive, noteService.find(positive).contains(note));
+            assertTrue("query: " + positive, noteService.find(positive).contains(note));
         }
 
         for (String negative : Arrays.asList("L0rem", "QUIPSUM", "foo", "dolor ups", "sit# lo", "'sitamet'", "'lorem dolor")) {
-            Assert.assertFalse("query: " + negative, noteService.find(negative).contains(note));
+            assertFalse("query: " + negative, noteService.find(negative).contains(note));
         }
     }
 }

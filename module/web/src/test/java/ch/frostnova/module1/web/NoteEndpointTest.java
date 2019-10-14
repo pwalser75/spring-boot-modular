@@ -3,8 +3,8 @@ package ch.frostnova.module1.web;
 
 import ch.frostnova.module1.api.model.Note;
 import ch.frostnova.module1.web.client.NoteClient;
-import org.junit.Assert;
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +18,8 @@ import javax.ws.rs.NotFoundException;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
+
+import static org.junit.Assert.*;
 
 /**
  * Note endpoint test
@@ -35,9 +37,9 @@ public class NoteEndpointTest {
     @Test
     public void testCRUD() {
 
-        final String baseURL = "https://localhost:" + port + "/api/notes";
+        String baseURL = "https://localhost:" + port + "/api/notes";
         log.info("BASE URL: " + baseURL);
-        try (final NoteClient noteClient = new NoteClient(baseURL)) {
+        try (NoteClient noteClient = new NoteClient(baseURL)) {
 
             // create
 
@@ -45,22 +47,22 @@ public class NoteEndpointTest {
             note.setText("Aloha");
 
             Note created = noteClient.create(note);
-            Assert.assertNotNull(created);
-            Assert.assertNotNull(created.getId());
-            Assert.assertEquals(note.getText(), created.getText());
+            assertNotNull(created);
+            assertNotNull(created.getId());
+            assertEquals(note.getText(), created.getText());
             String id = created.getId();
             note = created;
 
             // read
 
             Note loaded = noteClient.get(id);
-            Assert.assertNotNull(loaded);
-            Assert.assertNotNull(loaded.getId());
-            Assert.assertEquals(note.getText(), loaded.getText());
+            assertNotNull(loaded);
+            assertNotNull(loaded.getId());
+            assertEquals(note.getText(), loaded.getText());
 
             // list
 
-            Assert.assertTrue(noteClient.list().stream().anyMatch(p -> Objects.equals(p.getId(), id)));
+            assertTrue(noteClient.list().stream().anyMatch(p -> Objects.equals(p.getId(), id)));
 
             // update
 
@@ -68,9 +70,9 @@ public class NoteEndpointTest {
             noteClient.save(note);
 
             loaded = noteClient.get(id);
-            Assert.assertNotNull(loaded);
-            Assert.assertEquals(note.getId(), loaded.getId());
-            Assert.assertEquals(note.getText(), loaded.getText());
+            assertNotNull(loaded);
+            assertEquals(note.getId(), loaded.getId());
+            assertEquals(note.getText(), loaded.getText());
 
             // delete
 
@@ -80,22 +82,17 @@ public class NoteEndpointTest {
             noteClient.delete(id);
 
             // must not be found afterwards
-            Assert.assertFalse(noteClient.list().stream().anyMatch(p -> Objects.equals(p.getId(), id)));
+            assertFalse(noteClient.list().stream().anyMatch(p -> Objects.equals(p.getId(), id)));
 
-            try {
-                noteClient.get(id);
-                Assert.fail("Expected: NotFoundException");
-            } catch (NotFoundException expected) {
-                //
-            }
+            Assertions.assertThrows(NotFoundException.class, () -> noteClient.get(id));
         }
     }
 
     @Test
     public void testFind() {
-        final String baseURL = "https://localhost:" + port + "/api/notes";
+        String baseURL = "https://localhost:" + port + "/api/notes";
         log.info("BASE URL: " + baseURL);
-        try (final NoteClient noteClient = new NoteClient(baseURL)) {
+        try (NoteClient noteClient = new NoteClient(baseURL)) {
 
             // create
 
@@ -105,23 +102,23 @@ public class NoteEndpointTest {
             note.setText("Welcome to Switzerland " + time + ", " + random);
             note = noteClient.create(note);
 
-            Assert.assertTrue(noteClient.find("welcome").contains(note));
-            Assert.assertFalse(noteClient.find("aloha").contains(note));
+            assertTrue(noteClient.find("welcome").contains(note));
+            assertFalse(noteClient.find("aloha").contains(note));
 
-            Assert.assertTrue(noteClient.find(time).contains(note));
-            Assert.assertTrue(noteClient.find(random).contains(note));
-            Assert.assertTrue(noteClient.find(note.getText()).contains(note));
-            Assert.assertTrue(noteClient.find("\"" + note.getText().substring(0, note.getText().length() / 2) + "\"").contains(note));
+            assertTrue(noteClient.find(time).contains(note));
+            assertTrue(noteClient.find(random).contains(note));
+            assertTrue(noteClient.find(note.getText()).contains(note));
+            assertTrue(noteClient.find("\"" + note.getText().substring(0, note.getText().length() / 2) + "\"").contains(note));
 
-            Assert.assertFalse(noteClient.find(UUID.randomUUID().toString()).contains(note));
+            assertFalse(noteClient.find(UUID.randomUUID().toString()).contains(note));
         }
     }
 
     @Test(expected = BadRequestException.class)
     public void testValidation() {
-        final String baseURL = "https://localhost:" + port + "/api/notes";
+        String baseURL = "https://localhost:" + port + "/api/notes";
         log.info("BASE URL: " + baseURL);
-        try (final NoteClient noteClient = new NoteClient(baseURL)) {
+        try (NoteClient noteClient = new NoteClient(baseURL)) {
             noteClient.create(new Note());
         }
     }

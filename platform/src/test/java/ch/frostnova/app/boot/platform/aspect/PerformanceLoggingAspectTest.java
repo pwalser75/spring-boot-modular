@@ -1,6 +1,7 @@
 package ch.frostnova.app.boot.platform.aspect;
 
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Test for {@link PerformanceLoggingAspect}

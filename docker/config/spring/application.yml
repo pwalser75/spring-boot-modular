@@ -52,7 +52,7 @@ server:
     key-password: "keystore"
 
 # HTTP port for redirection to HTTPS - uncomment to activate
-http.server.port: 80
+# http.server.port: 80
 
 # Actuator configuration, expose /health, /info and /metrics endpoints
 management:
