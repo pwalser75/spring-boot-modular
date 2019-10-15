@@ -6,8 +6,8 @@ global:
 
 # Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
 rule_files:
-  # - "first_rules.yml"
-  # - "second_rules.yml"
+# - "first_rules.yml"
+# - "second_rules.yml"
 
 # A scrape configuration containing exactly one endpoint to scrape:
 # Here it's Prometheus itself.
@@ -17,7 +17,7 @@ scrape_configs:
     # metrics_path defaults to '/metrics'
     # scheme defaults to 'http'.
     static_configs:
-    - targets: ['127.0.0.1:9090']
+      - targets: ['127.0.0.1:9090']
 
   - job_name: 'spring-actuator'
     scheme: https
@@ -26,4 +26,4 @@ scrape_configs:
     metrics_path: '/actuator/prometheus'
     scrape_interval: 5s
     static_configs:
-    - targets: ['spring-boot-modular:443']
+      - targets: ['spring-boot-modular:443']

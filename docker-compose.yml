@@ -49,30 +49,30 @@ services:
     container_name: prometheus
     restart: unless-stopped
     ports:
-    - 9090:9090
+      - 9090:9090
     networks:
       - front-tier
       - back-tier
     command:
-    - --config.file=/etc/prometheus/prometheus.yml
+      - --config.file=/etc/prometheus/prometheus.yml
     volumes:
-    - ./docker/config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./docker/config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
 
   grafana:
     image: grafana/grafana:latest
     container_name: grafana
     restart: unless-stopped
     ports:
-     - 3000:3000
+      - 3000:3000
     networks:
-     - front-tier
-     - back-tier
+      - front-tier
+      - back-tier
     depends_on:
       - prometheus
     volumes:
       - grafana-storage:/var/lib/grafana
       - ./docker/config/grafana/:/etc/grafana/provisioning/
-    
+
 networks:
   front-tier:
   back-tier:
