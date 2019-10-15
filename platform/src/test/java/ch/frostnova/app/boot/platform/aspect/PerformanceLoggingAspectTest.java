@@ -45,6 +45,5 @@ public class PerformanceLoggingAspectTest {
         context.exit();
         context.exit();
         context.exit();
-
     }
 }

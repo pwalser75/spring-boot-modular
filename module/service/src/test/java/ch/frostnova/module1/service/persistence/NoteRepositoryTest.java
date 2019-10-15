@@ -1,24 +1,24 @@
 package ch.frostnova.module1.service.persistence;
 
 import ch.frostnova.module1.service.TestConfig;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test JPA repository
  */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @DataJpaTest
 @ContextConfiguration(classes = TestConfig.class)
 public class NoteRepositoryTest {
@@ -73,11 +73,11 @@ public class NoteRepositoryTest {
         repository.save(note);
 
         for (String positive : Arrays.asList("Lorem", "IPSUM", "oLo", "dolor ips", "sit, lo", "'sit amet'", "'em IP")) {
-            assertTrue("query: " + positive, repository.findAll(NoteRepository.fulltextSearch(positive)).contains(note));
+            assertTrue(repository.findAll(NoteRepository.fulltextSearch(positive)).contains(note), "query: " + positive);
         }
 
         for (String negative : Arrays.asList("L0rem", "QUIPSUM", "foo", "dolor ups", "sit# lo", "'sitamet'", "'lorem dolor")) {
-            assertFalse("query: " + negative, repository.findAll(NoteRepository.fulltextSearch(negative)).contains(note));
+            assertFalse(repository.findAll(NoteRepository.fulltextSearch(negative)).contains(note), "query: " + negative);
         }
     }
 }

@@ -38,11 +38,18 @@ import java.util.stream.Collectors;
  * &nbsp;&nbsp;+ Other.y() -&gt; 9.98 ms, self: 7.92 ms
  * &nbsp;&nbsp;&nbsp;&nbsp;+ Other.z() -&gt; 2.06 ms
  * </code></pre>
+ *
+ * @author Peter Walser
+ * @since 2018-11-02
  */
 @Aspect
 @Component
 @Profile("performance-logging")
 public class PerformanceLoggingAspect {
+
+    private final static String SYMBOL_SPACE = " ";
+    private final static String SYMBOL_INDENTATION = ""; // unicode alternative: "\u2937"
+    private final static String SYMBOL_RIGHT_ARROW = "->"; // unicode alternative: "\u2192"
 
     private static final Logger log = LoggerFactory.getLogger(PerformanceLoggingAspect.class);
 
@@ -51,9 +58,6 @@ public class PerformanceLoggingAspect {
      */
     private static final long DETAIL_THRESHOLD_NS = 1_000_000; // 1 ms
 
-    private final static String SYMBOL_INDENTATION = "+"; // unicode alternative: "\u2937"
-    private final static String SYMBOL_RIGHT_ARROW = "->"; // unicode alternative: "\u2192"
-
     /**
      * Bind aspect to any Spring @Service, @Controller, @RestController and Repository
      *
@@ -61,10 +65,13 @@ public class PerformanceLoggingAspect {
      * @return invocation result
      * @throws Throwable invocation exception
      */
-    @Around("@within(org.springframework.stereotype.Service) " +
-            "|| @within(org.springframework.stereotype.Controller) " +
-            "|| @within(org.springframework.web.bind.annotation.RestController)")
-    public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
+    @Around("@within(ch.frostnova.app.boot.platform.aspect.PerformanceLogging)" +
+            "|| @within(org.springframework.stereotype.Service)" +
+            "|| @within(org.springframework.stereotype.Controller)" +
+            "|| @within(org.springframework.scheduling.annotation.Scheduled)" +
+            "|| @within(org.springframework.web.bind.annotation.RestController)"
+    )
+    public static Object around(ProceedingJoinPoint joinPoint) throws Throwable {
 
         String invocation = joinPoint.getSignature().toShortString();
 
@@ -87,9 +94,9 @@ public class PerformanceLoggingAspect {
      * @return invocation result
      * @throws Throwable invocation exception
      */
-    @Around("@within(org.springframework.stereotype.Component) "+
-            "|| this(org.springframework.data.repository.Repository)")
-    public Object aroundIntermediate(ProceedingJoinPoint joinPoint) throws Throwable {
+    @Around("this(org.springframework.data.repository.Repository)" +
+            "|| @within(org.springframework.stereotype.Component)")
+    public static Object aroundIntermediate(ProceedingJoinPoint joinPoint) throws Throwable {
         if (PerformanceLoggingContext.current().isIntermediateInvocation()) {
             return around(joinPoint);
         }
@@ -154,25 +161,22 @@ public class PerformanceLoggingAspect {
                     }
                 }
                 iterator = invocations.iterator();
-                Integer skipFromLevel = null;
+                InvocationInfo skipFromLevel = null;
                 while (iterator.hasNext()) {
                     InvocationInfo invocationInfo = iterator.next();
                     if (skipFromLevel != null) {
-                        if (invocationInfo.level > skipFromLevel) {
+                        if (invocationInfo.level > skipFromLevel.level) {
                             iterator.remove();
                         } else {
                             skipFromLevel = null;
                         }
                     }
-                    if (skipFromLevel == null && invocationInfo.getElapsedTimeNs() < DETAIL_THRESHOLD_NS && invocationInfo.level > 1) {
-                        skipFromLevel = invocationInfo.level;
-                        if (invocationInfo.nestedTimeNs > 0) {
-                            invocationInfo.nestedBelowThreshold = true;
-                        }
+                    if (skipFromLevel == null && invocationInfo.getElapsedTimeNs() < PerformanceLoggingAspect.DETAIL_THRESHOLD_NS && invocationInfo.level > 1) {
+                        skipFromLevel = invocationInfo;
                     }
                 }
 
-                log.info(invocations.stream()
+                PerformanceLoggingAspect.log.info(invocations.stream()
                         .map(InvocationInfo::toString)
                         .collect(Collectors.joining("\n")));
                 invocations.clear();
@@ -190,7 +194,6 @@ public class PerformanceLoggingAspect {
         private final String invocation;
         private String result;
         private long nestedTimeNs;
-        private boolean nestedBelowThreshold;
 
         InvocationInfo(int level, String invocation, long startTimeNs) {
             this.level = level;
@@ -231,17 +234,17 @@ public class PerformanceLoggingAspect {
                 for (int i = 0; i < level; i++) {
                     builder.append("  ");
                 }
-                builder.append(PerformanceLoggingAspect.SYMBOL_INDENTATION);
-                builder.append(" ");
+                builder.append(SYMBOL_INDENTATION);
+                builder.append(SYMBOL_SPACE);
             }
             if (mergeCount > 1) {
                 builder.append(mergeCount);
                 builder.append("x ");
             }
             builder.append(invocation);
-            builder.append(" ");
-            builder.append(PerformanceLoggingAspect.SYMBOL_RIGHT_ARROW);
-            builder.append(" ");
+            builder.append(SYMBOL_SPACE);
+            builder.append(SYMBOL_RIGHT_ARROW);
+            builder.append(SYMBOL_SPACE);
             if (result != null) {
                 builder.append(result);
                 builder.append(", ");
@@ -251,13 +254,10 @@ public class PerformanceLoggingAspect {
                 builder.append(", self: ");
                 builder.append(formatTimeMs(durationNs - nestedTimeNs));
             }
-            if (nestedBelowThreshold) {
-                builder.append(", nested calls below threshold");
-            }
             return builder.toString();
         }
 
-        private String formatTimeMs(long timeNs) {
+        private static String formatTimeMs(long timeNs) {
             return BigDecimal.valueOf(timeNs * 0.000001).setScale(2, RoundingMode.HALF_EVEN) + " ms";
         }
     }

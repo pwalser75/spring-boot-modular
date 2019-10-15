@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import com.fasterxml.jackson.databind.util.StdDateFormat;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import javax.validation.*;
 import java.time.OffsetDateTime;
@@ -16,16 +16,16 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests for Note model
  */
 public class NoteTest {
 
-    @Before
-    public void init() {
+    @BeforeAll
+    public static void init() {
         Locale.setDefault(Locale.ENGLISH);
     }
 
@@ -93,7 +93,7 @@ public class NoteTest {
         errors.forEach(e -> System.out.println("- " + e.getPropertyPath() + ": " + e.getMessage()));
 
         Stream.of(expectedErrorPropertyPaths).forEach(property ->
-                assertTrue("expected validation error in " + property, errorProperties.contains(property)));
+                assertTrue(errorProperties.contains(property)));
         assertEquals(expectedErrorPropertyPaths.length, errorProperties.size());
     }
 

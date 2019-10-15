@@ -67,6 +67,10 @@ subprojects {
         delete "./db"
     }
 
+    test {
+        useJUnitPlatform()
+    }
+
     javadoc.onlyIf { !project.hasProperty('quick') }
 }
 
@@ -134,7 +138,9 @@ ext {
 
             ],
             springBootTest        : [
-                    "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
+                    dependencies.create("org.springframework.boot:spring-boot-starter-test:$springBootVersion") {
+                        exclude module: 'junit' // exclude JUnit 4 as we want to use JUnit 5
+                    }
             ],
             springBootDevTools    : [
                     "org.springframework.boot:spring-boot-devtools:$springBootVersion"

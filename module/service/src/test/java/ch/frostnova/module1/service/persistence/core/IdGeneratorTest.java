@@ -1,13 +1,13 @@
 package ch.frostnova.module1.service.persistence.core;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Test for {@link IdGenerator}
@@ -18,7 +18,7 @@ import static org.junit.Assert.assertNotNull;
 public class IdGeneratorTest {
 
     @Test
-    public void testIdGenerator() {
+    public static void testIdGenerator() {
 
         IdGenerator idGenerator = new IdGenerator();
 

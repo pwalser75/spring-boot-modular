@@ -3,15 +3,15 @@ package ch.frostnova.module1.web;
 
 import ch.frostnova.module1.api.model.Note;
 import ch.frostnova.module1.web.client.NoteClient;
-import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
@@ -19,12 +19,12 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Note endpoint test
  */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("performance-logging")
 public class NoteEndpointTest {
@@ -114,12 +114,12 @@ public class NoteEndpointTest {
         }
     }
 
-    @Test(expected = BadRequestException.class)
+    @Test
     public void testValidation() {
         String baseURL = "https://localhost:" + port + "/api/notes";
         log.info("BASE URL: " + baseURL);
         try (NoteClient noteClient = new NoteClient(baseURL)) {
-            noteClient.create(new Note());
+            assertThrows(BadRequestException.class, () -> noteClient.create(new Note()));
         }
     }
 }

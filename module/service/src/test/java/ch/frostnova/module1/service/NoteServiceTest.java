@@ -3,12 +3,12 @@ package ch.frostnova.module1.service;
 import ch.frostnova.module1.api.exception.ResourceNotFoundException;
 import ch.frostnova.module1.api.model.Note;
 import ch.frostnova.module1.api.service.NoteService;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.validation.ValidationException;
 import java.time.OffsetDateTime;
@@ -18,10 +18,9 @@ import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @DataJpaTest
 @ContextConfiguration(classes = TestConfig.class)
 public class NoteServiceTest {
@@ -46,21 +45,21 @@ public class NoteServiceTest {
         assertEquals(note.getText(), saved.getText());
     }
 
-    @Test(expected = ValidationException.class)
+    @Test
     public void testValidateTextRequired() {
 
         Note note = new Note();
-        noteService.save(note);
+        assertThrows(ValidationException.class, () -> noteService.save(note));
     }
 
-    @Test(expected = ValidationException.class)
+    @Test
     public void testValidateTextNotBlank() {
 
         Note note = new Note("");
-        noteService.save(note);
+        assertThrows(ValidationException.class, () -> noteService.save(note));
     }
 
-    @Test(expected = ValidationException.class)
+    @Test
     public void testValidateTextTooLong() {
 
         String text = ThreadLocalRandom.current()
@@ -70,7 +69,7 @@ public class NoteServiceTest {
                 .map(String::valueOf)
                 .collect(Collectors.joining());
         Note note = new Note(text);
-        noteService.save(note);
+        assertThrows(ValidationException.class, () -> noteService.save(note));
     }
 
     @Test
@@ -127,11 +126,11 @@ public class NoteServiceTest {
         Note note = noteService.save(new Note("Lorem ipsum dolor sit amet"));
 
         for (String positive : Arrays.asList("Lorem", "IPSUM", "oLo", "dolor ips", "sit, lo", "'sit amet'", "'em IP")) {
-            assertTrue("query: " + positive, noteService.find(positive).contains(note));
+            assertTrue(noteService.find(positive).contains(note), "query: " + positive);
         }
 
         for (String negative : Arrays.asList("L0rem", "QUIPSUM", "foo", "dolor ups", "sit# lo", "'sitamet'", "'lorem dolor")) {
-            assertFalse("query: " + negative, noteService.find(negative).contains(note));
+            assertFalse(noteService.find(negative).contains(note), "query: " + negative);
         }
     }
 }
