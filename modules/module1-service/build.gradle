@@ -1,0 +1,17 @@
+description = 'Module1 Service'
+
+dependencies {
+    api project(':modules:module1-api')
+
+    api libs.api
+    api libs.springBoot
+
+    compile project(':modules:common-service')
+
+    annotationProcessor libs.jpaAnnotationProcessor
+
+    testCompile libs.testbase
+    testCompile libs.springBootTest
+
+    testRuntime project(':platform')
+}

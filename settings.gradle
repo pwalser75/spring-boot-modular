@@ -1,9 +1,21 @@
 rootProject.name = 'Spring Multi Module App'
 
-include ':module:api'
-include ':module:service'
-include ':module:web'
+def addProject(path) {
+    def transPath = path.replaceAll(':', '/');
+    def projectDir = new File(new File("${rootDir}"), transPath)
+    def buildFile = new File(projectDir, 'build.gradle')
+    if (!buildFile.exists()) {
+        println "project(\"${path}\") does not exist (could not find ${buildFile})";
+    } else {
+        include "${path}"
+        project("${path}").projectDir = projectDir
+    }
+}
 
-include ':platform'
+addProject ':modules:common-service'
+addProject ':modules:module1-api'
+addProject ':modules:module1-service'
+addProject ':modules:module1-web'
 
-include ':app'
+addProject ':platform'
+addProject ':app'

@@ -1,0 +1,14 @@
+description = 'Module1 Web'
+
+dependencies {
+    api project(':modules:module1-api')
+
+    api libs.api
+    api libs.springBoot
+
+    testCompile libs.testbase
+    testCompile libs.springBootTest
+
+    testCompile project(':platform')
+    testCompile project(':modules:module1-service')
+}

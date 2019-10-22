@@ -16,6 +16,6 @@ dependencies {
     dev libs.springBootDevTools
 
     compile project(':platform')
-    compile project(':module:service')
-    compile project(':module:web')
+    compile project(':modules:module1-service')
+    compile project(':modules:module1-web')
 }
