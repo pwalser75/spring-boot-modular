@@ -65,11 +65,12 @@ public class PerformanceLoggingAspect {
      * @return invocation result
      * @throws Throwable invocation exception
      */
-    @Around("@within(ch.frostnova.app.boot.platform.aspect.PerformanceLogging)" +
+    @Around("!@within(ch.frostnova.app.boot.platform.aspect.NoPerformanceLogging) && " +
+            "(@within(ch.frostnova.app.boot.platform.aspect.PerformanceLogging)" +
             "|| @within(org.springframework.stereotype.Service)" +
             "|| @within(org.springframework.stereotype.Controller)" +
             "|| @within(org.springframework.scheduling.annotation.Scheduled)" +
-            "|| @within(org.springframework.web.bind.annotation.RestController)"
+            "|| @within(org.springframework.web.bind.annotation.RestController))"
     )
     public static Object around(ProceedingJoinPoint joinPoint) throws Throwable {
 
