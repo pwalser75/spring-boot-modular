@@ -2,7 +2,7 @@ import java.time.OffsetDateTime
 import java.time.temporal.ChronoUnit
 
 plugins {
-    id 'com.github.ben-manes.versions' version '0.26.0'
+    id 'com.github.ben-manes.versions' version '0.27.0'
     id 'org.kordamp.gradle.apidoc' version '0.25.0'
     id 'com.avast.gradle.docker-compose' version '0.9.5'
     id 'net.ltgt.apt' version '0.21'
@@ -95,7 +95,7 @@ dependencyUpdates.resolutionStrategy = {
 build.dependsOn testReport
 
 ext {
-    springBootVersion = '2.1.9.RELEASE'
+    springBootVersion = '2.2.0.RELEASE'
     junitVersion = '5.5.2'
     mockitoVersion = '3.1.0'
     logstashLogbackVersion = '6.2'
@@ -108,7 +108,7 @@ ext {
     jerseyVersion = '2.29.1'
     javaValidationVersion = '2.0.1.Final'
     mysqlDriverVersion = '8.0.18'
-    hibernateVersion = '5.4.6.Final'
+    hibernateVersion = '5.4.8.Final'
 
     libs = [
             api                   : [
