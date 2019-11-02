@@ -3,6 +3,9 @@ package ch.frostnova.module1.service;
 import ch.frostnova.module1.api.exception.ResourceNotFoundException;
 import ch.frostnova.module1.api.model.Note;
 import ch.frostnova.module1.api.service.NoteService;
+import ch.frostnova.project.common.service.scope.TaskScope;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +30,16 @@ public class NoteServiceTest {
 
     @Autowired
     private NoteService noteService;
+
+    @BeforeEach
+    public void setup() {
+        TaskScope.init();
+    }
+
+    @AfterEach
+    public void cleanup() {
+        TaskScope.destroy();
+    }
 
     @Test
     public void testCreate() {

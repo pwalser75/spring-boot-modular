@@ -5,7 +5,10 @@ import ch.frostnova.module1.api.model.Note;
 import ch.frostnova.module1.api.service.NoteService;
 import ch.frostnova.module1.service.persistence.NoteEntity;
 import ch.frostnova.module1.service.persistence.NoteRepository;
+import ch.frostnova.project.common.service.scope.TaskScope;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
@@ -23,6 +26,7 @@ import java.util.stream.Collectors;
  * Implementation of the NoteService
  */
 @Service
+@Scope(value = TaskScope.NAME, proxyMode = ScopedProxyMode.INTERFACES)
 @EnableTransactionManagement
 @Transactional
 @Validated

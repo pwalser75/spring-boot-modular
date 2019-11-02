@@ -1,5 +1,6 @@
 package ch.frostnova.module1.service;
 
+import ch.frostnova.project.common.service.CommonServiceConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -12,7 +13,7 @@ import org.springframework.validation.beanvalidation.MethodValidationPostProcess
  * @since 04.06.2019
  */
 @Configuration
-@Import(Module1ServiceConfig.class)
+@Import({Module1ServiceConfig.class, CommonServiceConfig.class})
 public class TestConfig {
 
     @Bean

@@ -3,7 +3,10 @@ package ch.frostnova.module1.web;
 
 import ch.frostnova.module1.api.model.Note;
 import ch.frostnova.module1.web.client.NoteClient;
+import ch.frostnova.project.common.service.scope.TaskScope;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
@@ -38,6 +41,17 @@ public class NoteEndpointTest {
 
     @MockBean
     private MetricsEndpoint metricsEndpoint;
+
+
+    @BeforeEach
+    public void setup() {
+        TaskScope.init();
+    }
+
+    @AfterEach
+    public void cleanup() {
+        TaskScope.destroy();
+    }
 
     @Test
     public void testCRUD() {

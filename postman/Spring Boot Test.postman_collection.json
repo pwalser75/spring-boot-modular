@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "ce98565c-40bf-4e75-b473-ffc16579a063",
+		"_postman_id": "bd4f78c8-5e19-4e33-8ea0-2e3b1b3128e5",
 		"name": "Spring Boot Test",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -169,7 +169,7 @@
 									"    var db = optional(details, x => x.db);\r",
 									"    \r",
 									"    tests[\"status is UP\"] = health.status === 'UP';\r",
-									"    tests[\"db status is UP\"]  = optional(health, x=>x.details, x=>x.db, x=>x.status) === 'UP';\r",
+									"    tests[\"db status is UP\"]  = optional(health, x=>x.components, x=>x.db, x=>x.status) === 'UP';\r",
 									"}"
 								],
 								"type": "text/javascript"
@@ -304,71 +304,6 @@
 							"path": [
 								"actuator",
 								"prometheus"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "API",
-			"item": [
-				{
-					"name": "Get OpenAPI contract",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"id": "24b3a4eb-ac1d-44d6-8f72-845ea88d0f1a",
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"id": "60b1c26b-ddb9-4a53-aff0-2980fbcd0862",
-								"exec": [
-									"var expectedStatus=200;\r",
-									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
-									"\r",
-									"if (responseCode.code === expectedStatus){\r",
-									"    var openAPI = pm.response.json();\r",
-									"    \r",
-									"    var info = openAPI.info;\r",
-									"    tests[\"has info\"] = info;\r",
-									"    if (info) {\r",
-									"         tests[\"title: \"+info.title] = info.title;\r",
-									"         tests[\"description: \"+info.description] = info.description;\r",
-									"         tests[\"version: \"+info.version] = info.version;\r",
-									"    }\r",
-									"}"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{HOST}}/v2/api-docs",
-							"host": [
-								"{{HOST}}"
-							],
-							"path": [
-								"v2",
-								"api-docs"
 							]
 						}
 					},
@@ -691,133 +626,6 @@
 					"response": []
 				},
 				{
-					"name": "Find Note",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"id": "24b3a4eb-ac1d-44d6-8f72-845ea88d0f1a",
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"id": "60b1c26b-ddb9-4a53-aff0-2980fbcd0862",
-								"exec": [
-									"var expectedStatus=200;\r",
-									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
-									"\r",
-									"if (responseCode.code === expectedStatus){\r",
-									"    var notes = pm.response.json();\r",
-									"    \r",
-									"    tests[\"has notes\"] = notes.length > 0;\r",
-									"    \r",
-									"    var note = notes.find(n=>n.id === pm.globals.get(\"note-id\"));\r",
-									"    \r",
-									"    tests[\"contains note:\"] = note;\r",
-									"    if (note) {\r",
-									"      tests[\"has correct id\"] = note.id ===  pm.globals.get(\"note-id\")\r",
-									"      tests[\"has createdOn\"] = note.createdOn;\r",
-									"      tests[\"has updatedOn\"] = note.updatedOn;\r",
-									"      tests[\"has text\"] = note.text;\r",
-									"      tests[\"has correct text\"] = note.text === pm.globals.get(\"note-text\");\r",
-									"    }\r",
-									"}\r",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{HOST}}/api/notes",
-							"host": [
-								"{{HOST}}"
-							],
-							"path": [
-								"api",
-								"notes"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Find Note - no match",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"id": "24b3a4eb-ac1d-44d6-8f72-845ea88d0f1a",
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"id": "60b1c26b-ddb9-4a53-aff0-2980fbcd0862",
-								"exec": [
-									"var expectedStatus=200;\r",
-									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
-									"\r",
-									"if (responseCode.code === expectedStatus){\r",
-									"    var notes = pm.response.json();\r",
-									"    \r",
-									"    tests[\"no match\"] = notes.length === 0;\r",
-									"}\r",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{HOST}}/api/notes?query=QWERTZASDF",
-							"host": [
-								"{{HOST}}"
-							],
-							"path": [
-								"api",
-								"notes"
-							],
-							"query": [
-								{
-									"key": "query",
-									"value": "QWERTZASDF"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Delete Note",
 					"event": [
 						{
@@ -836,10 +644,6 @@
 					"request": {
 						"method": "DELETE",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{HOST}}/api/notes/{{note-id}}",
 							"host": [
