@@ -7,8 +7,13 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.*;
 import java.io.IOException;
-import java.util.UUID;
 
+/**
+ * Servlet filter which activates the task scope on request level.
+ *
+ * @author pwalser
+ * @since 2019-11-03
+ */
 @Component
 @Order(1)
 public class TaskScopeRequestScopeFilter implements Filter {
@@ -34,7 +39,6 @@ public class TaskScopeRequestScopeFilter implements Filter {
             chain.doFilter(request, response);
             return;
         }
-        String requestId = UUID.randomUUID().toString();
         TaskScope.init();
         String conversationId = TaskScope.currentConversationId();
         logger.debug("Task scope created for request: {}", conversationId);

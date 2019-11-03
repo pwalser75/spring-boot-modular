@@ -20,7 +20,7 @@ import java.util.stream.IntStream;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {TaskScopeConfiguration.class, TaskScopedComponent.class})
+@ContextConfiguration(classes = {TaskScopeConfig.class, TaskScopedComponent.class})
 public class TaskScopeExecutionContextTest {
 
     @Autowired
@@ -71,7 +71,6 @@ public class TaskScopeExecutionContextTest {
         for (int i = 0; i < 100; i++) {
             futures.add(executorService.submit(() -> executionContext.execute(() -> {
                 assertTrue(TaskScope.isActive());
-                String threadInfo = Thread.currentThread().getId() + ": " + Thread.currentThread().getName();
                 try {
                     Thread.sleep(10);
                 } catch (InterruptedException ex) {
@@ -103,7 +102,6 @@ public class TaskScopeExecutionContextTest {
         for (int i = 0; i < 100; i++) {
             futures.add(executorService.submit(() -> executionContext.execute(() -> {
                 assertTrue(TaskScope.isActive());
-                String threadInfo = Thread.currentThread().getId() + ": " + Thread.currentThread().getName();
                 try {
                     Thread.sleep(10);
                 } catch (InterruptedException ex) {

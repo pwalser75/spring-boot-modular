@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class TaskScopeConfiguration {
+public class TaskScopeConfig {
 
     @Bean
     public static BeanFactoryPostProcessor beanFactoryPostProcessor() {

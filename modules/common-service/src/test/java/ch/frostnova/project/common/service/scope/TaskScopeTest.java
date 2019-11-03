@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {TaskScopeConfiguration.class, TaskScopedComponent.class})
+@ContextConfiguration(classes = {TaskScopeConfig.class, TaskScopedComponent.class})
 public class TaskScopeTest {
 
     @Autowired
