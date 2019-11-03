@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Supplier;
 
 /**
  * A scope for beans living withing a task context. Contrary to the {@link RequestScope}, the task scope is not limited to HTTP requests, but can be used for:
@@ -59,7 +58,7 @@ public class TaskScope implements Scope {
      * @return active
      */
     public static boolean isActive() {
-        return scopeInstance.get() != null;
+        return Optional.ofNullable(scopeInstance.get()).map(ScopeInstance::isActive).orElse(false);
     }
 
     /**
@@ -69,11 +68,6 @@ public class TaskScope implements Scope {
      */
     public static String currentConversationId() {
         return Optional.ofNullable(scopeInstance.get()).map(ScopeInstance::conversationId).orElse(null);
-    }
-
-    private ScopeInstance scopeInstance() {
-        checkScopeActive();
-        return scopeInstance.get();
     }
 
     private static void checkScopeActive() {
@@ -88,78 +82,9 @@ public class TaskScope implements Scope {
         }
     }
 
-    public static void runInContext(CheckedRunnable runnable) {
-        if (runnable == null) {
-            throw new IllegalArgumentException("Runnable is required");
-        }
-        runInContext(() -> {
-            runnable.runUnchecked();
-            return null;
-        });
-    }
-
-    public static <T> T runInContext(CheckedSupplier<T> supplier) {
-        if (supplier == null) {
-            throw new IllegalArgumentException("Supplier is required");
-        }
-        if (isActive()) {
-            return supplier.supplyUnchecked();
-        }
-        try {
-            init();
-            return supplier.supplyUnchecked();
-        } finally {
-            if (isActive()) {
-                destroy();
-            }
-        }
-    }
-
-    public static Runnable scoped(CheckedRunnable runnable) {
-        if (runnable == null) {
-            throw new IllegalArgumentException("Runnable is required");
-        }
-        return scoped(x -> {
-            runnable.runUnchecked();
-            return null;
-        }).asRunnable();
-    }
-
-    public static <T> Supplier<T> scoped(CheckedSupplier<T> supplier) {
-        if (supplier == null) {
-            throw new IllegalArgumentException("Supplier is required");
-        }
-        return scoped(x -> supplier.supplyUnchecked()).asSupplier();
-    }
-
-    public static <T, R> CheckedFunction<T, R> scoped(CheckedFunction<T, R> function) {
-        if (function == null) {
-            throw new IllegalArgumentException("Function is required");
-        }
-        ScopeInstance scopeInstance = TaskScope.scopeInstance.get();
-        return input -> {
-            ScopeInstance currentThreadScopeInstance = TaskScope.scopeInstance.get();
-            // running in active scope?
-            if (currentThreadScopeInstance != null) {
-                return function.apply(input);
-            }
-            // inherited scope?
-            if (scopeInstance != null) {
-                TaskScope.scopeInstance.set(scopeInstance);
-                try {
-                    return function.apply(input);
-                } finally {
-                    TaskScope.scopeInstance.remove();
-                }
-            }
-            // new scope
-            try {
-                TaskScope.init();
-                return function.apply(input);
-            } finally {
-                TaskScope.destroy();
-            }
-        };
+    private static ScopeInstance scopeInstance() {
+        checkScopeActive();
+        return scopeInstance.get();
     }
 
     @Override
@@ -192,26 +117,88 @@ public class TaskScope implements Scope {
     private static class ScopeInstance {
         private final Map<String, Object> scopedObjects = new HashMap<>();
         private final Map<String, Runnable> destructionCallbacks = new HashMap<>();
-        private final String conversationId = UUID.randomUUID().toString();
+        private String conversationId = UUID.randomUUID().toString();
 
-        public void destroy() {
+        private void destroy() {
             scopedObjects.keySet().forEach(name -> {
                 Optional.ofNullable(destructionCallbacks.get(name)).ifPresent(Runnable::run);
             });
             scopedObjects.clear();
             destructionCallbacks.clear();
+            conversationId = null;
         }
 
-        public String conversationId() {
+        private boolean isActive() {
+            return conversationId != null;
+        }
+
+        private String conversationId() {
             return conversationId;
         }
 
-        public Map<String, Object> scopedObjects() {
+        private Map<String, Object> scopedObjects() {
             return scopedObjects;
         }
 
-        public Map<String, Runnable> destructionCallbacks() {
+        private Map<String, Runnable> destructionCallbacks() {
             return destructionCallbacks;
+        }
+    }
+
+    public static ExecutionContext currentExecutionContext() {
+        return new ExecutionContext(scopeInstance());
+    }
+
+    public static ExecutionContext newExecutionContext() {
+        return new ExecutionContext();
+    }
+
+    public static class ExecutionContext {
+
+        private final ScopeInstance scope;
+
+        private ExecutionContext() {
+            this(null);
+        }
+
+        private ExecutionContext(ScopeInstance scope) {
+            this.scope = scope;
+            checkScopeActive();
+        }
+
+        private void checkScopeActive() {
+            if (scope != null && !scope.isActive()) {
+                throw new IllegalStateException("Scope is no longer active");
+            }
+        }
+
+        public void execute(CheckedRunnable runnable) {
+            if (runnable == null) {
+                throw new IllegalArgumentException("Runnable is required");
+            }
+            execute(() -> {
+                runnable.runUnchecked();
+                return null;
+            });
+        }
+
+        public <T> T execute(CheckedSupplier<T> supplier) {
+            if (supplier == null) {
+                throw new IllegalArgumentException("Supplier is required");
+            }
+            checkScopeActive();
+            ScopeInstance backupScope = scopeInstance.get();
+            ScopeInstance executionScope = scope != null ? scope : new ScopeInstance();
+
+            TaskScope.scopeInstance.set(executionScope);
+            try {
+                return supplier.supplyUnchecked();
+            } finally {
+                TaskScope.scopeInstance.set(backupScope);
+                if (scope == null) {
+                    executionScope.destroy();
+                }
+            }
         }
     }
 
@@ -243,10 +230,6 @@ public class TaskScope implements Scope {
                 throw new RuntimeException(ex);
             }
         }
-
-        default Runnable asRunnable() {
-            return () -> supplyUnchecked();
-        }
     }
 
     @FunctionalInterface
@@ -261,14 +244,6 @@ public class TaskScope implements Scope {
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
-        }
-
-        default Supplier<R> asSupplier() {
-            return () -> applyUnchecked(null);
-        }
-
-        default Runnable asRunnable() {
-            return () -> applyUnchecked(null);
         }
     }
 }
