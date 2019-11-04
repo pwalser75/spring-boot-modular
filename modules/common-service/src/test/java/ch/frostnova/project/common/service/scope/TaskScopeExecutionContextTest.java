@@ -8,8 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.io.IOException;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -162,6 +165,27 @@ public class TaskScopeExecutionContextTest {
     }
 
     @Test
+    public void testCurrentExecutionContextGone() {
+        TaskScope.init();
+        TaskScope.ExecutionContext executionContext = TaskScope.currentExecutionContext();
+
+        executionContext.execute(() -> taskScopedComponent.getUuid());
+        TaskScope.destroy();
+
+        assertThrows(IllegalStateException.class, () -> executionContext.execute(() -> taskScopedComponent.getUuid()));
+    }
+
+    @Test
+    public void testCurrentExecutionContextChanged() {
+        TaskScope.init();
+        TaskScope.ExecutionContext executionContext = TaskScope.currentExecutionContext();
+        TaskScope.destroy();
+
+        TaskScope.init();
+        assertThrows(IllegalStateException.class, () -> executionContext.execute(() -> taskScopedComponent.getUuid()));
+    }
+
+    @Test
     public void testExecuteInActiveContextThread() {
 
         TaskScope.init();
@@ -171,5 +195,86 @@ public class TaskScopeExecutionContextTest {
 
         assertEquals(uuid1, uuid2);
         assertEquals(uuid1, uuid3);
+    }
+
+    @Test
+    public void testNestedTaskScopes() {
+
+        final Set<String> preDestroyed = new HashSet<>();
+
+        TaskScope.init();
+        final String uuid1 = taskScopedComponent.getUuid();
+        taskScopedComponent.setPreDestroyCallback(() -> preDestroyed.add(uuid1));
+
+        TaskScope.newExecutionContext().execute(() -> {
+            final String uuid2 = taskScopedComponent.getUuid();
+            assertNotEquals(uuid1, uuid2);
+            taskScopedComponent.setPreDestroyCallback(() -> preDestroyed.add(uuid2));
+
+            TaskScope.newExecutionContext().execute(() -> {
+                final String uuid3 = taskScopedComponent.getUuid();
+                assertNotEquals(uuid1, uuid3);
+                assertNotEquals(uuid2, uuid3);
+                taskScopedComponent.setPreDestroyCallback(() -> preDestroyed.add(uuid3));
+            });
+            assertEquals(uuid2, taskScopedComponent.getUuid());
+            assertEquals(1, preDestroyed.size());
+        });
+        assertEquals(uuid1, taskScopedComponent.getUuid());
+        assertEquals(2, preDestroyed.size());
+        TaskScope.destroy();
+        assertEquals(3, preDestroyed.size());
+    }
+
+    @Test
+    public void testRequiresRunnable() {
+        final TaskScope.CheckedRunnable runnable = null;
+        assertThrows(IllegalArgumentException.class, () -> TaskScope.newExecutionContext().execute(runnable));
+    }
+
+    @Test
+    public void testRunnableExecutionWithRuntimeException() {
+        assertThrows(ArithmeticException.class, () -> TaskScope.newExecutionContext().execute(() -> {
+            if (1 > 0) {
+                throw new ArithmeticException();
+            }
+            return;
+        }));
+    }
+
+    @Test
+    public void testRunnableExecutionWithCheckedException() {
+        assertThrows(RuntimeException.class, () -> TaskScope.newExecutionContext().execute(() -> {
+            if (1 > 0) {
+                throw new IOException();
+            }
+            return;
+        }));
+    }
+
+    @Test
+    public void testRequiresSupplier() {
+        final TaskScope.CheckedSupplier runnable = null;
+        assertThrows(IllegalArgumentException.class, () -> TaskScope.newExecutionContext().execute(runnable));
+    }
+
+    @Test
+    public void testSupplierExecutionWithRuntimeException() {
+        assertThrows(ArithmeticException.class, () -> TaskScope.newExecutionContext().execute(() -> {
+            if (1 > 0) {
+                throw new ArithmeticException();
+            }
+            return null;
+        }));
+    }
+
+    @Test
+    public void testSupplierExecutionWithCheckedException() {
+        assertThrows(RuntimeException.class, () -> TaskScope.newExecutionContext().execute(() -> {
+            if (1 > 0) {
+                throw new IOException();
+            }
+            return null;
+        }));
     }
 }

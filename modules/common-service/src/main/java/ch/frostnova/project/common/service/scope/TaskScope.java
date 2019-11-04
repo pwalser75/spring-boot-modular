@@ -8,21 +8,21 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
 
 /**
  * A scope for beans living withing a task context. Contrary to the {@link RequestScope}, the task scope is not limited to HTTP requests, but can be used for:
  * <ul>
- *     <li>HTTP requests (request is a task)</li>
+ *     <li>HTTP requests (each request is a task)</li>
+ *     <li>Asynchronous and parallel task execution with shared or dedicated task scopes</li>
  *     <li>Dispatching of messages from topics and queues (processing of a message is a task)</li>
- *     <li>Batch processing jobs (each job is a task)</li>
  *     <li>Unit or integration testing (test or test suite is a task)</li>
- *     <li>Whatever other tasks you can immagine</li>
  * </ul>
  * The task scope can be manually started and stopped. For Servlet requests, the task scope is automatically
- * opened and closed, making it behave like the {@link RequestScope}.
- * Within one thread, no more than one task scope can be active.
+ * opened and closed (by the {@link TaskScopeRequestScopeFilter}), making this scope behave like the {@link RequestScope}.
+ * Task scopes are thread-bound, but nesting of task scopes within the same thread is possible using the {@link ExecutionContext} functionality.
  * <p>
- * //ServletRequestListener
  *
  * @author pwalser
  * @since 2019-11-01
@@ -114,15 +114,21 @@ public class TaskScope implements Scope {
         return scopeInstance().conversationId();
     }
 
+    /**
+     * The scope instance contains the registry of scoped objects, and the destruction callbacks
+     * for those objects, to be called when the scope is destroyed.
+     * Calling the destruction callbacks will have the dependency injection framework invoke
+     * the pre-destroy lifecycle hooks before the scoped objects are disposed of.
+     */
     private static class ScopeInstance {
         private final Map<String, Object> scopedObjects = new HashMap<>();
         private final Map<String, Runnable> destructionCallbacks = new HashMap<>();
         private String conversationId = UUID.randomUUID().toString();
 
         private void destroy() {
-            scopedObjects.keySet().forEach(name -> {
-                Optional.ofNullable(destructionCallbacks.get(name)).ifPresent(Runnable::run);
-            });
+            scopedObjects.keySet().forEach(name ->
+                    Optional.ofNullable(destructionCallbacks.get(name))
+                            .ifPresent(Runnable::run));
             scopedObjects.clear();
             destructionCallbacks.clear();
             conversationId = null;
@@ -145,14 +151,31 @@ public class TaskScope implements Scope {
         }
     }
 
+    /**
+     * Creates an {@link ExecutionContext} which executes code withing the current task scope.
+     *
+     * @return new execution context which runs code in the current task scope.
+     * @throws IllegalStateException when no current task scope is active.
+     */
     public static ExecutionContext currentExecutionContext() {
         return new ExecutionContext(scopeInstance());
     }
 
+    /**
+     * Creates a new {@link ExecutionContext} which executes code within a dedicated task scope (per execution).
+     *
+     * @return new execution context with dedicated task scopes per execution.
+     */
     public static ExecutionContext newExecutionContext() {
         return new ExecutionContext();
     }
 
+    /**
+     * An execution context which can execute code fragments ({@link Runnable}, {@link Callable},
+     * {@link CheckedRunnable} or {@link CheckedSupplier}).
+     * Particularly useful for asynchronous or parallel processing (using {@link ExecutorService},
+     * or parallel streams), where code can be executed in a shared or dedicated task scope.
+     */
     public static class ExecutionContext {
 
         private final ScopeInstance scope;
@@ -172,6 +195,11 @@ public class TaskScope implements Scope {
             }
         }
 
+        /**
+         * Execute a {@link CheckedRunnable} (compatible with {@link Runnable} in the task scope of the execution context.
+         *
+         * @param runnable runnable, required
+         */
         public void execute(CheckedRunnable runnable) {
             if (runnable == null) {
                 throw new IllegalArgumentException("Runnable is required");
@@ -182,6 +210,11 @@ public class TaskScope implements Scope {
             });
         }
 
+        /**
+         * Execute a {@link CheckedSupplier} (compatible with {@link Callable}) in the task scope of the execution context.
+         *
+         * @param supplier supplier, required
+         */
         public <T> T execute(CheckedSupplier<T> supplier) {
             if (supplier == null) {
                 throw new IllegalArgumentException("Supplier is required");
@@ -202,10 +235,23 @@ public class TaskScope implements Scope {
         }
     }
 
+    /**
+     * Functional interface for a runnable which can throw a checked exception.
+     */
     @FunctionalInterface
     public interface CheckedRunnable {
+
+        /**
+         * Functional contract
+         *
+         * @throws Exception optional exception
+         */
         void run() throws Exception;
 
+
+        /**
+         * Unchecked execution: execute checked and rethrow any exception as {@link RuntimeException}.
+         */
         default void runUnchecked() {
             try {
                 run();
@@ -217,28 +263,26 @@ public class TaskScope implements Scope {
         }
     }
 
+    /**
+     * Functional interface for a supplier which can throw a checked exception. (same as {@link Callable}).
+     */
     @FunctionalInterface
     public interface CheckedSupplier<T> {
+
+        /**
+         * Functional contract
+         *
+         * @return return value
+         * @throws Exception optional exception
+         */
         T supply() throws Exception;
 
+        /**
+         * Unchecked execution: execute checked and rethrow any exception as {@link RuntimeException}.
+         */
         default T supplyUnchecked() {
             try {
                 return supply();
-            } catch (RuntimeException ex) {
-                throw ex;
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
-        }
-    }
-
-    @FunctionalInterface
-    public interface CheckedFunction<T, R> {
-        R apply(T input) throws Exception;
-
-        default R applyUnchecked(T input) {
-            try {
-                return apply(input);
             } catch (RuntimeException ex) {
                 throw ex;
             } catch (Exception ex) {

@@ -12,7 +12,11 @@ import java.util.UUID;
 @Scope(value = TaskScope.NAME, proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class TaskScopedComponent {
 
+    /**
+     * Unique id to distinguish different instances
+     */
     private final String uuid = UUID.randomUUID().toString();
+
     private boolean postConstructed = false;
     private Runnable preDestroyCallback;
 
@@ -22,13 +26,13 @@ public class TaskScopedComponent {
 
     @PostConstruct
     public void setup() {
-        System.out.println("@PostConstruct: " + uuid);
+        // prove post-construction by setting the postConstructed flag
         postConstructed = true;
     }
 
     @PreDestroy
     public void cleanup() {
-        System.out.println("@PreDestroy: " + uuid);
+        // prove pre-destroy by calling the callback
         if (preDestroyCallback != null) {
             preDestroyCallback.run();
         }

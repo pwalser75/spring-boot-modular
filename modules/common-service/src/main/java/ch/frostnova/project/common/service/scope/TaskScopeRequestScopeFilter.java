@@ -40,11 +40,14 @@ public class TaskScopeRequestScopeFilter implements Filter {
             return;
         }
         TaskScope.init();
-        String conversationId = TaskScope.currentConversationId();
-        logger.debug("Task scope created for request: {}", conversationId);
-        chain.doFilter(request, response);
-        TaskScope.destroy();
-        logger.debug("Task scope destroyed for request: {}", conversationId);
+        final String conversationId = TaskScope.currentConversationId();
+        try {
+            logger.debug("Task scope created for request: {}", conversationId);
+            chain.doFilter(request, response);
+        } finally {
+            TaskScope.destroy();
+            logger.debug("Task scope destroyed for request: {}", conversationId);
+        }
 
     }
 }

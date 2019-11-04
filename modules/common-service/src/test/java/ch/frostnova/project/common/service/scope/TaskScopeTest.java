@@ -32,6 +32,7 @@ public class TaskScopeTest {
     @Test
     public void testScopeNotActive() {
         assertFalse(TaskScope.isActive());
+        assertNull(TaskScope.currentConversationId());
         assertThrows(BeanCreationException.class, () -> taskScopedComponent.getUuid());
     }
 
@@ -39,6 +40,9 @@ public class TaskScopeTest {
     public void testScopeActive() {
         TaskScope.init();
         try {
+            assertTrue(TaskScope.isActive());
+            assertNotNull(TaskScope.currentConversationId());
+
             assertNotNull(taskScopedComponent);
             assertNotNull(taskScopedComponent.getUuid());
 
