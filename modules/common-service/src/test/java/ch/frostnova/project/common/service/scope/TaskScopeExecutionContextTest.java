@@ -254,8 +254,8 @@ public class TaskScopeExecutionContextTest {
 
     @Test
     public void testRequiresSupplier() {
-        final TaskScope.CheckedSupplier runnable = null;
-        assertThrows(IllegalArgumentException.class, () -> TaskScope.newExecutionContext().execute(runnable));
+        final TaskScope.CheckedSupplier<String> supplier = null;
+        assertThrows(IllegalArgumentException.class, () -> TaskScope.newExecutionContext().execute(supplier));
     }
 
     @Test

@@ -33,7 +33,7 @@ public class AppInfoController {
     @Autowired
     private InfoEndpoint infoEndpoint;
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses({
             @ApiResponse(code = 200, message = "ok")
     })

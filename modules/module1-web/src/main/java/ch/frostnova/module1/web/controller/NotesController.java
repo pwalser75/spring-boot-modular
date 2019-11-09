@@ -35,7 +35,7 @@ public class NotesController {
      * @param query optional query text (space or comma-separated tokens, single/double quoting supported
      * @return list of notes (never null)
      */
-    @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Lists all notes, or find by query (fulltext search)", response = Note.class)
     @ApiResponses({
             @ApiResponse(code = 200, message = "ok")
@@ -54,7 +54,7 @@ public class NotesController {
      * @param id id of the record
      * @return record
      */
-    @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Get a specific note", response = Note.class)
     @ApiResponses({
             @ApiResponse(code = 200, message = "ok"),
@@ -74,7 +74,7 @@ public class NotesController {
      * @param note record to create
      * @return created record
      */
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation(value = "Create a new note", response = Note.class)
     @ApiResponses({
@@ -92,7 +92,7 @@ public class NotesController {
      * @param id   id of the record to update
      * @param note new data to set
      */
-    @PutMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PutMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiOperation(value = "Update an existing note", response = Note.class)
     @ApiResponses({
