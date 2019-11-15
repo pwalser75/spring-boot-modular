@@ -1,7 +1,7 @@
 package ch.frostnova.app.boot.platform.aspect;
 
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 /**
  * Test for {@link PerformanceLoggingAspect}
@@ -9,41 +9,42 @@ import org.junit.jupiter.api.Test;
 public class PerformanceLoggingAspectTest {
 
     @Test
-    public void testLog() throws Exception {
+    public void testExecuteLog() {
 
         PerformanceLoggingAspect.PerformanceLoggingContext context = PerformanceLoggingAspect.PerformanceLoggingContext.current();
 
-        context.enter("Test.a()");
-        Thread.sleep(50);
+        Assertions.assertThrows(IllegalArgumentException.class, () ->
+                context.execute("Test.a()", () -> {
+                    Thread.sleep(50);
+                    context.execute("Test.b()", () -> {
+                        Thread.sleep(100);
+                        for (int i = 0; i < 3; i++) {
+                            context.execute("Test.c()", () -> {
+                                Thread.sleep(10);
+                            });
+                        }
+                        try {
+                            context.execute("Test.d()", () -> {
+                                throw new ArithmeticException();
+                            });
+                        } catch (ArithmeticException ex) {
+                            throw new IllegalArgumentException(ex);
+                        }
+                    });
+                }));
 
-        context.enter("Test.b()");
-        Thread.sleep(100);
+        context.execute("Test.e()", () -> {
+            Thread.sleep(25);
+        });
 
-        for (int i = 0; i < 3; i++) {
-            context.enter("Test.c()");
-            Thread.sleep(10);
-            context.exit();
-        }
-
-        context.enter("Test.d()");
-        context.exit(new ArithmeticException());
-
-        context.exit(new IllegalArgumentException());
-
-        context.enter("Test.e()");
-        Thread.sleep(25);
-        context.exit(null);
-
-        context.exit();
-
-        context.enter("Other.x()");
-        Thread.sleep(2);
-        context.enter("Other.y()");
-        Thread.sleep(3);
-        context.enter("Other.z()");
-        Thread.sleep(1);
-        context.exit();
-        context.exit();
-        context.exit();
+        context.execute("Other.x()", () -> {
+            Thread.sleep(3);
+            context.execute("Other.y()", () -> {
+                Thread.sleep(2);
+                context.execute("Other.z()", () -> {
+                    Thread.sleep(1);
+                });
+            });
+        });
     }
 }

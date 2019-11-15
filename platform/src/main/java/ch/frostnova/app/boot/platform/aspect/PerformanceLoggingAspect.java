@@ -1,19 +1,14 @@
 package ch.frostnova.app.boot.platform.aspect;
 
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.aspectj.lang.annotation.*;
+import org.slf4j.*;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.Deque;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Optional;
+import java.math.*;
+import java.util.*;
+import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
@@ -72,20 +67,10 @@ public class PerformanceLoggingAspect {
             "|| @within(org.springframework.scheduling.annotation.Scheduled)" +
             "|| @within(org.springframework.web.bind.annotation.RestController))"
     )
-    public static Object around(ProceedingJoinPoint joinPoint) throws Throwable {
+    public static Object around(ProceedingJoinPoint joinPoint) {
 
         String invocation = joinPoint.getSignature().toShortString();
-
-        PerformanceLoggingContext.current().enter(invocation);
-
-        Throwable error = null;
-        try {
-            return joinPoint.proceed();
-        } catch (Throwable t) {
-            throw error = t;
-        } finally {
-            PerformanceLoggingContext.current().exit(error);
-        }
+        return PerformanceLoggingContext.current().execute(invocation, () -> joinPoint.proceed());
     }
 
     /**
@@ -104,7 +89,7 @@ public class PerformanceLoggingAspect {
         return joinPoint.proceed();
     }
 
-    static class PerformanceLoggingContext {
+    public static class PerformanceLoggingContext {
 
         private final static ThreadLocal<PerformanceLoggingContext> current = new ThreadLocal<>();
 
@@ -121,11 +106,11 @@ public class PerformanceLoggingAspect {
             return context;
         }
 
-        public boolean isIntermediateInvocation() {
+        boolean isIntermediateInvocation() {
             return invocationStack.size() > 0;
         }
 
-        public void enter(String invocation) {
+        private void enter(String invocation) {
             long time = System.nanoTime();
             InvocationInfo invocationInfo = new InvocationInfo(invocationStack.size(), invocation, time);
             invocations.add(invocationInfo);
@@ -133,11 +118,7 @@ public class PerformanceLoggingAspect {
             nestedTime.push(new AtomicLong());
         }
 
-        public void exit() {
-            exit(null);
-        }
-
-        public void exit(Throwable t) {
+        private void exit(Throwable t) {
             long time = System.nanoTime();
             if (invocationStack.isEmpty()) {
                 throw new IllegalStateException("No invocation in progress");
@@ -184,7 +165,55 @@ public class PerformanceLoggingAspect {
                 current.remove();
             }
         }
+
+
+        /**
+         * Run code inside the performance logging context
+         *
+         * @param invocationInfo invocationInfo
+         * @param runnable       runnable to execute, required
+         */
+        public void execute(String invocationInfo, CheckedRunnable runnable) {
+            enter(invocationInfo);
+
+            Throwable error = null;
+            try {
+                runnable.run();
+            } catch (RuntimeException ex) {
+                error = ex;
+                throw ex;
+            } catch (Throwable ex) {
+                error = ex;
+                throw ex instanceof RuntimeException ? (RuntimeException) ex : new RuntimeException(ex);
+            } finally {
+                exit(error);
+            }
+        }
+
+        /**
+         * Run code inside the performance logging context
+         *
+         * @param invocationInfo invocationInfo
+         * @param supplier       supplier to execute, required
+         */
+        public <T> T execute(String invocationInfo, CheckedSupplier<T> supplier) {
+            enter(invocationInfo);
+
+            Throwable error = null;
+            try {
+                return supplier.supply();
+            } catch (RuntimeException ex) {
+                error = ex;
+                throw ex;
+            } catch (Throwable ex) {
+                error = ex;
+                throw ex instanceof RuntimeException ? (RuntimeException) ex : new RuntimeException(ex);
+            } finally {
+                exit(error);
+            }
+        }
     }
+
 
     private static class InvocationInfo {
 
@@ -261,5 +290,34 @@ public class PerformanceLoggingAspect {
         private static String formatTimeMs(long timeNs) {
             return BigDecimal.valueOf(timeNs * 0.000001).setScale(2, RoundingMode.HALF_EVEN) + " ms";
         }
+    }
+
+    /**
+     * Functional interface for a runnable which can throw a checked exception.
+     */
+    @FunctionalInterface
+    public interface CheckedRunnable {
+
+        /**
+         * Functional contract
+         *
+         * @throws Exception optional exception
+         */
+        void run() throws Throwable;
+    }
+
+    /**
+     * Functional interface for a supplier which can throw a checked exception. (same as {@link Callable}).
+     */
+    @FunctionalInterface
+    public interface CheckedSupplier<T> {
+
+        /**
+         * Functional contract
+         *
+         * @return return value
+         * @throws Exception optional exception
+         */
+        T supply() throws Throwable;
     }
 }
