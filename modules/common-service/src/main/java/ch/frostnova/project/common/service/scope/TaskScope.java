@@ -246,7 +246,7 @@ public class TaskScope implements Scope {
          *
          * @throws Exception optional exception
          */
-        void run() throws Exception;
+        void run() throws Throwable;
 
 
         /**
@@ -258,6 +258,8 @@ public class TaskScope implements Scope {
             } catch (RuntimeException ex) {
                 throw ex;
             } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            } catch (Throwable ex) {
                 throw new RuntimeException(ex);
             }
         }
@@ -275,7 +277,7 @@ public class TaskScope implements Scope {
          * @return return value
          * @throws Exception optional exception
          */
-        T supply() throws Exception;
+        T supply() throws Throwable;
 
         /**
          * Unchecked execution: execute checked and rethrow any exception as {@link RuntimeException}.
@@ -286,6 +288,8 @@ public class TaskScope implements Scope {
             } catch (RuntimeException ex) {
                 throw ex;
             } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            } catch (Throwable ex) {
                 throw new RuntimeException(ex);
             }
         }
