@@ -5,7 +5,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
 
-    <changeSet id="0001" author="pwalser">
+    <changeSet id="0001-create-note-table" author="pwalser">
 
         <createTable schemaName="${schema}" tableName="NOTE">
             <column name="ID" type="varchar(64)">
@@ -17,7 +17,13 @@
             <column name="CREATED_ON" type="datetime">
                 <constraints nullable="false"/>
             </column>
+            <column name="CREATED_BY" type="varchar(64)">
+                <constraints nullable="false"/>
+            </column>
             <column name="UPDATED_ON" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="UPDATED_BY" type="varchar(64)">
                 <constraints nullable="false"/>
             </column>
             <column name="TEXT" type="varchar(2048)">

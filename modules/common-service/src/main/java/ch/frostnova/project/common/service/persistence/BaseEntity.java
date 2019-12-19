@@ -1,17 +1,21 @@
 package ch.frostnova.project.common.service.persistence;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.OffsetDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 /**
  * Base Entity
  */
 @MappedSuperclass
+@EntityListeners(AuditingEntityListener.class)
 public class BaseEntity {
 
     @Id
@@ -24,8 +28,17 @@ public class BaseEntity {
     @Column(name = "CREATED_ON", nullable = false)
     private OffsetDateTime createdOn;
 
+    @CreatedBy
+    @Column(name = "CREATED_BY", length = 64, nullable = false)
+    private String createdBy;
+
+    @LastModifiedDate
     @Column(name = "UPDATED_ON", nullable = false)
     private OffsetDateTime lastUpdatedOn;
+
+    @LastModifiedBy
+    @Column(name = "UPDATED_BY", length = 64, nullable = false)
+    private String lastUpdatedBy;
 
     @Version
     @Column(name = "VERSION", nullable = false)
@@ -43,42 +56,24 @@ public class BaseEntity {
         return createdOn;
     }
 
-    public void setCreatedOn(OffsetDateTime createdOn) {
-        this.createdOn = createdOn;
-    }
-
     public OffsetDateTime getLastUpdatedOn() {
         return lastUpdatedOn;
-    }
-
-    public void setLastUpdatedOn(OffsetDateTime lastUpdatedOn) {
-        this.lastUpdatedOn = lastUpdatedOn;
     }
 
     public long getVersion() {
         return version;
     }
 
-    public void setVersion(long version) {
-        this.version = version;
-    }
-
     public boolean isPersistent() {
         return id != null;
     }
 
-    @PrePersist
-    private void createAudit() {
-        lastUpdatedOn = createdOn = now();
+    public String getCreatedBy() {
+        return createdBy;
     }
 
-    @PreUpdate
-    private void updateAuditDates() {
-        lastUpdatedOn = now();
-    }
-
-    private static OffsetDateTime now() {
-        return OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+    public String getLastUpdatedBy() {
+        return lastUpdatedBy;
     }
 
     @Override

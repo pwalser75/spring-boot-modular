@@ -38,10 +38,14 @@ public class NoteRepositoryTest {
         note = repository.save(note);
         assertTrue(note.isPersistent());
         assertNotNull(note.getId());
+
         assertNotNull(note.getCreatedOn());
+        assertNotNull(note.getCreatedBy());
         assertFalse(note.getCreatedOn().isBefore(before));
         assertFalse(note.getCreatedOn().isAfter(OffsetDateTime.now()));
+
         assertNotNull(note.getLastUpdatedOn());
+        assertNotNull(note.getLastUpdatedBy());
         assertFalse(note.getLastUpdatedOn().isBefore(before));
         assertFalse(note.getLastUpdatedOn().isAfter(OffsetDateTime.now()));
         OffsetDateTime creationDate = note.getCreatedOn();
