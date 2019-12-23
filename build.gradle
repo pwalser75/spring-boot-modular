@@ -113,7 +113,7 @@ ext {
                     "io.springfox:springfox-swagger2:$swaggerVersion",
             ],
             testbase              : [
-                    "org.junit.jupiter:junit-jupiter-engine:$junitVersion",
+                    "org.junit.jupiter:junit-jupiter:$junitVersion",
                     "org.mockito:mockito-core:$mockitoVersion",
                     "org.glassfish.jersey.core:jersey-client:$jerseyVersion",
                     "org.glassfish.jersey.media:jersey-media-json-jackson:$jerseyVersion",
@@ -133,7 +133,7 @@ ext {
             ],
             springBootTest        : [
                     dependencies.create("org.springframework.boot:spring-boot-starter-test:$springBootVersion") {
-                        exclude module: 'junit' // exclude JUnit 4 as we want to use JUnit 5
+                        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
                     }
             ],
             springBootDevTools    : [

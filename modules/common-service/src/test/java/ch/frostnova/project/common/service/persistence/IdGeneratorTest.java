@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class IdGeneratorTest {
 
     @Test
-    public static void testIdGenerator() {
+    public void testIdGenerator() {
 
         IdGenerator idGenerator = new IdGenerator();
 

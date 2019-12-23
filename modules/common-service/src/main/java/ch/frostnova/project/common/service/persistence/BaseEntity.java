@@ -20,7 +20,7 @@ public class BaseEntity {
 
     @Id
     @GeneratedValue(generator = "generated-id")
-    @GenericGenerator(name = "generated-id", strategy = "ch.frostnova.project.common.service.persistence.IdGenerator")
+    @GenericGenerator(name = "generated-id", strategy = IdGenerator.CLASS_NAME)
     @Column(name = "ID", unique = true, nullable = false)
     private String id;
 
