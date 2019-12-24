@@ -7,6 +7,7 @@ import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import java.time.OffsetDateTime;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -23,7 +24,7 @@ public class PersistenceConfig {
 
     @Bean(OFFSET_DATE_TIME_PROVIDER_ID)
     public DateTimeProvider dateTimeProvider() {
-        return new OffsetDateTimeProvider();
+        return () -> Optional.of(OffsetDateTime.now());
     }
 
     @Bean(AUDITOR_PROVIDER_ID)
