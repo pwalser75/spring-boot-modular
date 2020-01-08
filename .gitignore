@@ -4,6 +4,9 @@
 **/out/
 **/target/
 
+# Ignore generated sources and resources
+**/generated/
+
 # Ignore logs
 **/logs/
 
@@ -23,5 +26,3 @@ docker/data
 # Cache of project
 .gradletasknamecache
 
-# Misc
-roup
