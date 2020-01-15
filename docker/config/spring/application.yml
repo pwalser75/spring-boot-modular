@@ -50,6 +50,8 @@ server:
     key-store: "/config/server-keystore.jks"
     key-store-password: "keystore"
     key-password: "keystore"
+  http2:
+    enabled: true
 
 # HTTP port for redirection to HTTPS - uncomment to activate
 # http.server.port: 80

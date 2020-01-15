@@ -1,13 +1,12 @@
 package ch.frostnova.project.common.service.persistence;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test for {@link IdGenerator}
@@ -22,14 +21,15 @@ public class IdGeneratorTest {
 
         IdGenerator idGenerator = new IdGenerator();
 
-        Set<Serializable> generatedIds = new HashSet<>();
-        for (int i = 0; i < 1000; i++) {
+        int numberOfIdsToGenerate = 1000;
 
-            Serializable id = idGenerator.generate(null, null);
-            assertNotNull(id);
-            assertFalse(generatedIds.contains(id));
-            generatedIds.add(id);
-            System.out.println(id);
-        }
+        long numberOfDistinctIds = IntStream.range(0, numberOfIdsToGenerate)
+                .mapToObj(i -> idGenerator.generate(null, null))
+                .peek(System.out::println)
+                .peek(id -> assertNotNull(id))
+                .peek(id -> assertTrue(id.toString().length() >= 10))
+                .distinct()
+                .count();
+        Assertions.assertEquals(numberOfIdsToGenerate, numberOfDistinctIds);
     }
 }

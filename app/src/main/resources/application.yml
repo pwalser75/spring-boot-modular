@@ -36,9 +36,11 @@ spring:
     parameters:
       schema: TEST
 
-# TLS configuration - enable HTTPS
+# TLS configuration - enable HTTP2 and HTTPS
 server:
   port: 8443
+  http2:
+    enabled: true
   ssl:
     enabled: true
     protocol: TLSv1.2

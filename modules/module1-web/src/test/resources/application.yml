@@ -11,6 +11,8 @@ server:
     key-store: "classpath:server-keystore.jks"
     key-store-password: "keystore"
     key-password: "keystore"
+  http2:
+    enabled: true
 
 # Persistence: datasource/JPA configuration
 spring:
