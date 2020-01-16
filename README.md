@@ -4,14 +4,20 @@
 
 Spring boot project with
 
+* **Java 11**
+* **TLS enabled** and properly configured (optionally redirecting HTTP to HTTPS when enabling the HTTP port).
+* **HTTP2 enabled** (on JRE 11+)
+
+Features:
+* **Modular architecture**: App, Platform and common / business modules
 * API (Service, DTO, Exception)
 * Persistence (Spring Data Repository, JPA)
 * Service Layer
 * REST controller (CRUD)
-* TLS enabled and properly configured (optionally redirecting HTTP to HTTPS when enabling the HTTP port).
-* Access Log filter, logging all requests (method, URI, response status and execution time)
-* Performance Logging filter, logging performance tree of nested service calls
-* Docker support (Docker and Docker-Compose files), with Prometheus/Grafana monitoring/dashboard.
+
+* **Access Log** filter, logging all requests (method, URI, response status and execution time)
+* **Performance Logging** filter, logging performance tree of nested service calls
+* **Docker support** (Docker and Docker-Compose files), with **Prometheus** monitoring / **Grafana** dashboard.
 
 ### Setting up TLS
 
