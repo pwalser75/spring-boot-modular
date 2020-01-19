@@ -1,4 +1,4 @@
-package ch.frostnova.app.boot.platform.web.config;
+package ch.frostnova.app.boot.platform.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

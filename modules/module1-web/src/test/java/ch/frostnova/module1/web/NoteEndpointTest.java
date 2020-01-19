@@ -2,6 +2,7 @@ package ch.frostnova.module1.web;
 
 
 import ch.frostnova.module1.api.model.Note;
+import ch.frostnova.module1.web.client.LoginClient;
 import ch.frostnova.module1.web.client.NoteClient;
 import ch.frostnova.project.common.service.scope.TaskScope;
 import org.junit.jupiter.api.AfterEach;
@@ -22,6 +23,7 @@ import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("performance-logging")
+@ActiveProfiles({"test", "performance-logging"})
 public class NoteEndpointTest {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
@@ -42,10 +44,13 @@ public class NoteEndpointTest {
     @MockBean
     private MetricsEndpoint metricsEndpoint;
 
+    private String baseURL;
 
     @BeforeEach
     public void setup() {
         TaskScope.init();
+        baseURL = "https://localhost:" + port;
+        log.info("BASE URL: " + baseURL);
     }
 
     @AfterEach
@@ -53,12 +58,17 @@ public class NoteEndpointTest {
         TaskScope.destroy();
     }
 
+    private String login() {
+        try (LoginClient loginClient = new LoginClient(baseURL)) {
+            return loginClient.login("test-tenant", "test-user", Set.of("FIRST", "SECOND", "THIRD"));
+        }
+    }
+
+
     @Test
     public void testCRUD() {
 
-        String baseURL = "https://localhost:" + port + "/api/notes";
-        log.info("BASE URL: " + baseURL);
-        try (NoteClient noteClient = new NoteClient(baseURL)) {
+        try (NoteClient noteClient = new NoteClient(baseURL, login())) {
 
             // create
 
@@ -109,9 +119,7 @@ public class NoteEndpointTest {
 
     @Test
     public void testFind() {
-        String baseURL = "https://localhost:" + port + "/api/notes";
-        log.info("BASE URL: " + baseURL);
-        try (NoteClient noteClient = new NoteClient(baseURL)) {
+        try (NoteClient noteClient = new NoteClient(baseURL, login())) {
 
             // create
 
@@ -135,9 +143,7 @@ public class NoteEndpointTest {
 
     @Test
     public void testValidation() {
-        String baseURL = "https://localhost:" + port + "/api/notes";
-        log.info("BASE URL: " + baseURL);
-        try (NoteClient noteClient = new NoteClient(baseURL)) {
+        try (NoteClient noteClient = new NoteClient(baseURL, login())) {
             assertThrows(BadRequestException.class, () -> noteClient.create(new Note()));
         }
     }

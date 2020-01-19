@@ -16,11 +16,15 @@ import java.util.List;
  */
 public class NoteClient implements AutoCloseable {
 
+    private final static String PATH = "/api/notes";
+
     private final String baseURL;
+    private final String authToken;
     private final Client client;
 
-    public NoteClient(String baseURL) {
-        this.baseURL = baseURL;
+    public NoteClient(String baseURL, String authToken) {
+        this.baseURL = baseURL + PATH;
+        this.authToken = authToken;
         client = RestClientConfig.clientBuilder().build();
     }
 
@@ -29,19 +33,23 @@ public class NoteClient implements AutoCloseable {
         client.close();
     }
 
+    private Invocation.Builder authenticated(Invocation.Builder builder) {
+        return (authToken != null) ? builder.header("Authorization", "Bearer " + authToken) : builder;
+    }
+
     /**
      * List all notes
      *
      * @return list of notes (never null)
      */
     public List<Note> list() {
-        Invocation invocation = client
+        Invocation invocation = authenticated(client
                 .target(baseURL)
-                .request()
+                .request())
                 .buildGet();
 
         Response response = ResponseExceptionMapper.check(invocation.invoke(), 200);
-        return response.readEntity(new GenericType<List<Note>>() {
+        return response.readEntity(new GenericType<>() {
         });
     }
 
@@ -51,14 +59,14 @@ public class NoteClient implements AutoCloseable {
      * @return search result
      */
     public List<Note> find(String query) {
-        Invocation invocation = client
+        Invocation invocation = authenticated(client
                 .target(baseURL)
                 .queryParam("query", query)
-                .request()
+                .request())
                 .buildGet();
 
         Response response = ResponseExceptionMapper.check(invocation.invoke(), 200);
-        return response.readEntity(new GenericType<List<Note>>() {
+        return response.readEntity(new GenericType<>() {
         });
     }
 
@@ -69,9 +77,10 @@ public class NoteClient implements AutoCloseable {
      * @return note.
      */
     public Note get(String id) {
-        Invocation invocation = client
+
+        Invocation invocation = authenticated(client
                 .target(baseURL + "/" + id)
-                .request()
+                .request())
                 .buildGet();
 
         Response response = ResponseExceptionMapper.check(invocation.invoke(), 200);
@@ -85,9 +94,9 @@ public class NoteClient implements AutoCloseable {
      * @return created note
      */
     public Note create(Note note) {
-        Invocation invocation = client
+        Invocation invocation = authenticated(client
                 .target(baseURL)
-                .request()
+                .request())
                 .buildPost(Entity.json(note));
 
         Response response = ResponseExceptionMapper.check(invocation.invoke(), 201);
@@ -105,9 +114,9 @@ public class NoteClient implements AutoCloseable {
             throw new IllegalArgumentException("Not yet persisted, use the create() method instead");
         }
 
-        Invocation invocation = client
+        Invocation invocation = authenticated(client
                 .target(baseURL + "/" + note.getId())
-                .request()
+                .request())
                 .buildPut(Entity.json(note));
 
         ResponseExceptionMapper.check(invocation.invoke(), 204);
@@ -120,9 +129,9 @@ public class NoteClient implements AutoCloseable {
      */
     public void delete(String id) {
 
-        Invocation invocation = client
+        Invocation invocation = authenticated(client
                 .target(baseURL + "/" + id)
-                .request()
+                .request())
                 .buildDelete();
 
         ResponseExceptionMapper.check(invocation.invoke(), 204);

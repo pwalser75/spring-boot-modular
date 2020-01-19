@@ -61,3 +61,10 @@ management:
       base-path: /actuator
       exposure.include: health,info,metrics,prometheus
   endpoint.health.show-details: always
+
+# JWT authentication configuration
+ch.frostnova.platform.security:
+  jwt:
+    key-type: RSA
+    public-key: jwt.pub.pem
+    private-key: jwt.pem

@@ -5,10 +5,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.auditing.DateTimeProvider;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import java.security.Principal;
 import java.time.OffsetDateTime;
-import java.util.Objects;
 import java.util.Optional;
 
 import static ch.frostnova.project.common.service.PersistenceConfig.AUDITOR_PROVIDER_ID;
@@ -33,14 +35,10 @@ public class PersistenceConfig {
     }
 
     private static String resolveUserName() {
-         /*
-          if you are using spring security, you can get the currently logged username with following code segment.
-          SecurityContextHolder.getContext().getAuthentication().getName()
-         */
-        return Optional.ofNullable(System.getProperty("user.name"))
-                .filter(Objects::nonNull)
-                .map(String::trim)
-                .filter(s -> s.length() > 0)
+
+        return Optional.ofNullable(SecurityContextHolder.getContext())
+                .map(SecurityContext::getAuthentication)
+                .map(Principal::getName)
                 .orElse(ANONYMOUS_USER_NAME);
     }
 }

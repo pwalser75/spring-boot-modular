@@ -5,6 +5,8 @@ dependencies {
     compile libs.api
     compile libs.springBoot
     compile libs.liquibase
+    compile libs.jwt
 
     testCompile libs.testbase
+    testCompile libs.springBootTest
 }

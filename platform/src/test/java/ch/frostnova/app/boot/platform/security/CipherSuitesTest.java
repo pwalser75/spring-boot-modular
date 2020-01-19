@@ -1,4 +1,4 @@
-package ch.frostnova.app.boot.tls;
+package ch.frostnova.app.boot.platform.security;
 
 import org.junit.jupiter.api.Test;
 

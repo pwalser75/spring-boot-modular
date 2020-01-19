@@ -1,0 +1,11 @@
+spring:profiles.active: performance-logging
+
+info:
+  app:
+    name: "frostnova-platform"
+
+ch.frostnova.platform.security:
+  jwt:
+    key-type: RSA
+    public-key: jwt.pub.pem
+    private-key: jwt.pem

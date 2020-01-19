@@ -1,4 +1,4 @@
-package ch.frostnova.app.boot.platform.web.config;
+package ch.frostnova.app.boot.platform.config;
 
 import org.apache.catalina.Context;
 import org.apache.catalina.connector.Connector;

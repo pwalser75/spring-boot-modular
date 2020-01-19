@@ -1,0 +1,26 @@
+package ch.frostnova.app.boot.platform.service.impl;
+
+import ch.frostnova.app.boot.platform.model.UserInfo;
+import ch.frostnova.app.boot.platform.service.AuthorizationService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
+import java.util.stream.Collectors;
+
+@Service
+public class AuthorizationServiceImpl implements AuthorizationService {
+
+    @Override
+    public UserInfo getUserInfo() {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        return UserInfo.aUserInfo()
+                .tenant("default")
+                .login(String.valueOf(authentication.getPrincipal()))
+                .roles(authentication.getAuthorities().stream().map(String::valueOf).collect(Collectors.toSet()))
+                .build();
+
+    }
+}

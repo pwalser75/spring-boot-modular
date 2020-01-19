@@ -27,16 +27,3 @@ spring:
       ddl-auto: create
   liquibase:
     enabled: false
-
-# Custom application properties
-app:
-  test:
-    a: 123
-    b: 123.456
-    c: true
-    d: Test
-    e: [ONE,TWO, THREE]
-    f:
-      - first
-      - second
-      - third

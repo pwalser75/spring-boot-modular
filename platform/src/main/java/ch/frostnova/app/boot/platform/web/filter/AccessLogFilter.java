@@ -32,7 +32,7 @@ import java.util.Optional;
  * </code></pre>
  */
 @Component
-@Order(1)
+@Order(0)
 public class AccessLogFilter implements Filter {
 
     private final static double NS_TO_MS_FACTOR = 1d / 1000000;

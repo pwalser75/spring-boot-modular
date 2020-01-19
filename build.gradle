@@ -103,6 +103,7 @@ ext {
     javaValidationVersion = '2.0.1.Final'
     mysqlDriverVersion = '8.0.19'
     hibernateVersion = '5.4.10.Final'
+    jjwtVersion = '0.9.1'
 
     libs = [
             api                   : [
@@ -123,6 +124,7 @@ ext {
                     "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion",
                     "org.springframework.boot:spring-boot-starter-web:$springBootVersion",
                     "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion",
+                    "org.springframework.boot:spring-boot-starter-security:$springBootVersion",
                     "net.logstash.logback:logstash-logback-encoder:$logstashLogbackVersion",
                     "org.codehaus.janino:janino:$janinoVersion",
                     "io.micrometer:micrometer-registry-prometheus:$micrometerVersion",
@@ -146,6 +148,9 @@ ext {
             ],
             jpaAnnotationProcessor: [
                     "org.hibernate:hibernate-jpamodelgen:$hibernateVersion"
+            ],
+            jwt                   : [
+                    "io.jsonwebtoken:jjwt:${jjwtVersion}"
             ]
     ]
 }
@@ -154,5 +159,3 @@ task start(dependsOn: ['assemble', ':app:bootRun']) {
     group = 'Start/Run'
     description = 'Start the boot app'
 }
-
-

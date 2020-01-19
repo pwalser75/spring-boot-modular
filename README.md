@@ -7,6 +7,7 @@ Spring boot project with
 * **Java 11**
 * **TLS enabled** and properly configured (optionally redirecting HTTP to HTTPS when enabling the HTTP port).
 * **HTTP2 enabled** (on JRE 11+)
+* **JWT** authentication
 
 Features:
 * **Modular architecture**: App, Platform and common / business modules
@@ -27,6 +28,34 @@ Clients need to trust this CA in order to connect. The test client already has a
 When connecting with other clients (browser, Postman, ...), you need to add this CA as trusted root CA (browser: certificates, add trusted root certificate).
 The CA certificate is located in the project root (`test_ca_001.cer`).
 
+### Setting up JWT authentication
+
+JWTs (JSON Web Tokens) are used for authentication. For testing purpose, this app
+contains a REST endpoint where JWT tokens can be issued for any user. 
+
+Signing and verifying JWTs requires a Key Pair (private key for signing, public key for verifying).
+An example key pair is already included and configured. To create your own key pair, use:
+
+    ssh-keygen -t rsa -b 4096 -m PEM -f jwt.key
+
+Do not enter a password (not required). Afterwards extract the private and public keys into separate files:
+
+    openssl rsa -in jwt.key -pubout -outform PEM -out jwt.pub.pem
+    openssl pkcs8 -topk8 -inform PEM -outform PEM -in jwt.key -out jwt.pem -nocrypt
+
+This yields the `jwt.pem` private key and `jwt.pub.pem` public key.
+
+In the configuration (`application-yml`), enable JWT authentication using:
+
+    ch.frostnova.platform.security:
+      jwt:
+        key-type: RSA
+        public-key: jwt.pub.pem
+        private-key: jwt.pem
+
+- `public-key` is required to validate JWT tokens.
+- `private-key` is optional, if configured the application can issue arbitrary JWT tokens in the `/login` endpoint (only for testing - do not use for production. Refer to swagger-ui for usage).
+
 ## Build
 
 To build this project with Gradle (default tasks: _clean build install_):
@@ -41,7 +70,9 @@ To start this project with Gradle:
 
 ## API Documentation (Swagger)
 
-API documentation reachable at [https://localhost:8443/swagger-ui.html](https://localhost/swagger-ui.html)
+API documentation available at [https://localhost:8443/swagger-ui.html](https://localhost/swagger-ui.html).
+
+The note endpoint requires authentication using JWT (header: Authorization: Bearer {jwt}).
 
 ## Actuator Endpoints
 

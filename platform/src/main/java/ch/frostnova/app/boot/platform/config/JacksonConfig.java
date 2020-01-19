@@ -1,4 +1,4 @@
-package ch.frostnova.app.boot.platform.web.config;
+package ch.frostnova.app.boot.platform.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
