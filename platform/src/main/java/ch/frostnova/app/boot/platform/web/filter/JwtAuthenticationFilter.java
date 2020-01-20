@@ -2,6 +2,7 @@ package ch.frostnova.app.boot.platform.web.filter;
 
 import ch.frostnova.app.boot.platform.service.JWTVerificationService;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,6 +69,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         } catch (AuthenticationException ex) {
             throw ex;
+        } catch (ExpiredJwtException ex) {
+            throw new BadCredentialsException(ex.getMessage(), ex);
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }

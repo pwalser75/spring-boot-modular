@@ -37,13 +37,13 @@ public class JWTSigningServiceImpl implements JWTSigningService {
     }
 
     @Override
-    public String createJWT(String tenant, String login, Set<String> roles, Map<String, Object> additionalClaims, Duration validity) {
-        OffsetDateTime now = OffsetDateTime.now();
+    public String createJWT(String tenant, String login, Set<String> roles, Map<String, Object> additionalClaims, OffsetDateTime validFrom, Duration validity) {
+
         return Jwts.builder()
                 .setIssuer(appName)
-                .setIssuedAt(Date.from(now.toInstant()))
-                .setNotBefore(Date.from(now.toInstant()))
-                .setExpiration(Date.from(now.plus(validity).toInstant()))
+                .setIssuedAt(Date.from(validFrom.toInstant()))
+                .setNotBefore(Date.from(validFrom.toInstant()))
+                .setExpiration(Date.from(validFrom.plus(validity).toInstant()))
                 .claim(CLAIM_TENANT, tenant)
                 .setSubject(login)
                 .claim(CLAIM_SCOPE, Optional.ofNullable(roles).map(TreeSet::new).orElse(null))
