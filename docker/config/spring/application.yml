@@ -67,3 +67,9 @@ management:
 logstash:
   servers: ${LOGSTASH_HOST_PORT:""}
 
+# JWT authentication configuration
+ch.frostnova.platform.security:
+  jwt:
+    key-type: RSA
+    public-key: jwt.pub.pem
+    private-key: jwt.pem

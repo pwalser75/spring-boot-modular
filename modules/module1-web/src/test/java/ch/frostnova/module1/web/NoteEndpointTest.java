@@ -1,8 +1,9 @@
 package ch.frostnova.module1.web;
 
 
+import ch.frostnova.app.boot.platform.model.UserInfo;
+import ch.frostnova.app.boot.platform.service.TokenAuthenticator;
 import ch.frostnova.module1.api.model.Note;
-import ch.frostnova.module1.web.client.LoginClient;
 import ch.frostnova.module1.web.client.NoteClient;
 import ch.frostnova.project.common.service.scope.TaskScope;
 import org.junit.jupiter.api.AfterEach;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.actuate.metrics.MetricsEndpoint;
@@ -23,10 +25,11 @@ import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
 
+import static ch.frostnova.app.boot.platform.model.UserInfo.aUserInfo;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 /**
  * Note endpoint test
@@ -44,13 +47,22 @@ public class NoteEndpointTest {
     @MockBean
     private MetricsEndpoint metricsEndpoint;
 
+    @MockBean
+    private TokenAuthenticator tokenAuthenticator;
+
     private String baseURL;
+
+    private String testToken;
 
     @BeforeEach
     public void setup() {
         TaskScope.init();
         baseURL = "https://localhost:" + port;
         log.info("BASE URL: " + baseURL);
+
+        testToken = UUID.randomUUID().toString();
+        UserInfo testUser = aUserInfo().tenant("test-tenant").login("test-user").role("A").role("B").role("C").build();
+        when(tokenAuthenticator.authenticate(Mockito.eq(testToken))).thenReturn(testUser);
     }
 
     @AfterEach
@@ -58,17 +70,10 @@ public class NoteEndpointTest {
         TaskScope.destroy();
     }
 
-    private String login() {
-        try (LoginClient loginClient = new LoginClient(baseURL)) {
-            return loginClient.login("test-tenant", "test-user", Set.of("FIRST", "SECOND", "THIRD"));
-        }
-    }
-
-
     @Test
     public void testCRUD() {
 
-        try (NoteClient noteClient = new NoteClient(baseURL, login())) {
+        try (NoteClient noteClient = new NoteClient(baseURL, testToken)) {
 
             // create
 
@@ -119,7 +124,7 @@ public class NoteEndpointTest {
 
     @Test
     public void testFind() {
-        try (NoteClient noteClient = new NoteClient(baseURL, login())) {
+        try (NoteClient noteClient = new NoteClient(baseURL, testToken)) {
 
             // create
 
@@ -143,7 +148,7 @@ public class NoteEndpointTest {
 
     @Test
     public void testValidation() {
-        try (NoteClient noteClient = new NoteClient(baseURL, login())) {
+        try (NoteClient noteClient = new NoteClient(baseURL, testToken)) {
             assertThrows(BadRequestException.class, () -> noteClient.create(new Note()));
         }
     }

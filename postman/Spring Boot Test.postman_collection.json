@@ -392,6 +392,98 @@
 					"response": []
 				},
 				{
+					"name": "Request expired JWT",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "24b3a4eb-ac1d-44d6-8f72-845ea88d0f1a",
+								"exec": [
+									"pm.globals.set(\"tenant\", \"frostnova\");",
+									"pm.globals.set(\"login\", \"pwalser\");",
+									"pm.globals.set(\"roles\", \"A,B,C\");",
+									"",
+									"pm.globals.unset(\"expired-jwt\");"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "60b1c26b-ddb9-4a53-aff0-2980fbcd0862",
+								"exec": [
+									"var expectedStatus=200;\r",
+									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
+									"\r",
+									"if (responseCode.code === expectedStatus){\r",
+									"    \r",
+									"    var jwt = pm.response.text();\r",
+									"    var parts = jwt.split(\".\");\r",
+									"    tests[\"JWT has 3 parts\"] =parts.length = 3;\r",
+									"    \r",
+									"    var json = atob(parts[1]);\r",
+									"    tests[\"Content: \"+json] = json;\r",
+									"    var content = JSON.parse(json);\r",
+									"    \r",
+									"    tests[\"Tenant: \" +content.tenant] = content.tenant === pm.globals.get(\"tenant\");\r",
+									"    tests[\"Subject: \"+content.sub] = content.sub === pm.globals.get(\"login\");\r",
+									"    tests[\"Scope: \"+content.scope] = content.scope;\r",
+									"    tests[\"Issued at: \"+new Date(content.iat*1000)] = content.iat;\r",
+									"    tests[\"Valid from: \"+new Date(content.nbf*1000)] = content.nbf === 946813556;\r",
+									"    tests[\"Valid to: \"+new Date(content.exp*1000)] = content.exp === 994770592;\r",
+									"\r",
+									"    \r",
+									"    pm.globals.set(\"expired-jwt\", jwt);\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{HOST}}/login/{{tenant}}/{{login}}?roles={{roles}}&foo=bla,arg&valid-from=2000-01-02T12:45:56%2B01:00&duration=555d1h23m56s",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"login",
+								"{{tenant}}",
+								"{{login}}"
+							],
+							"query": [
+								{
+									"key": "roles",
+									"value": "{{roles}}"
+								},
+								{
+									"key": "foo",
+									"value": "bla,arg"
+								},
+								{
+									"key": "valid-from",
+									"value": "2000-01-02T12:45:56%2B01:00"
+								},
+								{
+									"key": "duration",
+									"value": "555d1h23m56s"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Get authorization info",
 					"event": [
 						{
@@ -477,15 +569,10 @@
 									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
 									"\r",
 									"if (responseCode.code === expectedStatus){\r",
-									"    \r",
-									"if (responseCode.code === expectedStatus){\r",
 									"    var error = pm.response.json();\r",
 									"    \r",
 									"    tests[\"error\"] = error.error === 'Forbidden';\r",
 									"    tests[\"message\"] = error.message === 'Access Denied';\r",
-									"}\r",
-									"\r",
-									"   \r",
 									"}"
 								],
 								"type": "text/javascript"
@@ -498,6 +585,63 @@
 					"request": {
 						"method": "GET",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{HOST}}/authorization/",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"authorization",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get authorization info (expired JWT)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "24b3a4eb-ac1d-44d6-8f72-845ea88d0f1a",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "60b1c26b-ddb9-4a53-aff0-2980fbcd0862",
+								"exec": [
+									"var expectedStatus=403;\r",
+									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
+									"\r",
+									"if (responseCode.code === expectedStatus){\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{expired-jwt}}",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": ""

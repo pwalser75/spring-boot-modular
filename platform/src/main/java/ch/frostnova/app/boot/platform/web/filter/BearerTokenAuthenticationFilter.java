@@ -1,9 +1,8 @@
 package ch.frostnova.app.boot.platform.web.filter;
 
-import ch.frostnova.app.boot.platform.service.JWTVerificationService;
-import io.jsonwebtoken.Claims;
+import ch.frostnova.app.boot.platform.model.UserInfo;
+import ch.frostnova.app.boot.platform.service.TokenAuthenticator;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jws;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -19,18 +18,17 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
+public class BearerTokenAuthenticationFilter extends OncePerRequestFilter {
 
-    private final static Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
+    private final static Logger logger = LoggerFactory.getLogger(BearerTokenAuthenticationFilter.class);
 
-    private final JWTVerificationService jwtVerificationService;
+    private final TokenAuthenticator tokenAuthenticator;
 
-    public JwtAuthenticationFilter(JWTVerificationService jwtVerificationService) {
-        this.jwtVerificationService = jwtVerificationService;
+    public BearerTokenAuthenticationFilter(TokenAuthenticator tokenAuthenticator) {
+        this.tokenAuthenticator = tokenAuthenticator;
     }
 
 
@@ -54,18 +52,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (!requestTokenHeader.startsWith("Bearer ")) {
                 throw new BadCredentialsException("Expected bearer token in Authorization header");
             }
-            String jwt = requestTokenHeader.substring(7);
-            logger.debug("JWT: {}", jwt);
-            Jws<Claims> claims = jwtVerificationService.verify(jwt);
-            logger.debug("Authenticated as: {}", claims.getBody());
+            String token = requestTokenHeader.substring(7);
 
-            List<?> scopes = claims.getBody().get("scope", List.class);
-            Set<SimpleGrantedAuthority> grantedAuthorities = scopes.stream()
-                    .map(String::valueOf)
+            UserInfo authenticated = tokenAuthenticator.authenticate(token);
+            Set<SimpleGrantedAuthority> grantedAuthorities = authenticated.getRoles().stream()
                     .map(SimpleGrantedAuthority::new)
                     .collect(Collectors.toSet());
 
-            return new PreAuthenticatedAuthenticationToken(claims.getBody().getSubject(), claims, grantedAuthorities);
+            return new PreAuthenticatedAuthenticationToken(authenticated.getLogin(), null, grantedAuthorities);
+
 
         } catch (AuthenticationException ex) {
             throw ex;

@@ -1,7 +1,7 @@
 package ch.frostnova.app.boot.platform.config;
 
-import ch.frostnova.app.boot.platform.service.JWTVerificationService;
-import ch.frostnova.app.boot.platform.web.filter.JwtAuthenticationFilter;
+import ch.frostnova.app.boot.platform.service.TokenAuthenticator;
+import ch.frostnova.app.boot.platform.web.filter.BearerTokenAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private JWTVerificationService jwtVerificationService;
+    private TokenAuthenticator tokenAuthenticator;
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
@@ -41,7 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 ).permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .addFilterBefore(new JwtAuthenticationFilter(jwtVerificationService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new BearerTokenAuthenticationFilter(tokenAuthenticator), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
