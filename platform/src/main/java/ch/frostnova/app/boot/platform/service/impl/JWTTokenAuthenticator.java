@@ -7,12 +7,14 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
+@ConditionalOnProperty(value = "ch.frostnova.platform.security.auth", havingValue = "jwt")
 public class JWTTokenAuthenticator implements TokenAuthenticator {
 
     @Autowired
@@ -23,7 +25,6 @@ public class JWTTokenAuthenticator implements TokenAuthenticator {
 
     @Override
     public UserInfo authenticate(String token) throws SecurityException {
-
 
         logger.debug("Token: {}", token);
         Jws<Claims> claims = jwtVerificationService.verify(token);

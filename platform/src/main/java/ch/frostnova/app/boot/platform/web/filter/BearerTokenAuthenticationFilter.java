@@ -3,8 +3,6 @@ package ch.frostnova.app.boot.platform.web.filter;
 import ch.frostnova.app.boot.platform.model.UserInfo;
 import ch.frostnova.app.boot.platform.service.TokenAuthenticator;
 import io.jsonwebtoken.ExpiredJwtException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -23,14 +21,11 @@ import java.util.stream.Collectors;
 
 public class BearerTokenAuthenticationFilter extends OncePerRequestFilter {
 
-    private final static Logger logger = LoggerFactory.getLogger(BearerTokenAuthenticationFilter.class);
-
     private final TokenAuthenticator tokenAuthenticator;
 
     public BearerTokenAuthenticationFilter(TokenAuthenticator tokenAuthenticator) {
         this.tokenAuthenticator = tokenAuthenticator;
     }
-
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -38,6 +33,7 @@ public class BearerTokenAuthenticationFilter extends OncePerRequestFilter {
         Authentication authentication = authenticate(request);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
+        // TODO: set user information on MDC
         filterChain.doFilter(request, response);
 
     }
@@ -54,12 +50,14 @@ public class BearerTokenAuthenticationFilter extends OncePerRequestFilter {
             }
             String token = requestTokenHeader.substring(7);
 
-            UserInfo authenticated = tokenAuthenticator.authenticate(token);
-            Set<SimpleGrantedAuthority> grantedAuthorities = authenticated.getRoles().stream()
+            UserInfo userInfo = tokenAuthenticator.authenticate(token);
+            Set<SimpleGrantedAuthority> grantedAuthorities = userInfo.getRoles().stream()
                     .map(SimpleGrantedAuthority::new)
                     .collect(Collectors.toSet());
 
-            return new PreAuthenticatedAuthenticationToken(authenticated.getLogin(), null, grantedAuthorities);
+            PreAuthenticatedAuthenticationToken authentication = new PreAuthenticatedAuthenticationToken(userInfo.getLogin(), null, grantedAuthorities);
+            authentication.setDetails(userInfo);
+            return authentication;
 
 
         } catch (AuthenticationException ex) {

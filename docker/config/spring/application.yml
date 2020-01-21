@@ -69,7 +69,8 @@ logstash:
 
 # JWT authentication configuration
 ch.frostnova.platform.security:
-  jwt:
-    key-type: RSA
-    public-key: jwt.pub.pem
-    private-key: jwt.pem
+  auth: jwt
+  signing:
+    key-type: EC
+    public-key: "/config/jwt.pub.pem"
+    private-key: "/config/jwt.pem"

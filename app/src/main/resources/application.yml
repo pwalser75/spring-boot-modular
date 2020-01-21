@@ -64,7 +64,8 @@ management:
 
 # JWT authentication configuration
 ch.frostnova.platform.security:
-  jwt:
-    key-type: RSA
+  auth: jwt
+  signing:
+    key-type: EC
     public-key: jwt.pub.pem
     private-key: jwt.pem

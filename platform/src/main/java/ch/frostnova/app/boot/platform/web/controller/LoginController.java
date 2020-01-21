@@ -52,7 +52,7 @@ public class LoginController {
         Set<String> reserved = Set.of("roles", "valid-from", "duration");
         parameterMap.forEach((k, v) -> {
             if (!reserved.contains(k)) {
-                additionalClaims.put(k, Arrays.stream(v).collect(Collectors.toList()));
+                additionalClaims.put(k, Arrays.stream(v).map(String::valueOf).collect(Collectors.joining(",")));
             }
         });
 

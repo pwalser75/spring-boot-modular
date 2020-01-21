@@ -4,8 +4,10 @@ info:
   app:
     name: "frostnova-platform"
 
+# JWT authentication configuration
 ch.frostnova.platform.security:
-  jwt:
+  auth: jwt
+  signing:
     key-type: RSA
     public-key: jwt.pub.pem
     private-key: jwt.pem

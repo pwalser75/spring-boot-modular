@@ -3,7 +3,7 @@ package ch.frostnova.app.boot.platform.service;
 import ch.frostnova.app.boot.platform.PlatformConfig;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
-import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -31,7 +31,7 @@ public class JWTServiceTest {
     @Autowired
     private JWTVerificationService jwtVerificationService;
 
-    @RepeatedTest(10)
+    @Test
     public void testGenerateJWT() {
 
         Duration duration = Duration.of(42, ChronoUnit.MINUTES);
@@ -46,13 +46,14 @@ public class JWTServiceTest {
 
         Jws<Claims> jwt = jwtVerificationService.verify(token);
 
-        String issuer = jwt.getBody().getIssuer();
-        Instant issuedAt = jwt.getBody().getIssuedAt().toInstant();
-        String tenant = jwt.getBody().get("tenant", String.class);
-        String subject = jwt.getBody().getSubject();
-        Instant notBefore = jwt.getBody().getNotBefore().toInstant();
-        Instant notAfter = jwt.getBody().getExpiration().toInstant();
-        Collection<String> scopes = jwt.getBody().get("scope", Collection.class);
+        Claims body = jwt.getBody();
+        String issuer = body.getIssuer();
+        Instant issuedAt = body.getIssuedAt().toInstant();
+        String tenant = body.get("tenant", String.class);
+        String subject = body.getSubject();
+        Instant notBefore = body.getNotBefore().toInstant();
+        Instant notAfter = body.getExpiration().toInstant();
+        Collection<String> scopes = body.get("scope", Collection.class);
 
         assertEquals("frostnova-platform", issuer);
         assertEquals("test-tenant", tenant);
@@ -67,6 +68,6 @@ public class JWTServiceTest {
         assertNotNull(scopes);
 
         roles.forEach(role -> assertTrue(scopes.contains(role)));
-        additionalClaims.forEach((k, v) -> assertEquals(v, jwt.getBody().get(k, v.getClass())));
+        additionalClaims.forEach((k, v) -> assertEquals(v, body.get(k, v.getClass())));
     }
 }

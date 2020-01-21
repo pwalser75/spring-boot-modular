@@ -16,6 +16,11 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
+        Object details = authentication.getDetails();
+        if (details instanceof UserInfo) {
+            return (UserInfo) details;
+        }
+
         return UserInfo.aUserInfo()
                 .tenant("default")
                 .login(String.valueOf(authentication.getPrincipal()))
