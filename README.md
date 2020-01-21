@@ -62,10 +62,11 @@ In the configuration (`application-yml`), enable JWT authentication using:
   
 ```yaml  
 ch.frostnova.platform.security:  
- auth: jwt signing: 
- key-type: RSA 
- public-key: jwt.pub.pem 
- private-key: jwt.pem
+ auth: jwt 
+ signing: 
+   key-type: RSA 
+   public-key: jwt.pub.pem 
+   private-key: jwt.pem
  ```  
   
 - `key-type` is required (either **RSA** or **EC**)  
