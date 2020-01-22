@@ -1,5 +1,8 @@
 package ch.frostnova.app.boot.platform.model;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
@@ -8,6 +11,7 @@ import java.util.function.Consumer;
 
 import static java.util.stream.Collectors.joining;
 
+@ApiModel("UserInfo")
 public class UserInfo {
 
     private String tenant;
@@ -17,14 +21,17 @@ public class UserInfo {
     private UserInfo() {
     }
 
+    @ApiModelProperty(notes = "tenant id for the user (multitenancy support)", example = "tenant123")
     public String getTenant() {
         return tenant;
     }
 
+    @ApiModelProperty(notes = "login id of the user", example = "USER123")
     public String getLogin() {
         return login;
     }
 
+    @ApiModelProperty(notes = "set of granted roles", example = "foo, bla")
     public Set<String> getRoles() {
         return Collections.unmodifiableSet(roles);
     }

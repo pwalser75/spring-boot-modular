@@ -5,6 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,15 +35,28 @@ public class SigningConfig {
         if (privateKey != null) {
             resolvedPrivateKey = loadPrivateKey(requireKeyType().getKeyType(), getResource(privateKey));
         }
-
         if (publicKey != null) {
             resolvedPublicKey = loadPublicKey(requireKeyType().getKeyType(), getResource(publicKey));
         }
     }
 
     private URL getResource(String resourcePath) throws IOException {
-        return Optional.ofNullable(getClass().getResource("/" + resourcePath))
-                .orElseThrow(() -> new FileNotFoundException(String.format("Resource '%s' not found", resourcePath)));
+
+        // attempt to locate Java resource
+        URL resource = getClass().getResource("/" + resourcePath);
+        if (resource != null) {
+            return resource;
+        }
+
+        // attempt to locate file
+        File file = new File(resourcePath);
+        if (file.exists()) {
+            if (file.isFile() && !file.canRead()) {
+                throw new IOException("File is not readable: " + resourcePath);
+            }
+            return file.toURI().toURL();
+        }
+        throw new FileNotFoundException(String.format("Resource '%s' not found", resourcePath));
     }
 
     public SigningKeyType getKeyType() {
@@ -85,8 +99,8 @@ public class SigningConfig {
         RSA("RSA", SignatureAlgorithm.RS256),
         EC("EC", SignatureAlgorithm.ES256);
 
-        private String keyType;
-        private SignatureAlgorithm signatureAlgorithm;
+        private final String keyType;
+        private final SignatureAlgorithm signatureAlgorithm;
 
 
         SigningKeyType(String keyType, SignatureAlgorithm signatureAlgorithm) {

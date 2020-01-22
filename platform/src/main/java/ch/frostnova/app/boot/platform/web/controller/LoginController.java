@@ -40,9 +40,9 @@ public class LoginController {
                         @PathVariable("user") @NotBlank String login,
                         @ApiParam(value = "Set of granted roles (optional)")
                         @RequestParam(value = "roles", required = false) Set<String> roles,
-                        @ApiParam(value = "Valid from (optional, defaults to now)")
+                        @ApiParam(value = "Valid from, in ISO date time format, e.g. 2020-01-01T12:34:56+01:00 (optional, defaults to now)")
                         @RequestParam(value = "valid-from", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Optional<OffsetDateTime> validFrom,
-                        @ApiParam(value = "Validity (duration, optional (default: 1h) in ?d?h?m?s?ms format, e.g. 1h23m56s")
+                        @ApiParam(value = "Validity (duration, optional (default: 1h) in ?d?h?m?s?ms format, e.g. 5d, or 5m30s, or 1h23m56s")
                         @RequestParam(value = "duration", required = false, defaultValue = "1h") Duration duration,
                         HttpServletRequest request) {
 

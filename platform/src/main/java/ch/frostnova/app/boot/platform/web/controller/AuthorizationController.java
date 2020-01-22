@@ -2,10 +2,7 @@ package ch.frostnova.app.boot.platform.web.controller;
 
 import ch.frostnova.app.boot.platform.model.UserInfo;
 import ch.frostnova.app.boot.platform.service.AuthorizationService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +21,7 @@ public class AuthorizationController {
     private AuthorizationService authorizationService;
 
     @ApiOperation(value = "Get authentication info for the current user", response = UserInfo.class)
+    @ApiImplicitParam(name = "Authorization", value = "Authorization header, e.g. \"Bearer {access-token}\"", required = true, paramType = "header", dataTypeClass = String.class, example = "Bearer access_token")
     @ApiResponses({
             @ApiResponse(code = 200, message = "ok")
     })
