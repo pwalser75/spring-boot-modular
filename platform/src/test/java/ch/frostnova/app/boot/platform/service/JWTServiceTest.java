@@ -2,12 +2,17 @@ package ch.frostnova.app.boot.platform.service;
 
 import ch.frostnova.app.boot.platform.PlatformConfig;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.lang.Assert;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cache.CacheManager;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -25,11 +30,16 @@ import static org.junit.jupiter.api.Assertions.*;
 @EnableConfigurationProperties
 public class JWTServiceTest {
 
+    private Logger logger = LoggerFactory.getLogger(getClass());
+
     @Autowired
     private JWTSigningService jwtSigningService;
 
     @Autowired
     private JWTVerificationService jwtVerificationService;
+
+    @Autowired
+    private Optional<CacheManager> cacheManager;
 
     @Test
     public void testGenerateJWT() {
@@ -69,5 +79,24 @@ public class JWTServiceTest {
 
         roles.forEach(role -> assertTrue(scopes.contains(role)));
         additionalClaims.forEach((k, v) -> assertEquals(v, body.get(k, v.getClass())));
+    }
+
+    @Test
+    public void testJWTExpiration() throws Exception {
+
+        String token = jwtSigningService.createJWT("test-tenant", "test-user", null, null, OffsetDateTime.now(), Duration.of(2, ChronoUnit.SECONDS));
+        jwtVerificationService.verify(token);
+
+        Thread.sleep(2000);
+        assertThrows(ExpiredJwtException.class, () -> jwtVerificationService.verify(token));
+    }
+
+    @Test
+    public void testJWTCache() {
+
+        String token = jwtSigningService.createJWT("test-tenant", "test-user", null, null, OffsetDateTime.now(), Duration.of(1, ChronoUnit.HOURS));
+        Jws<Claims> value = jwtVerificationService.verify(token);
+
+        Assert.isTrue(value == jwtVerificationService.verify(token));
     }
 }

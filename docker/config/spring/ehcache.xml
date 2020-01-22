@@ -1,0 +1,23 @@
+<config
+        xmlns:jsr107='http://www.ehcache.org/v3/jsr107'
+        xmlns='http://www.ehcache.org/v3'>
+    <service>
+        <jsr107:defaults enable-management="true" enable-statistics="true"/>
+    </service>
+
+    <!-- caches authenticated JWT credentials information -->
+    <cache alias="jwt-cache" uses-template="ephemeral-cache"/>
+
+    <!-- Ephemeral cache with a very short TTL, used to leverage caching for information
+    whose changes are acceptable to become not immediately effective, but rather
+    within minutes -->
+    <cache-template name="ephemeral-cache">
+        <expiry>
+            <ttl unit="minutes">5</ttl>
+        </expiry>
+        <resources>
+            <heap>5000</heap>
+        </resources>
+    </cache-template>
+
+</config>

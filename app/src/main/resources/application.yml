@@ -35,6 +35,11 @@ spring:
     change-log: classpath:db/changelog/db.changelog-master.xml
     parameters:
       schema: TEST
+  cache:
+    type: jcache
+    jcache:
+      provider: org.ehcache.jsr107.EhcacheCachingProvider
+      config: classpath:ehcache.xml
 
 # TLS configuration - enable HTTP2 and HTTPS
 server:
