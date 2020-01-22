@@ -22,7 +22,7 @@ services:
     networks:
       - front-tier
       - back-tier
-    mem_reservation: 50m
+    mem_reservation: 128m
     mem_limit: 256m
 
   mysql:

@@ -7,8 +7,8 @@ dependencies {
 
     annotationProcessor libs.jpaAnnotationProcessor
 
-    testCompile libs.testbase
-    testCompile libs.springBootTest
+    testImplementation libs.testbase
+    testImplementation libs.springBootTest
 
-    testRuntime project(':platform')
+    testRuntimeOnly project(':platform')
 }

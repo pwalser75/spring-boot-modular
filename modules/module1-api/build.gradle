@@ -4,7 +4,7 @@ dependencies {
 
     api libs.api
 
-    testCompile libs.testbase
-    testCompile libs.springBoot
-    testCompile libs.springBootTest
+    testImplementation libs.testbase
+    testImplementation libs.springBoot
+    testImplementation libs.springBootTest
 }

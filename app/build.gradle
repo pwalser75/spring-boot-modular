@@ -1,5 +1,5 @@
 plugins {
-    id 'org.springframework.boot' version '2.2.3.RELEASE'
+    id 'org.springframework.boot' version '2.2.4.RELEASE'
 }
 
 description = 'Multi Module App'
@@ -10,12 +10,13 @@ configurations {
 
 dependencies {
 
-    testCompile libs.testbase
-    testCompile libs.springBootTest
+    testImplementation libs.testbase
+    testImplementation libs.springBootTest
 
     dev libs.springBootDevTools
 
-    compile project(':platform')
-    compile project(':modules:module1-service')
-    compile project(':modules:module1-web')
+    implementation project(':platform')
+    implementation project(':modules:common-service')
+    implementation project(':modules:module1-service')
+    implementation project(':modules:module1-web')
 }

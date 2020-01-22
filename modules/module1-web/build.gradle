@@ -1,14 +1,15 @@
 description = 'Module1 Web'
 
 dependencies {
-    api project(':modules:module1-api')
 
     api libs.api
     api libs.springBoot
 
-    testCompile libs.testbase
-    testCompile libs.springBootTest
+    implementation project(':modules:module1-api')
+    implementation project(':modules:module1-service')
+    implementation project(':modules:common-service')
 
-    testCompile project(':platform')
-    testCompile project(':modules:module1-service')
+    testImplementation libs.testbase
+    testImplementation libs.springBootTest
+    testImplementation project(':platform')
 }

@@ -3,14 +3,13 @@ import java.time.temporal.ChronoUnit
 
 plugins {
     id 'com.github.ben-manes.versions' version '0.27.0'
-    id 'org.kordamp.gradle.apidoc' version '0.31.2'
     id 'com.avast.gradle.docker-compose' version '0.10.7'
     id 'net.ltgt.apt' version '0.21'
 }
 
 description = 'Spring Boot Modular Project'
 
-defaultTasks 'clean', 'build', 'install', 'publishToMavenLocal'
+defaultTasks 'clean', 'build', 'publishToMavenLocal'
 
 def buildDate = OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS)
 
@@ -19,7 +18,6 @@ allprojects {
 }
 subprojects {
     apply plugin: 'java-library'
-    apply plugin: 'maven'
     apply plugin: 'maven-publish'
 
     repositories {
@@ -86,11 +84,9 @@ dependencyUpdates.resolutionStrategy = {
     }
 }
 
-build.dependsOn testReport
-
 ext {
-    springBootVersion = '2.2.3.RELEASE'
-    junitVersion = '5.5.2'
+    springBootVersion = '2.2.4.RELEASE'
+    junitVersion = '5.6.0'
     mockitoVersion = '3.2.4'
     logstashLogbackVersion = '6.3'
     janinoVersion = '3.1.0'
@@ -104,6 +100,8 @@ ext {
     mysqlDriverVersion = '8.0.19'
     hibernateVersion = '5.4.10.Final'
     jjwtVersion = '0.9.1'
+    javaCacheVersion = '1.1.1'
+    ehcacheVersion = '3.8.1'
 
     libs = [
             api                   : [
@@ -125,12 +123,15 @@ ext {
                     "org.springframework.boot:spring-boot-starter-web:$springBootVersion",
                     "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion",
                     "org.springframework.boot:spring-boot-starter-security:$springBootVersion",
+                    "org.springframework.boot:spring-boot-starter-cache:$springBootVersion",
                     "net.logstash.logback:logstash-logback-encoder:$logstashLogbackVersion",
                     "org.codehaus.janino:janino:$janinoVersion",
                     "io.micrometer:micrometer-registry-prometheus:$micrometerVersion",
                     "io.springfox:springfox-swagger-ui:$swaggerVersion",
                     "mysql:mysql-connector-java:$mysqlDriverVersion",
-                    "com.h2database:h2:$h2Version"
+                    "com.h2database:h2:$h2Version",
+                    "javax.cache:cache-api:$javaCacheVersion",
+                    "org.ehcache:ehcache:$ehcacheVersion"
 
             ],
             springBootTest        : [
@@ -155,7 +156,7 @@ ext {
     ]
 }
 
-task start(dependsOn: ['assemble', ':app:bootRun']) {
+task start(dependsOn: ['app:assemble', ':app:bootRun']) {
     group = 'Start/Run'
     description = 'Start the boot app'
 }
