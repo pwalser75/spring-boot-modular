@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,12 +13,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.validation.ConstraintViolationException;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * Exception handler advice.
@@ -25,7 +21,6 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class GeneralExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
 
-    private final static Pattern exceptionNamePattern = Pattern.compile("([A-Z][a-z0-9]+)");
 
     private final static Logger logger = LoggerFactory.getLogger(GeneralExceptionHandlerAdvice.class);
 
@@ -45,6 +40,11 @@ public class GeneralExceptionHandlerAdvice extends ResponseEntityExceptionHandle
         return handleExceptionInternal(ex, errors.getErrors(), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
+    @ExceptionHandler(AuthenticationException.class)
+    protected ResponseEntity<Object> handleAuthenticationException(AuthenticationException ex, WebRequest request) {
+        return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.FORBIDDEN, request);
+    }
+
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<Object> handleUnknownException(Exception ex, WebRequest request) {
         return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
@@ -60,7 +60,7 @@ public class GeneralExceptionHandlerAdvice extends ResponseEntityExceptionHandle
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers,
                                                              HttpStatus status, WebRequest request) {
-        ErrorResponse errorResponse = new ErrorResponse(status.name(), toErrorCode(ex), ex.getLocalizedMessage(), body);
+        ErrorResponse errorResponse = new ErrorResponse(status.name(), ex, body);
         String logMessage = ex.getClass().getSimpleName() + ": " + ex.getMessage();
         if (status.is5xxServerError()) {
             logger.error(logMessage, ex);
@@ -73,18 +73,5 @@ public class GeneralExceptionHandlerAdvice extends ResponseEntityExceptionHandle
             }
         }
         return super.handleExceptionInternal(ex, errorResponse, headers, status, request);
-    }
-
-    private static String toErrorCode(Throwable ex) {
-        String simpleName = ex.getClass().getSimpleName();
-        Matcher matcher = exceptionNamePattern.matcher(simpleName);
-        List<String> tokens = new LinkedList<>();
-        while (matcher.find()) {
-            tokens.add(matcher.group(0));
-        }
-        if (tokens.isEmpty()) {
-            return simpleName;
-        }
-        return tokens.stream().map(String::toUpperCase).collect(Collectors.joining("_"));
     }
 }

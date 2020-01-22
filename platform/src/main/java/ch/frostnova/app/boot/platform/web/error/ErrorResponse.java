@@ -5,6 +5,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * General error response
@@ -13,6 +18,8 @@ import java.time.temporal.ChronoUnit;
  * @since 07.06.2019
  */
 public class ErrorResponse {
+
+    private final static Pattern exceptionNamePattern = Pattern.compile("([A-Z][a-z0-9]+)");
 
     @JsonProperty("timestamp")
     private final OffsetDateTime timestamp;
@@ -31,12 +38,25 @@ public class ErrorResponse {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private final Object details;
 
-    public ErrorResponse(String errorCode, String error, String message, Object details) {
-        this.timestamp = OffsetDateTime.now().truncatedTo(ChronoUnit.MILLIS);
+    public ErrorResponse(String errorCode, Exception ex, Object details) {
+        timestamp = OffsetDateTime.now().truncatedTo(ChronoUnit.MILLIS);
         this.errorCode = errorCode;
-        this.error = error;
-        this.message = message;
         this.details = details;
+        error = toErrorCode(ex);
+        message = ex.getLocalizedMessage();
+    }
+
+    public static String toErrorCode(Throwable ex) {
+        String simpleName = ex.getClass().getSimpleName();
+        Matcher matcher = exceptionNamePattern.matcher(simpleName);
+        List<String> tokens = new LinkedList<>();
+        while (matcher.find()) {
+            tokens.add(matcher.group(0));
+        }
+        if (tokens.isEmpty()) {
+            return simpleName;
+        }
+        return tokens.stream().map(String::toUpperCase).collect(Collectors.joining("_"));
     }
 
     public OffsetDateTime getTimestamp() {

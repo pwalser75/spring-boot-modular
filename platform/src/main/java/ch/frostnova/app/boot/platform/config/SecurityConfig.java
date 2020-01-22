@@ -2,6 +2,7 @@ package ch.frostnova.app.boot.platform.config;
 
 import ch.frostnova.app.boot.platform.service.TokenAuthenticator;
 import ch.frostnova.app.boot.platform.web.filter.BearerTokenAuthenticationFilter;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +24,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private TokenAuthenticator tokenAuthenticator;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
 
@@ -41,7 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 ).permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .addFilterBefore(new BearerTokenAuthenticationFilter(tokenAuthenticator), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new BearerTokenAuthenticationFilter(tokenAuthenticator, objectMapper), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
