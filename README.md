@@ -77,11 +77,14 @@ ch.frostnova.platform.security:
   
 To build this project with Gradle (default tasks: _clean build install_):  
   
- ./gradlew  ## Start  
+    ./gradlew 
+
+## Start  
       
 To start this project with Gradle:  
       
- ./gradlew start  
+    ./gradlew start  
+
 ## API Documentation (Swagger)  
   
 API documentation available at [https://localhost:8443/swagger-ui.html]().  
