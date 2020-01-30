@@ -1,4 +1,4 @@
-package ch.frostnova.project.common.service.scope;
+package ch.frostnova.common.service.scope;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

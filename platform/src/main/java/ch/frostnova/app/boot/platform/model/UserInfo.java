@@ -3,10 +3,8 @@ package ch.frostnova.app.boot.platform.model;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.text.Collator;
+import java.util.*;
 import java.util.function.Consumer;
 
 import static java.util.stream.Collectors.joining;
@@ -16,7 +14,8 @@ public class UserInfo {
 
     private String tenant;
     private String login;
-    private final Set<String> roles = new HashSet<>();
+    private final Set<String> roles = new TreeSet<>(Collator.getInstance());
+    private final Map<String, String> additionalClaims = new TreeMap<>(Collator.getInstance());
 
     private UserInfo() {
     }
@@ -34,6 +33,11 @@ public class UserInfo {
     @ApiModelProperty(notes = "set of granted roles", example = "foo, bla")
     public Set<String> getRoles() {
         return Collections.unmodifiableSet(roles);
+    }
+
+    @ApiModelProperty(notes = "map of additional claims")
+    public Map<String, String> getAdditionalClaims() {
+        return additionalClaims;
     }
 
     @Override
@@ -100,6 +104,19 @@ public class UserInfo {
 
         public Builder role(String role) {
             return set(x -> x.roles.add(role));
+        }
+
+        public Builder additionalClaims(Map<String, String> additionalClaims) {
+            return set(x -> {
+                x.additionalClaims.clear();
+                if (additionalClaims != null) {
+                    x.additionalClaims.putAll(additionalClaims);
+                }
+            });
+        }
+
+        public Builder additionalClaim(String key, String value) {
+            return set(x -> x.additionalClaims.put(key, value));
         }
 
         public UserInfo build() {

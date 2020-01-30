@@ -42,6 +42,7 @@ public class JWTSigningServiceImpl implements JWTSigningService {
 
         return Jwts.builder()
                 .setIssuer(appName)
+                .setId(UUID.randomUUID().toString())
                 .setIssuedAt(Date.from(validFrom.toInstant()))
                 .setNotBefore(Date.from(validFrom.toInstant()))
                 .setExpiration(Date.from(validFrom.plus(validity).toInstant()))

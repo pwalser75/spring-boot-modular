@@ -16,7 +16,9 @@ dependencies {
     dev libs.springBootDevTools
 
     implementation project(':platform')
+
     implementation project(':modules:common-service')
+
     implementation project(':modules:module1-service')
     implementation project(':modules:module1-web')
 }

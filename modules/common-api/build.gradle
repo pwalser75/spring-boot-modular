@@ -1,0 +1,6 @@
+description = 'Common API'
+
+dependencies {
+
+    api libs.api
+}

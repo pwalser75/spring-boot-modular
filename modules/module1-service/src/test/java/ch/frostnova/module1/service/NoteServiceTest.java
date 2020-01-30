@@ -1,9 +1,9 @@
 package ch.frostnova.module1.service;
 
-import ch.frostnova.module1.api.exception.ResourceNotFoundException;
+import ch.frostnova.common.api.exception.ResourceNotFoundException;
+import ch.frostnova.common.service.scope.TaskScope;
 import ch.frostnova.module1.api.model.Note;
 import ch.frostnova.module1.api.service.NoteService;
-import ch.frostnova.project.common.service.scope.TaskScope;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

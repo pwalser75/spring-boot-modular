@@ -1,6 +1,6 @@
 package ch.frostnova.module1.service;
 
-import ch.frostnova.project.common.service.CommonServiceConfig;
+import ch.frostnova.common.service.CommonServiceConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;

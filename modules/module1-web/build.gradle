@@ -5,11 +5,13 @@ dependencies {
     api libs.api
     api libs.springBoot
 
-    implementation project(':modules:module1-api')
-    implementation project(':modules:module1-service')
-    implementation project(':modules:common-service')
+    api project(':modules:module1-api')
+
 
     testImplementation libs.testbase
     testImplementation libs.springBootTest
+    
     testImplementation project(':platform')
+    testImplementation project(':modules:common-service')
+    testImplementation project(':modules:module1-service')
 }

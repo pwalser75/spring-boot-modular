@@ -1,4 +1,4 @@
-package ch.frostnova.project.common.service.scope;
+package ch.frostnova.common.service.scope;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;

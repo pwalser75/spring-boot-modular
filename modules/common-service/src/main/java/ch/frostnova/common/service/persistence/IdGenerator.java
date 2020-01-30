@@ -1,4 +1,4 @@
-package ch.frostnova.project.common.service.persistence;
+package ch.frostnova.common.service.persistence;
 
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
@@ -24,7 +24,7 @@ public class IdGenerator implements IdentifierGenerator {
     /**
      * Class name, to be used as annotation value - must be a constant.
      */
-    public final static String CLASS_NAME = "ch.frostnova.project.common.service.persistence.IdGenerator";
+    public final static String CLASS_NAME = "ch.frostnova.common.service.persistence.IdGenerator";
 
     private final static String ALPHABET = createAlphabet();
     private final static int ID_BIT_LENGTH = 128;

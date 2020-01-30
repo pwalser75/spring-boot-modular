@@ -1,4 +1,4 @@
-package ch.frostnova.module1.api.exception;
+package ch.frostnova.common.api.exception;
 
 import java.util.NoSuchElementException;
 

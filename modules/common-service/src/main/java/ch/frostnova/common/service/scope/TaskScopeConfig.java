@@ -1,4 +1,4 @@
-package ch.frostnova.project.common.service.scope;
+package ch.frostnova.common.service.scope;
 
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.context.annotation.Bean;

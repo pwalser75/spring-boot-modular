@@ -12,7 +12,9 @@ def addProject(path) {
     }
 }
 
+addProject ':modules:common-api'
 addProject ':modules:common-service'
+
 addProject ':modules:module1-api'
 addProject ':modules:module1-service'
 addProject ':modules:module1-web'

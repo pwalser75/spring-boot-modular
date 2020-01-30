@@ -1,6 +1,6 @@
 package ch.frostnova.module1.service;
 
-import ch.frostnova.project.common.service.PersistenceConfig;
+import ch.frostnova.common.service.PersistenceConfig;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;

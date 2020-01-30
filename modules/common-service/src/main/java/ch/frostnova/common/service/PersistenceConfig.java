@@ -1,4 +1,4 @@
-package ch.frostnova.project.common.service;
+package ch.frostnova.common.service;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +13,7 @@ import java.security.Principal;
 import java.time.OffsetDateTime;
 import java.util.Optional;
 
-import static ch.frostnova.project.common.service.PersistenceConfig.AUDITOR_PROVIDER_ID;
+import static ch.frostnova.common.service.PersistenceConfig.AUDITOR_PROVIDER_ID;
 
 @EnableTransactionManagement
 @EnableJpaAuditing(dateTimeProviderRef = PersistenceConfig.OFFSET_DATE_TIME_PROVIDER_ID, auditorAwareRef = AUDITOR_PROVIDER_ID)

@@ -1,6 +1,6 @@
 package ch.frostnova.module1.web.error;
 
-import ch.frostnova.module1.api.exception.ResourceNotFoundException;
+import ch.frostnova.common.api.exception.ResourceNotFoundException;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

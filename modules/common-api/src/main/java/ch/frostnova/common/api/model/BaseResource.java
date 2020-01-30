@@ -1,4 +1,4 @@
-package ch.frostnova.module1.api.model;
+package ch.frostnova.common.api.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;

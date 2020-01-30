@@ -1,5 +1,6 @@
 package ch.frostnova.module1.api.model;
 
+import ch.frostnova.common.api.model.BaseResource;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

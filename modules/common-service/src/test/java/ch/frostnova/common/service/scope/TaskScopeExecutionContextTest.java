@@ -1,4 +1,4 @@
-package ch.frostnova.project.common.service.scope;
+package ch.frostnova.common.service.scope;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

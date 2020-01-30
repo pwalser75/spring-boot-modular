@@ -1,4 +1,4 @@
-package ch.frostnova.project.common.service.persistence;
+package ch.frostnova.common.service.persistence;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

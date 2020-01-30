@@ -1,4 +1,4 @@
-package ch.frostnova.project.common.service.persistence;
+package ch.frostnova.common.service.persistence;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedBy;
