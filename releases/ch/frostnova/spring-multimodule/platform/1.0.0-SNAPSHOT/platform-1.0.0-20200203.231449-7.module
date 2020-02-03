@@ -1,0 +1,91 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "ch.frostnova.spring-multimodule",
+    "module": "platform",
+    "version": "1.0.0-SNAPSHOT",
+    "attributes": {
+      "org.gradle.status": "integration"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "6.1",
+      "buildId": "n4z72cqnfveqdhx5a4f2spvqua"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 13,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "files": [
+        {
+          "name": "platform-1.0.0-SNAPSHOT.jar",
+          "url": "platform-1.0.0-20200203.231449-7.jar",
+          "size": 59670240,
+          "sha512": "7ee3927b735a00704e433b23578fc4096fe2b751b70d7151ed32a81c0f5810d48f0c9b705d8f8be10633c6f5656714a6f82b9c5267a4ad0d7a28c8d4812f69e6",
+          "sha256": "a3b165895792477ac6e38d0c3b851e3c168a9b0e00c1883960860f1f64dbf26c",
+          "sha1": "9cff758a401f04f185272d3de76feca02d6cf894",
+          "md5": "d882c48baa50c65f9d81327b06045ebc"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 13,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "ch.frostnova.spring-multimodule",
+          "module": "platform",
+          "version": {
+            "requires": "1.0.0-SNAPSHOT"
+          }
+        },
+        {
+          "group": "ch.frostnova.spring-multimodule",
+          "module": "platform",
+          "version": {
+            "requires": "1.0.0-SNAPSHOT"
+          }
+        },
+        {
+          "group": "ch.frostnova.spring-multimodule",
+          "module": "platform",
+          "version": {
+            "requires": "1.0.0-SNAPSHOT"
+          }
+        },
+        {
+          "group": "ch.frostnova.spring-multimodule",
+          "module": "platform",
+          "version": {
+            "requires": "1.0.0-SNAPSHOT"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "platform-1.0.0-SNAPSHOT.jar",
+          "url": "platform-1.0.0-20200203.231449-7.jar",
+          "size": 59670240,
+          "sha512": "7ee3927b735a00704e433b23578fc4096fe2b751b70d7151ed32a81c0f5810d48f0c9b705d8f8be10633c6f5656714a6f82b9c5267a4ad0d7a28c8d4812f69e6",
+          "sha256": "a3b165895792477ac6e38d0c3b851e3c168a9b0e00c1883960860f1f64dbf26c",
+          "sha1": "9cff758a401f04f185272d3de76feca02d6cf894",
+          "md5": "d882c48baa50c65f9d81327b06045ebc"
+        }
+      ]
+    }
+  ]
+}

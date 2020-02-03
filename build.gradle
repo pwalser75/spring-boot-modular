@@ -30,6 +30,7 @@ subprojects {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     plugins.withType(JavaPlugin) {
         jar {
             manifest {
@@ -38,6 +39,23 @@ subprojects {
                         "Version": project.version,
                         "Build-Date": buildDate
                 )
+            }
+        }
+    }
+
+    publishing {
+
+        publications {
+            maven(MavenPublication) {
+                groupId = 'ch.frostnova.spring-multimodule'
+                artifactId = 'platform'
+                from components.java
+            }
+        }
+        repositories {
+            maven {
+                name = 'project-local'
+                url = "file://${project.rootDir}/releases"
             }
         }
     }
