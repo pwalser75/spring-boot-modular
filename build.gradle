@@ -15,31 +15,27 @@ def buildDate = OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS)
 
 allprojects {
     group = 'ch.frostnova.spring-multimodule'
-}
-subprojects {
-    apply plugin: 'java-library'
-    apply plugin: 'maven-publish'
 
     repositories {
         jcenter()
         mavenLocal()
         mavenCentral()
     }
-    tasks.withType(JavaCompile) {
-        options.encoding = 'UTF-8'
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
+}
+subprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'maven-publish'
 
-    plugins.withType(JavaPlugin) {
-        jar {
-            manifest {
-                attributes(
-                        "Name": project.name,
-                        "Version": project.version,
-                        "Build-Date": buildDate
-                )
-            }
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+
+    jar {
+        manifest {
+            attributes(
+                    "Name": project.name,
+                    "Version": project.version,
+                    "Build-Date": buildDate
+            )
         }
     }
 

@@ -4,8 +4,6 @@ info:
     description: "Spring Boot Multi Module Project"
     version: "1.0.0-SNAPSHOT"
 
-
-
 # Spring configuration
 spring:
   application.name: "spring-multi-module"
