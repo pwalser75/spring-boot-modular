@@ -2,9 +2,8 @@ description = 'Module 1 API'
 
 dependencies {
 
-    api project(':modules:common-api')
-
     implementation libs.api
+    implementation project(':modules:common-api')
 
     testImplementation libs.testbase
     testImplementation libs.springBoot

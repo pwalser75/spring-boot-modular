@@ -2,15 +2,15 @@ description = 'Module1 Web'
 
 dependencies {
 
-    api libs.api
-    api libs.springBoot
-
     api project(':modules:module1-api')
+    api project(':modules:common-service')
 
+    implementation libs.api
+    implementation libs.springBoot
 
     testImplementation libs.testbase
     testImplementation libs.springBootTest
-    
+
     testImplementation project(':platform')
     testImplementation project(':modules:common-service')
     testImplementation project(':modules:module1-service')

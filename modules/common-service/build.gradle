@@ -2,8 +2,10 @@ description = 'Common Service'
 
 dependencies {
 
-    api libs.api
-    api libs.springBoot
+    api project(':modules:common-api')
+
+    implementation libs.api
+    implementation libs.springBoot
 
     annotationProcessor libs.jpaAnnotationProcessor
 

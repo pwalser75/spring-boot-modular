@@ -2,11 +2,23 @@ description = 'Platform Service'
 
 dependencies {
 
-    api libs.api
     api libs.springBoot
-    api libs.liquibase
     api libs.jwt
+    api libs.liquibase
+
+    implementation libs.api
+    implementation libs.springBoot
 
     testImplementation libs.testbase
     testImplementation libs.springBootTest
+}
+
+publishing {
+
+    publications {
+        maven(MavenPublication) {
+            version = project.version
+            from components.java
+        }
+    }
 }

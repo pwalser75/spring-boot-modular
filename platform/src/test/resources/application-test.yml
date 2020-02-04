@@ -4,11 +4,14 @@ info:
   app:
     name: "frostnova-platform"
 
-spring.cache:
-  type: jcache
-  jcache:
-    provider: org.ehcache.jsr107.EhcacheCachingProvider
-    config: classpath:ehcache.xml
+spring:
+  main:
+    lazy-initialization: true
+  cache:
+    type: jcache
+    jcache:
+      provider: org.ehcache.jsr107.EhcacheCachingProvider
+      config: classpath:ehcache.xml
 
 # JWT authentication configuration
 ch.frostnova.platform.security:

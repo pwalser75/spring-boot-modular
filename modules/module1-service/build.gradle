@@ -3,8 +3,8 @@ description = 'Module1 Service'
 dependencies {
 
     api project(':modules:module1-api')
+    api project(':modules:common-service')
 
-    implementation project(':modules:common-service')
     implementation libs.api
     implementation libs.springBoot
 

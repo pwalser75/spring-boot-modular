@@ -44,21 +44,13 @@ subprojects {
     }
 
     publishing {
-
-        publications {
-            maven(MavenPublication) {
-                groupId = 'ch.frostnova.spring-multimodule'
-                artifactId = 'platform'
-                from components.java
-            }
-        }
         repositories {
             maven {
-                name = 'project-local'
-                url = "file://${project.rootDir}/releases"
+                url = "file://${project.rootDir}/repository/" + (version.endsWith('SNAPSHOT') ? 'snapshots' : 'releases')
             }
         }
     }
+
 
     if (!project.hasProperty('quick')) {
         task sourcesJar(type: Jar, dependsOn: classes) {

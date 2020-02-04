@@ -2,5 +2,5 @@ description = 'Common API'
 
 dependencies {
 
-    api libs.api
+    implementation libs.api
 }

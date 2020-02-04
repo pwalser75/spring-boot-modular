@@ -10,15 +10,13 @@ configurations {
 
 dependencies {
 
-    testImplementation libs.testbase
-    testImplementation libs.springBootTest
-
     dev libs.springBootDevTools
 
-    implementation project(':platform')
+    api project(':platform')
+    api project(':modules:common-service')
+    api project(':modules:module1-service')
+    api project(':modules:module1-web')
 
-    implementation project(':modules:common-service')
-
-    implementation project(':modules:module1-service')
-    implementation project(':modules:module1-web')
+    testImplementation libs.testbase
+    testImplementation libs.springBootTest
 }
