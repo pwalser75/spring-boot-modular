@@ -1,5 +1,6 @@
 package ch.frostnova.app.boot.platform.web.controller;
 
+import ch.frostnova.app.boot.platform.model.UserInfo;
 import ch.frostnova.app.boot.platform.service.JWTSigningService;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +47,7 @@ public class LoginController {
                         @RequestParam(value = "duration", required = false, defaultValue = "1h") Duration duration,
                         HttpServletRequest request) {
 
-        Map<String, Object> additionalClaims = new HashMap<>();
+        Map<String, String> additionalClaims = new HashMap<>();
 
         Map<String, String[]> parameterMap = request.getParameterMap();
         Set<String> reserved = Set.of("roles", "valid-from", "duration");
@@ -56,7 +57,8 @@ public class LoginController {
             }
         });
 
+        UserInfo userInfo = UserInfo.aUserInfo().tenant(tenant).login(login).roles(roles).additionalClaims(additionalClaims).build();
 
-        return jwtSigningService.createJWT(tenant, login, roles, additionalClaims, validFrom.orElse(OffsetDateTime.now()), duration);
+        return jwtSigningService.createJWT(userInfo, validFrom.orElse(OffsetDateTime.now()), duration);
     }
 }

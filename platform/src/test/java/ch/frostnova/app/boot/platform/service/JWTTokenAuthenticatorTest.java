@@ -35,11 +35,16 @@ public class JWTTokenAuthenticatorTest {
     @Test
     public void test() {
 
-        String token = jwtSigningService.createJWT("test-tenant", "test-login",
-                Set.of("RoleA", "RoleB"),
-                Map.of("loginDeviceId", "device-001", "accessChannel", "web"),
-                OffsetDateTime.now(),
-                Duration.of(4, ChronoUnit.HOURS));
+        UserInfo request = UserInfo.aUserInfo()
+                .tenant("test-tenant")
+                .login("test-login")
+                .role("RoleA")
+                .role("RoleB")
+                .additionalClaim("loginDeviceId", "device-001")
+                .additionalClaim("accessChannel", "web")
+                .build();
+
+        String token = jwtSigningService.createJWT(request, OffsetDateTime.now(), Duration.of(2, ChronoUnit.HOURS));
 
         UserInfo userInfo = jwtTokenAuthenticator.authenticate(token);
 

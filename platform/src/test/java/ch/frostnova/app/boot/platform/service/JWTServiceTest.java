@@ -1,6 +1,7 @@
 package ch.frostnova.app.boot.platform.service;
 
 import ch.frostnova.app.boot.platform.PlatformConfig;
+import ch.frostnova.app.boot.platform.model.UserInfo;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
@@ -46,12 +47,18 @@ public class JWTServiceTest {
 
         Duration duration = Duration.of(42, ChronoUnit.MINUTES);
         OffsetDateTime validFrom = OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS);
-        Set<String> roles = Set.of("ROLE1", "ROLE2", "ROLE3");
-        Map<String, Object> additionalClaims = new HashMap<>();
-        additionalClaims.put("login-device-id", UUID.randomUUID().toString());
-        additionalClaims.put("channel", "mobile");
 
-        String token = jwtSigningService.createJWT("test-tenant", "test-user", roles, additionalClaims, validFrom, duration);
+        UserInfo userInfo = UserInfo.aUserInfo()
+                .tenant("test-tenant")
+                .login("test-user")
+                .role("RoleA")
+                .role("RoleB")
+                .role("RoleC")
+                .additionalClaim("loginDeviceId",UUID.randomUUID().toString())
+                .additionalClaim("accessChannel", "mobile")
+                .build();
+
+        String token = jwtSigningService.createJWT(userInfo, validFrom, duration);
         System.out.println(token);
 
         Jws<Claims> jwt = jwtVerificationService.verify(token);
@@ -77,14 +84,15 @@ public class JWTServiceTest {
         assertFalse(notAfter.isAfter(validFrom.toInstant().plus(duration)));
         assertNotNull(scopes);
 
-        roles.forEach(role -> assertTrue(scopes.contains(role)));
-        additionalClaims.forEach((k, v) -> assertEquals(v, body.get(k, v.getClass())));
+        userInfo.getRoles().forEach(role -> assertTrue(scopes.contains(role)));
+        userInfo.getAdditionalClaims().forEach((k, v) -> assertEquals(v, body.get(k, v.getClass())));
     }
 
     @Test
     public void testJWTExpiration() throws Exception {
 
-        String token = jwtSigningService.createJWT("test-tenant", "test-user", null, null, OffsetDateTime.now(), Duration.of(2, ChronoUnit.SECONDS));
+        UserInfo userInfo = UserInfo.aUserInfo().tenant("test-tenant").login("test-user").build();
+        String token = jwtSigningService.createJWT(userInfo, OffsetDateTime.now(), Duration.of(2, ChronoUnit.SECONDS));
         jwtVerificationService.verify(token);
 
         Thread.sleep(2000);
@@ -94,7 +102,8 @@ public class JWTServiceTest {
     @Test
     public void testJWTCache() {
 
-        String token = jwtSigningService.createJWT("test-tenant", "test-user", null, null, OffsetDateTime.now(), Duration.of(1, ChronoUnit.HOURS));
+        UserInfo userInfo = UserInfo.aUserInfo().tenant("test-tenant").login("test-user").build();
+        String token = jwtSigningService.createJWT(userInfo, OffsetDateTime.now(), Duration.of(1, ChronoUnit.HOURS));
         Jws<Claims> value = jwtVerificationService.verify(token);
 
         Assert.isTrue(value == jwtVerificationService.verify(token));
