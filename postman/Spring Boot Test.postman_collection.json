@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "bd4f78c8-5e19-4e33-8ea0-2e3b1b3128e5",
+		"_postman_id": "4ec31907-447c-4ebc-834b-a24eb9b03693",
 		"name": "Spring Boot Test",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -309,7 +309,8 @@
 					},
 					"response": []
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "02 - Login",
@@ -452,7 +453,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{HOST}}/login/{{tenant}}/{{login}}?roles={{roles}}&foo=bla,arg&valid-from=2000-01-02T12:45:56%2B01:00&duration=555d1h23m56s",
+							"raw": "{{HOST}}/login/{{tenant}}/{{login}}?roles={{roles}}&cnl=postman&ldid=9999&foo=bla,arg&valid-from=2000-01-02T12:45:56%2B01:00&duration=555d1h23m56s",
 							"host": [
 								"{{HOST}}"
 							],
@@ -465,6 +466,14 @@
 								{
 									"key": "roles",
 									"value": "{{roles}}"
+								},
+								{
+									"key": "cnl",
+									"value": "postman"
+								},
+								{
+									"key": "ldid",
+									"value": "9999"
 								},
 								{
 									"key": "foo",
@@ -694,8 +703,8 @@
 									"    \r",
 									"    var content=note.content;\r",
 									"    tests[\"has id\"] = note.id;\r",
-									"    tests[\"has createdOn\"] = note.createdOn;\r",
-									"    tests[\"has updatedOn\"] = note.updatedOn;\r",
+									"    tests[\"has created\"] = note.created;\r",
+									"    tests[\"has updated\"] = note.updated;\r",
 									"    tests[\"has text\"] = note.text;\r",
 									"    tests[\"has correct text\"] = note.text === pm.globals.get(\"note-text\");\r",
 									"    \r",
@@ -765,8 +774,8 @@
 									"    \r",
 									"    var content=note.content;\r",
 									"    tests[\"has correct id\"] = note.id ===  pm.globals.get(\"note-id\");\r",
-									"    tests[\"has createdOn\"] = note.createdOn;\r",
-									"    tests[\"has updatedOn\"] = note.updatedOn;\r",
+									"    tests[\"has created\"] = note.created;\r",
+									"    tests[\"has updated\"] = note.updated;\r",
 									"    tests[\"has correct text\"] = note.text === pm.globals.get(\"note-text\");\r",
 									"}\r",
 									""
@@ -792,7 +801,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{HOST}}/api/notes/{{note-id}}",
+							"raw": "{{HOST}}/api/notes/{{note-id}}?=",
 							"host": [
 								"{{HOST}}"
 							],
@@ -842,8 +851,8 @@
 									"    tests[\"contains note:\"] = note;\r",
 									"    if (note) {\r",
 									"      tests[\"has correct id\"] = note.id ===  pm.globals.get(\"note-id\")\r",
-									"      tests[\"has createdOn\"] = note.createdOn;\r",
-									"      tests[\"has updatedOn\"] = note.updatedOn;\r",
+									"      tests[\"has created\"] = note.created;\r",
+									"      tests[\"has updated\"] = note.updated;\r",
 									"      tests[\"has text\"] = note.text;\r",
 									"      tests[\"has correct text\"] = note.text === pm.globals.get(\"note-text\");\r",
 									"    }\r",
@@ -970,8 +979,8 @@
 									"    \r",
 									"    var content=note.content;\r",
 									"    tests[\"has correct id\"] = note.id ===  pm.globals.get(\"note-id\")\r",
-									"    tests[\"has createdOn\"] = note.createdOn;\r",
-									"    tests[\"has updatedOn\"] = note.updatedOn;\r",
+									"    tests[\"has created\"] = note.created;\r",
+									"    tests[\"has updated\"] = note.updated;\r",
 									"    tests[\"has correct text\"] = note.text === pm.globals.get(\"note-text\");\r",
 									"}\r",
 									""
@@ -1567,7 +1576,9 @@
 					},
 					"response": []
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		}
-	]
+	],
+	"protocolProfileBehavior": {}
 }

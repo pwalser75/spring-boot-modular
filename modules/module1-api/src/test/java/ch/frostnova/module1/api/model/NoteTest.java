@@ -59,9 +59,9 @@ public class NoteTest {
 
         // dates not in the future
         note.setText("Hello World");
-        note.setCreatedOn(OffsetDateTime.now().plusMinutes(1));
-        note.setUpdatedOn(OffsetDateTime.now().plusDays(1));
-        validate(note, "createdOn", "updatedOn");
+        note.setCreated(OffsetDateTime.now().plusMinutes(1));
+        note.setUpdated(OffsetDateTime.now().plusDays(1));
+        validate(note, "created", "updated");
     }
 
     @Test
@@ -70,8 +70,8 @@ public class NoteTest {
         Note note = new Note();
         note.setText("Hello World");
         note.setId("ABC12345");
-        note.setCreatedOn(OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS).minusDays(1));
-        note.setUpdatedOn(OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS).minusHours(1));
+        note.setCreated(OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS).minusDays(1));
+        note.setUpdated(OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS).minusHours(1));
 
         String json = NoteTest.objectMapper().writeValueAsString(note);
         System.out.println(json);
@@ -79,8 +79,8 @@ public class NoteTest {
         Note restored = NoteTest.objectMapper().readValue(json, Note.class);
         assertEquals(note.getText(), restored.getText());
         assertEquals(note.getId(), restored.getId());
-        assertTrue(note.getCreatedOn().isEqual(restored.getCreatedOn()));
-        assertTrue(note.getUpdatedOn().isEqual(restored.getUpdatedOn()));
+        assertTrue(note.getCreated().isEqual(restored.getCreated()));
+        assertTrue(note.getUpdated().isEqual(restored.getUpdated()));
     }
 
     private static void validate(Object obj, String... expectedErrorPropertyPaths) {

@@ -22,14 +22,14 @@ public class BaseResource implements Serializable {
     private String id;
 
     @ApiModelProperty(position = 1, notes = "creation date (generated)", accessMode = READ_ONLY, example = EXAMPLE_OFFSET_DATE_TIME)
-    @JsonProperty("createdOn")
+    @JsonProperty("created")
     @PastOrPresent
-    private OffsetDateTime createdOn;
+    private OffsetDateTime created;
 
     @ApiModelProperty(position = 2, notes = "last modification date (generated)", accessMode = READ_ONLY, example = EXAMPLE_OFFSET_DATE_TIME)
-    @JsonProperty("updatedOn")
+    @JsonProperty("updated")
     @PastOrPresent
-    private OffsetDateTime updatedOn;
+    private OffsetDateTime updated;
 
     public String getId() {
         return id;
@@ -39,20 +39,20 @@ public class BaseResource implements Serializable {
         this.id = id;
     }
 
-    public OffsetDateTime getCreatedOn() {
-        return createdOn;
+    public OffsetDateTime getCreated() {
+        return created;
     }
 
-    public void setCreatedOn(OffsetDateTime createdOn) {
-        this.createdOn = createdOn;
+    public void setCreated(OffsetDateTime created) {
+        this.created = created;
     }
 
-    public OffsetDateTime getUpdatedOn() {
-        return updatedOn;
+    public OffsetDateTime getUpdated() {
+        return updated;
     }
 
-    public void setUpdatedOn(OffsetDateTime updatedOn) {
-        this.updatedOn = updatedOn;
+    public void setUpdated(OffsetDateTime updated) {
+        this.updated = updated;
     }
 
     @Override

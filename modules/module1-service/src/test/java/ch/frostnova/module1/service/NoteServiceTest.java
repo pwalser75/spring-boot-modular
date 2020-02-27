@@ -51,11 +51,11 @@ public class NoteServiceTest {
 
         Note saved = noteService.save(note);
         assertNotNull(saved.getId());
-        assertNotNull(saved.getCreatedOn());
-        assertFalse(saved.getCreatedOn().isAfter(OffsetDateTime.now()));
-        assertNotNull(saved.getUpdatedOn());
-        assertFalse(saved.getUpdatedOn().isAfter(OffsetDateTime.now()));
-        assertFalse(saved.getUpdatedOn().isAfter(saved.getCreatedOn()));
+        assertNotNull(saved.getCreated());
+        assertFalse(saved.getCreated().isAfter(OffsetDateTime.now()));
+        assertNotNull(saved.getUpdated());
+        assertFalse(saved.getUpdated().isAfter(OffsetDateTime.now()));
+        assertFalse(saved.getUpdated().isAfter(saved.getCreated()));
 
         assertEquals(note.getText(), saved.getText());
     }
