@@ -1,6 +1,6 @@
 package ch.frostnova.module1.web;
 
-import ch.frostnova.app.boot.platform.PlatformConfig;
+import ch.frostnova.spring.boot.platform.PlatformConfig;
 import ch.frostnova.common.service.CommonServiceConfig;
 import ch.frostnova.module1.service.Module1ServiceConfig;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

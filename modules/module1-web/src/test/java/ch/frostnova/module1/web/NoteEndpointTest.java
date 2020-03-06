@@ -1,8 +1,8 @@
 package ch.frostnova.module1.web;
 
 
-import ch.frostnova.app.boot.platform.model.UserInfo;
-import ch.frostnova.app.boot.platform.service.TokenAuthenticator;
+import ch.frostnova.spring.boot.platform.model.UserInfo;
+import ch.frostnova.spring.boot.platform.service.TokenAuthenticator;
 import ch.frostnova.common.service.scope.TaskScope;
 import ch.frostnova.module1.api.model.Note;
 import ch.frostnova.module1.web.client.NoteClient;
@@ -27,7 +27,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
-import static ch.frostnova.app.boot.platform.model.UserInfo.aUserInfo;
+import static ch.frostnova.spring.boot.platform.model.UserInfo.aUserInfo;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 

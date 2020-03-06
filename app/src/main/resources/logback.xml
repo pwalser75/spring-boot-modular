@@ -110,12 +110,12 @@
     <logger name="org.hibernate.SQL" level="debug"/>liquibase
     -->
 
-    <logger name="ch.frostnova.app.boot.platform.web.filter.AccessLogFilter" level="info" additivity="false">
+    <logger name="ch.frostnova.spring.boot.platform.web.filter.AccessLogFilter" level="info" additivity="false">
         <appender-ref ref="ACCESS"/>
         <appender-ref ref="CONSOLE"/>
     </logger>
 
-    <logger name="ch.frostnova.app.boot.platform.aspect.PerformanceLoggingAspect" level="info" additivity="false">
+    <logger name="ch.frostnova.spring.boot.platform.aspect.PerformanceLoggingAspect" level="info" additivity="false">
         <appender-ref ref="PERFORMANCE"/>
         <appender-ref ref="CONSOLE"/>
     </logger>
