@@ -12,14 +12,14 @@ import java.util.Objects;
 import static io.swagger.annotations.ApiModelProperty.AccessMode.READ_ONLY;
 
 @JsonPropertyOrder({"id", "createdOn", "updatedOn"})
-public class BaseResource implements Serializable {
+public class BaseResource<ID> implements Serializable {
 
     private final String EXAMPLE_ID = "12345";
     private final String EXAMPLE_OFFSET_DATE_TIME = "2019-08-07T16:54:32+01:00";
 
     @ApiModelProperty(notes = "identifier (generated)", accessMode = READ_ONLY, example = EXAMPLE_ID)
     @JsonProperty("id")
-    private String id;
+    private ID id;
 
     @ApiModelProperty(position = 1, notes = "creation date (generated)", accessMode = READ_ONLY, example = EXAMPLE_OFFSET_DATE_TIME)
     @JsonProperty("created")
@@ -31,11 +31,11 @@ public class BaseResource implements Serializable {
     @PastOrPresent
     private OffsetDateTime updated;
 
-    public String getId() {
+    public ID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(ID id) {
         this.id = id;
     }
 
@@ -55,6 +55,13 @@ public class BaseResource implements Serializable {
         this.updated = updated;
     }
 
+    /**
+     * Two resource instances are considered equal when they have the <b>same exact type</b> and have the <b>same id</b>,
+     * unless that id is null (new resource), in which case they are considered equal when they are the <b>same instance</b>.
+     *
+     * @param o other object, may be null
+     * @return equals
+     */
     @Override
     public final boolean equals(Object o) {
         if (this == o) {

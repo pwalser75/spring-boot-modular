@@ -12,7 +12,7 @@ import javax.validation.constraints.Size;
  * DTO for Note
  */
 @ApiModel("Note")
-public class Note extends BaseResource {
+public class Note extends BaseResource<String> {
 
     @NotBlank
     @Size(max = 2048)

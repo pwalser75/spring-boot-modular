@@ -3,4 +3,6 @@ description = 'Common API'
 dependencies {
 
     implementation libs.api
+
+    testImplementation libs.testbase
 }
