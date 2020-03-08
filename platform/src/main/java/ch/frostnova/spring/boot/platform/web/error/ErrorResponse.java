@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 /**
  * General error response
  *
- * @author wap
+ * @author pwalser
  * @since 07.06.2019
  */
 public class ErrorResponse {

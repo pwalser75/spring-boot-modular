@@ -9,7 +9,7 @@ import org.springframework.validation.beanvalidation.MethodValidationPostProcess
 /**
  * Test config
  *
- * @author wap
+ * @author pwalser
  * @since 04.06.2019
  */
 @Configuration
