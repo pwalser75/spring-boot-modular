@@ -22,6 +22,8 @@ import javax.annotation.PostConstruct;
 @Lazy(value = false)
 public class NoteMetrics {
 
+    private final static String NOTE_COUNT_GAUGE_NAME = "business.metrics.notes.count";
+
     private Logger logger = LoggerFactory.getLogger(NoteMetrics.class);
 
     @Autowired
@@ -36,7 +38,7 @@ public class NoteMetrics {
     public void init() {
         logger.debug("registering notes gauge");
         update();
-        Gauge.builder("notes", this, noteMetrics -> notesCount)
+        Gauge.builder(NOTE_COUNT_GAUGE_NAME, this, noteMetrics -> notesCount)
                 .description("Number of notes in the DB")
                 .register(meterRegistry);
         logger.info("notes gauge registered");

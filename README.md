@@ -106,10 +106,12 @@ which can issue arbitrary valid JWT tokens. (WARNING: only configure this for te
 
 * Info: https://localhost:8443/actuator/info
 * Health: https://localhost:8443/actuator/health
-* Metrics: https://localhost/actuator/metrics
-* Prometheus: https://localhost/actuator/prometheus
-* Metrics, custom gauge (number of notes in the DB): https://localhost:8443/actuator/prometheus?includedNames=notes
+* Metrics: https://localhost:8443/actuator/metrics
 * HTTP request metrics: https://localhost:8443/actuator/metrics/http.server.requests
+* Prometheus: https://localhost:8443/actuator/prometheus
+* Metrics, custom gauge (number of notes in the DB): <br>
+  https://localhost:8443/actuator/metrics/business.metrics.notes.count<br>
+  https://localhost:8443/actuator/prometheus?includedNames=business_metrics_notes_count
 
 ## Docker
 

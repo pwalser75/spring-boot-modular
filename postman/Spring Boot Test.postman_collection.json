@@ -249,6 +249,61 @@
 					"response": []
 				},
 				{
+					"name": "Get Actuator Metrics Notes Gauge",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var expectedStatus=200;\r",
+									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
+									"\r",
+									"if (responseCode.code === expectedStatus){\r",
+									"    \r",
+									"    var metrics = pm.response.json();\r",
+									"    var uptime = metrics.measurements? metrics.measurements[0].value : undefined;\r",
+									"    \r",
+									"    tests[\"notes count: \"+uptime] = uptime >= 0;\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{HOST}}/actuator/metrics/business.metrics.notes.count",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"actuator",
+								"metrics",
+								"business.metrics.notes.count"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Get Actuator Prometheus",
 					"event": [
 						{
@@ -303,15 +358,6 @@
 					"name": "Get Actuator Prometheus Notes Gauge",
 					"event": [
 						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
 							"listen": "test",
 							"script": {
 								"exec": [
@@ -322,10 +368,19 @@
 									"    \r",
 									"    var prometheusData = pm.response.text();\r",
 									"    var lines = prometheusData.split('\\n');\r",
-									"    var value = lines.find(l=> l.match(/^notes (\\d+(?:\\.\\d+)?)$/));\r",
+									"    var gaugeLine = lines.find(l=> l.match(/^business_metrics_notes_count (\\d+(?:\\.\\d+)?)$/));\r",
 									"\r",
-									"    tests[\"contains notes gauge \"+value]= value\r",
+									"    tests[\"contains notes gauge \"+gaugeLine] = gaugeLine\r",
 									"}"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -342,7 +397,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{HOST}}/actuator/prometheus?includedNames=notes",
+							"raw": "{{HOST}}/actuator/prometheus?includedNames=business_metrics_notes_count",
 							"host": [
 								"{{HOST}}"
 							],
@@ -353,7 +408,7 @@
 							"query": [
 								{
 									"key": "includedNames",
-									"value": "notes"
+									"value": "business_metrics_notes_count"
 								}
 							]
 						}
