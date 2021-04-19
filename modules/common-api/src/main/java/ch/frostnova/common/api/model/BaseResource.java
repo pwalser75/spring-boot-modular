@@ -17,16 +17,16 @@ public class BaseResource<ID> implements Serializable {
     private final String EXAMPLE_ID = "12345";
     private final String EXAMPLE_OFFSET_DATE_TIME = "2019-08-07T16:54:32+01:00";
 
-    @ApiModelProperty(notes = "identifier (generated)", accessMode = READ_ONLY, example = EXAMPLE_ID)
+    @ApiModelProperty(name = "id", notes = "identifier (generated)", accessMode = READ_ONLY, example = EXAMPLE_ID)
     @JsonProperty("id")
     private ID id;
 
-    @ApiModelProperty(position = 1, notes = "creation date (generated)", accessMode = READ_ONLY, example = EXAMPLE_OFFSET_DATE_TIME)
+    @ApiModelProperty(name = "created", position = 1, notes = "creation date (generated)", accessMode = READ_ONLY, example = EXAMPLE_OFFSET_DATE_TIME)
     @JsonProperty("created")
     @PastOrPresent
     private OffsetDateTime created;
 
-    @ApiModelProperty(position = 2, notes = "last modification date (generated)", accessMode = READ_ONLY, example = EXAMPLE_OFFSET_DATE_TIME)
+    @ApiModelProperty(name = "updated", position = 2, notes = "last modification date (generated)", accessMode = READ_ONLY, example = EXAMPLE_OFFSET_DATE_TIME)
     @JsonProperty("updated")
     @PastOrPresent
     private OffsetDateTime updated;

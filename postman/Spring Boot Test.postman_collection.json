@@ -14,7 +14,6 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "24b3a4eb-ac1d-44d6-8f72-845ea88d0f1a",
 								"exec": [
 									""
 								],
@@ -24,7 +23,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "60b1c26b-ddb9-4a53-aff0-2980fbcd0862",
 								"exec": [
 									"var expectedStatus=200;\r",
 									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
@@ -77,7 +75,6 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "24b3a4eb-ac1d-44d6-8f72-845ea88d0f1a",
 								"exec": [
 									""
 								],
@@ -87,7 +84,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "60b1c26b-ddb9-4a53-aff0-2980fbcd0862",
 								"exec": [
 									"var expectedStatus=200;\r",
 									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
@@ -137,7 +133,6 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "24b3a4eb-ac1d-44d6-8f72-845ea88d0f1a",
 								"exec": [
 									""
 								],
@@ -147,7 +142,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "60b1c26b-ddb9-4a53-aff0-2980fbcd0862",
 								"exec": [
 									"var expectedStatus=200;\r",
 									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
@@ -205,7 +199,6 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "24b3a4eb-ac1d-44d6-8f72-845ea88d0f1a",
 								"exec": [
 									""
 								],
@@ -215,7 +208,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "60b1c26b-ddb9-4a53-aff0-2980fbcd0862",
 								"exec": [
 									"var expectedStatus=200;\r",
 									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
@@ -262,7 +254,6 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "24b3a4eb-ac1d-44d6-8f72-845ea88d0f1a",
 								"exec": [
 									""
 								],
@@ -272,7 +263,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "60b1c26b-ddb9-4a53-aff0-2980fbcd0862",
 								"exec": [
 									"var expectedStatus=200;\r",
 									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
@@ -308,9 +298,69 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Get Actuator Prometheus Notes Gauge",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var expectedStatus=200;\r",
+									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
+									"\r",
+									"if (responseCode.code === expectedStatus){\r",
+									"    \r",
+									"    var prometheusData = pm.response.text();\r",
+									"    var lines = prometheusData.split('\\n');\r",
+									"    var value = lines.find(l=> l.match(/^notes (\\d+(?:\\.\\d+)?)$/));\r",
+									"\r",
+									"    tests[\"contains notes gauge \"+value]= value\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{HOST}}/actuator/prometheus?includedNames=notes",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"actuator",
+								"prometheus"
+							],
+							"query": [
+								{
+									"key": "includedNames",
+									"value": "notes"
+								}
+							]
+						}
+					},
+					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "02 - Login",
@@ -321,7 +371,6 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "24b3a4eb-ac1d-44d6-8f72-845ea88d0f1a",
 								"exec": [
 									"pm.globals.set(\"tenant\", \"frostnova\");",
 									"pm.globals.set(\"login\", \"pwalser\");",
@@ -335,7 +384,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "60b1c26b-ddb9-4a53-aff0-2980fbcd0862",
 								"exec": [
 									"var expectedStatus=200;\r",
 									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
@@ -398,7 +446,6 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "24b3a4eb-ac1d-44d6-8f72-845ea88d0f1a",
 								"exec": [
 									"pm.globals.set(\"tenant\", \"frostnova\");",
 									"pm.globals.set(\"login\", \"pwalser\");",
@@ -412,7 +459,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "60b1c26b-ddb9-4a53-aff0-2980fbcd0862",
 								"exec": [
 									"var expectedStatus=200;\r",
 									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
@@ -498,7 +544,6 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "24b3a4eb-ac1d-44d6-8f72-845ea88d0f1a",
 								"exec": [
 									""
 								],
@@ -508,7 +553,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "60b1c26b-ddb9-4a53-aff0-2980fbcd0862",
 								"exec": [
 									"var expectedStatus=200;\r",
 									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
@@ -562,7 +606,6 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "24b3a4eb-ac1d-44d6-8f72-845ea88d0f1a",
 								"exec": [
 									""
 								],
@@ -572,7 +615,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "60b1c26b-ddb9-4a53-aff0-2980fbcd0862",
 								"exec": [
 									"var expectedStatus=403;\r",
 									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
@@ -581,7 +623,6 @@
 									"    var error = pm.response.json();\r",
 									"    \r",
 									"    tests[\"error\"] = error.error === 'Forbidden';\r",
-									"    tests[\"message\"] = error.message === 'Access Denied';\r",
 									"}"
 								],
 								"type": "text/javascript"
@@ -617,7 +658,6 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "24b3a4eb-ac1d-44d6-8f72-845ea88d0f1a",
 								"exec": [
 									""
 								],
@@ -627,7 +667,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "60b1c26b-ddb9-4a53-aff0-2980fbcd0862",
 								"exec": [
 									"var expectedStatus=403;\r",
 									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
@@ -668,8 +707,7 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "03 - Notes",
@@ -680,7 +718,6 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "24b3a4eb-ac1d-44d6-8f72-845ea88d0f1a",
 								"exec": [
 									"var text = \"Lorem ipsum \"+new Date().toISOString();\r",
 									"pm.globals.set(\"note-text\", text);\r",
@@ -693,7 +730,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "60b1c26b-ddb9-4a53-aff0-2980fbcd0862",
 								"exec": [
 									"var expectedStatus=201;\r",
 									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
@@ -754,7 +790,6 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "24b3a4eb-ac1d-44d6-8f72-845ea88d0f1a",
 								"exec": [
 									""
 								],
@@ -764,7 +799,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "60b1c26b-ddb9-4a53-aff0-2980fbcd0862",
 								"exec": [
 									"var expectedStatus=200;\r",
 									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
@@ -826,7 +860,6 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "24b3a4eb-ac1d-44d6-8f72-845ea88d0f1a",
 								"exec": [
 									""
 								],
@@ -836,7 +869,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "60b1c26b-ddb9-4a53-aff0-2980fbcd0862",
 								"exec": [
 									"var expectedStatus=200;\r",
 									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
@@ -898,7 +930,6 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "24b3a4eb-ac1d-44d6-8f72-845ea88d0f1a",
 								"exec": [
 									"var text = \"Changed test \"+new Date().toISOString();\r",
 									"pm.globals.set(\"note-text\", text);\r",
@@ -910,7 +941,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "60b1c26b-ddb9-4a53-aff0-2980fbcd0862",
 								"exec": [
 									"var expectedStatus=204;\r",
 									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
@@ -959,7 +989,6 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "24b3a4eb-ac1d-44d6-8f72-845ea88d0f1a",
 								"exec": [
 									""
 								],
@@ -969,7 +998,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "60b1c26b-ddb9-4a53-aff0-2980fbcd0862",
 								"exec": [
 									"var expectedStatus=200;\r",
 									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
@@ -1025,7 +1053,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "1f4a8c2c-b8e4-4e26-81b2-933a44c721fd",
 								"exec": [
 									"var expectedStatus=204;\r",
 									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
@@ -1064,7 +1091,6 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "24b3a4eb-ac1d-44d6-8f72-845ea88d0f1a",
 								"exec": [
 									""
 								],
@@ -1074,7 +1100,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "60b1c26b-ddb9-4a53-aff0-2980fbcd0862",
 								"exec": [
 									"var expectedStatus=404;\r",
 									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
@@ -1120,7 +1145,6 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "24b3a4eb-ac1d-44d6-8f72-845ea88d0f1a",
 								"exec": [
 									""
 								],
@@ -1130,7 +1154,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "60b1c26b-ddb9-4a53-aff0-2980fbcd0862",
 								"exec": [
 									"var expectedStatus=200;\r",
 									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
@@ -1182,7 +1205,6 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "24b3a4eb-ac1d-44d6-8f72-845ea88d0f1a",
 								"exec": [
 									""
 								],
@@ -1192,7 +1214,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "60b1c26b-ddb9-4a53-aff0-2980fbcd0862",
 								"exec": [
 									"var expectedStatus=400;\r",
 									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
@@ -1250,7 +1271,6 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "24b3a4eb-ac1d-44d6-8f72-845ea88d0f1a",
 								"exec": [
 									""
 								],
@@ -1260,7 +1280,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "60b1c26b-ddb9-4a53-aff0-2980fbcd0862",
 								"exec": [
 									"var expectedStatus=400;\r",
 									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
@@ -1318,7 +1337,6 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "24b3a4eb-ac1d-44d6-8f72-845ea88d0f1a",
 								"exec": [
 									""
 								],
@@ -1328,7 +1346,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "60b1c26b-ddb9-4a53-aff0-2980fbcd0862",
 								"exec": [
 									"var expectedStatus=400;\r",
 									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
@@ -1386,7 +1403,6 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "24b3a4eb-ac1d-44d6-8f72-845ea88d0f1a",
 								"exec": [
 									""
 								],
@@ -1396,7 +1412,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "60b1c26b-ddb9-4a53-aff0-2980fbcd0862",
 								"exec": [
 									"var expectedStatus=400;\r",
 									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
@@ -1452,7 +1467,6 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "24b3a4eb-ac1d-44d6-8f72-845ea88d0f1a",
 								"exec": [
 									""
 								],
@@ -1462,7 +1476,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "60b1c26b-ddb9-4a53-aff0-2980fbcd0862",
 								"exec": [
 									"var expectedStatus=400;\r",
 									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
@@ -1518,7 +1531,6 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "24b3a4eb-ac1d-44d6-8f72-845ea88d0f1a",
 								"exec": [
 									""
 								],
@@ -1528,7 +1540,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "60b1c26b-ddb9-4a53-aff0-2980fbcd0862",
 								"exec": [
 									"var expectedStatus=404;\r",
 									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
@@ -1576,9 +1587,7 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		}
-	],
-	"protocolProfileBehavior": {}
+	]
 }

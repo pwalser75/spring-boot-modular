@@ -3,12 +3,13 @@ package ch.frostnova.module1.web.client;
 import ch.frostnova.module1.api.model.Note;
 import ch.frostnova.module1.web.config.ResponseExceptionMapper;
 import ch.frostnova.module1.web.config.RestClientConfig;
+import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.client.Invocation;
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.Response;
 import java.util.List;
 
 /**
@@ -71,7 +72,7 @@ public class NoteClient implements AutoCloseable {
     }
 
     /**
-     * Get a note by id. Throws a {@link javax.ws.rs.NotFoundException} if the note wasn't found.
+     * Get a note by id. Throws a {@link NotFoundException} if the note wasn't found.
      *
      * @param id id
      * @return note.

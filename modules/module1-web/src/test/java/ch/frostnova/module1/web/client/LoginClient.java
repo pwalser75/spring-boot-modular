@@ -2,11 +2,11 @@ package ch.frostnova.module1.web.client;
 
 import ch.frostnova.module1.web.config.ResponseExceptionMapper;
 import ch.frostnova.module1.web.config.RestClientConfig;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.Invocation;
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.Response;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;

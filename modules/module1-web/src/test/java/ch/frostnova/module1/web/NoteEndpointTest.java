@@ -1,11 +1,13 @@
 package ch.frostnova.module1.web;
 
 
-import ch.frostnova.spring.boot.platform.model.UserInfo;
-import ch.frostnova.spring.boot.platform.service.TokenAuthenticator;
 import ch.frostnova.common.service.scope.TaskScope;
 import ch.frostnova.module1.api.model.Note;
 import ch.frostnova.module1.web.client.NoteClient;
+import ch.frostnova.spring.boot.platform.model.UserInfo;
+import ch.frostnova.spring.boot.platform.service.TokenAuthenticator;
+import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.NotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,14 +23,16 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.ws.rs.BadRequestException;
-import javax.ws.rs.NotFoundException;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
 import static ch.frostnova.spring.boot.platform.model.UserInfo.aUserInfo;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 /**

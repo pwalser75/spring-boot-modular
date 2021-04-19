@@ -69,7 +69,7 @@ public class PerformanceLoggingAspect {
     @Around("!@within(ch.frostnova.spring.boot.platform.aspect.NoPerformanceLogging) && " +
             "(@within(ch.frostnova.spring.boot.platform.aspect.PerformanceLogging)" +
             "|| @within(org.springframework.stereotype.Service)" +
-            "|| @within(org.springframework.stereotype.Controller)" +
+          //  "|| @within(org.springframework.stereotype.Controller)" +
             "|| @within(org.springframework.scheduling.annotation.Scheduled)" +
             "|| @within(org.springframework.web.bind.annotation.RestController))"
     )
