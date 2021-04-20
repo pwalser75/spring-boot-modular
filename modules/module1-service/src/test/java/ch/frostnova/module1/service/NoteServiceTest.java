@@ -22,7 +22,10 @@ import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
@@ -50,28 +53,28 @@ public class NoteServiceTest {
         Note note = new Note(text);
 
         Note saved = noteService.save(note);
-        assertNotNull(saved.getId());
-        assertNotNull(saved.getCreated());
-        assertFalse(saved.getCreated().isAfter(OffsetDateTime.now()));
-        assertNotNull(saved.getUpdated());
-        assertFalse(saved.getUpdated().isAfter(OffsetDateTime.now()));
-        assertFalse(saved.getUpdated().isAfter(saved.getCreated()));
+        assertThat(saved.getId()).isNotNull();
+        assertThat(saved.getCreated()).isNotNull();
+        assertThat(saved.getCreated().isAfter(OffsetDateTime.now())).isFalse();
+        assertThat(saved.getUpdated()).isNotNull();
+        assertThat(saved.getUpdated().isAfter(OffsetDateTime.now())).isFalse();
+        assertThat(saved.getUpdated().isAfter(saved.getCreated())).isFalse();
 
-        assertEquals(note.getText(), saved.getText());
+        assertThat(saved.getText()).isEqualTo(note.getText());
     }
 
     @Test
     public void testValidateTextRequired() {
 
         Note note = new Note();
-        assertThrows(ValidationException.class, () -> noteService.save(note));
+        assertThatThrownBy(() -> noteService.save(note)).isInstanceOf(ValidationException.class);
     }
 
     @Test
     public void testValidateTextNotBlank() {
 
         Note note = new Note("");
-        assertThrows(ValidationException.class, () -> noteService.save(note));
+        assertThatThrownBy(() -> noteService.save(note)).isInstanceOf(ValidationException.class);
     }
 
     @Test
@@ -84,7 +87,7 @@ public class NoteServiceTest {
                 .map(String::valueOf)
                 .collect(Collectors.joining());
         Note note = new Note(text);
-        assertThrows(ValidationException.class, () -> noteService.save(note));
+        assertThatThrownBy(() -> noteService.save(note)).isInstanceOf(ValidationException.class);
     }
 
     @Test
@@ -95,8 +98,8 @@ public class NoteServiceTest {
 
         Note loaded = noteService.get(note.getId());
 
-        assertEquals(note, loaded);
-        assertEquals(note.getText(), loaded.getText());
+        assertThat(loaded).isEqualTo(note);
+        assertThat(loaded.getText()).isEqualTo(note.getText());
     }
 
     @Test
@@ -106,7 +109,7 @@ public class NoteServiceTest {
         note = noteService.save(note);
 
         List<Note> list = noteService.list();
-        assertTrue(list.contains(note));
+        assertThat(list.contains(note)).isTrue();
     }
 
     @Test
@@ -119,8 +122,8 @@ public class NoteServiceTest {
         noteService.save(note);
 
         Note updated = noteService.get(note.getId());
-        assertEquals(note, updated);
-        assertEquals(note.getText(), updated.getText());
+        assertThat(updated).isEqualTo(note);
+        assertThat(updated.getText()).isEqualTo(note.getText());
     }
 
     @Test
@@ -131,8 +134,8 @@ public class NoteServiceTest {
 
         noteService.delete(id);
 
-        assertThrows(ResourceNotFoundException.class, () -> noteService.get(id));
-        assertFalse(noteService.list().stream().anyMatch(n -> n.getId().equals(id)));
+        assertThatThrownBy(() -> noteService.get(id)).isInstanceOf(ResourceNotFoundException.class);
+        assertThat(noteService.list().stream().anyMatch(n -> n.getId().equals(id))).isFalse();
     }
 
     @Test

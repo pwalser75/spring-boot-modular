@@ -14,7 +14,9 @@ import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test JPA repository
@@ -35,40 +37,40 @@ public class NoteRepositoryTest {
         NoteEntity note = new NoteEntity();
         note.setText("Aloha");
 
-        assertFalse(note.isPersistent());
+        assertThat(note.isPersistent()).isFalse();
         OffsetDateTime before = OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS);
         note = repository.save(note);
-        assertTrue(note.isPersistent());
-        assertNotNull(note.getId());
+        assertThat(note.isPersistent()).isTrue();
+        assertThat(note.getId()).isNotNull();
 
-        assertNotNull(note.getCreatedOn());
-        assertNotNull(note.getCreatedBy());
-        assertFalse(note.getCreatedOn().isBefore(before));
-        assertFalse(note.getCreatedOn().isAfter(OffsetDateTime.now()));
+        assertThat(note.getCreatedOn()).isNotNull();
+        assertThat(note.getCreatedBy()).isNotNull();
+        assertThat(note.getCreatedOn().isBefore(before)).isFalse();
+        assertThat(note.getCreatedOn().isAfter(OffsetDateTime.now())).isFalse();
 
-        assertNotNull(note.getLastUpdatedOn());
-        assertNotNull(note.getLastUpdatedBy());
-        assertFalse(note.getLastUpdatedOn().isBefore(before));
-        assertFalse(note.getLastUpdatedOn().isAfter(OffsetDateTime.now()));
+        assertThat(note.getLastUpdatedOn()).isNotNull();
+        assertThat(note.getLastUpdatedBy()).isNotNull();
+        assertThat(note.getLastUpdatedOn().isBefore(before)).isFalse();
+        assertThat(note.getLastUpdatedOn().isAfter(OffsetDateTime.now())).isFalse();
         OffsetDateTime creationDate = note.getCreatedOn();
 
         // read
         note = repository.findById(note.getId()).orElseThrow(NoSuchElementException::new);
-        assertEquals("Aloha", note.getText());
+        assertThat(note.getText()).isEqualTo("Aloha");
 
         // update
         before = OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS);
         note.setText("Lorem ipsum dolor sit amet");
         note = repository.save(note);
-        assertEquals(creationDate, note.getCreatedOn());
-        assertNotNull(note.getLastUpdatedOn());
-        assertFalse(note.getLastUpdatedOn().isBefore(before));
-        assertFalse(note.getLastUpdatedOn().isAfter(OffsetDateTime.now()));
+        assertThat(note.getCreatedOn()).isEqualTo(creationDate);
+        assertThat(note.getLastUpdatedOn()).isNotNull();
+        assertThat(note.getLastUpdatedOn().isBefore(before)).isFalse();
+        assertThat(note.getLastUpdatedOn().isAfter(OffsetDateTime.now())).isFalse();
 
         // delete
         repository.deleteById(note.getId());
         note = repository.findById(note.getId()).orElse(null);
-        assertNull(note);
+        assertThat(note).isNull();
     }
 
     @Test

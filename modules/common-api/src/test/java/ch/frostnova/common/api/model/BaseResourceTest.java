@@ -2,7 +2,7 @@ package ch.frostnova.common.api.model;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class BaseResourceTest {
 
@@ -58,19 +58,19 @@ public class BaseResourceTest {
     }
 
     private void assertEqualsAndHashcode(Object a, Object b) {
-        assertNotNull(a);
-        assertNotNull(b);
-        assertTrue(a.equals(b));
-        assertTrue(b.equals(a));
-        assertTrue(a.hashCode() == b.hashCode());
+        assertThat(a).isNotNull();
+        assertThat(b).isNotNull();
+        assertThat(a.equals(b)).isTrue();
+        assertThat(b.equals(a)).isTrue();
+        assertThat(a.hashCode() == b.hashCode()).isTrue();
     }
 
     private void assertNotEqualsAndHashcode(Object a, Object b) {
         if (a != null) {
-            assertFalse(a.equals(b));
+            assertThat(a.equals(b)).isFalse();
         }
         if (b != null) {
-            assertFalse(b.equals(a));
+            assertThat(b.equals(a)).isFalse();
         }
     }
 }

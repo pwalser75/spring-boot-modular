@@ -20,7 +20,10 @@ import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {TaskScopeConfig.class, TaskScopedComponent.class})
@@ -35,31 +38,31 @@ public class TaskScopeExecutionContextTest {
         if (TaskScope.isActive()) {
             TaskScope.destroy();
         }
-        assertFalse(TaskScope.isActive());
+        assertThat(TaskScope.isActive()).isFalse();
     }
 
     @Test
     public void testRunInContext() {
-        assertFalse(TaskScope.isActive());
+        assertThat(TaskScope.isActive()).isFalse();
 
         TaskScope.newExecutionContext().execute(() -> {
-            assertNotNull(taskScopedComponent);
-            assertNotNull(taskScopedComponent.getUuid());
+            assertThat(taskScopedComponent).isNotNull();
+            assertThat(taskScopedComponent.getUuid()).isNotNull();
             System.out.println(taskScopedComponent.getUuid());
         });
 
-        assertFalse(TaskScope.isActive());
+        assertThat(TaskScope.isActive()).isFalse();
     }
 
     @Test
     public void testRunInContextWithException() {
-        assertFalse(TaskScope.isActive());
+        assertThat(TaskScope.isActive()).isFalse();
 
         assertThrows(ArithmeticException.class, () ->
                 TaskScope.newExecutionContext().execute(() -> {
                     throw new ArithmeticException();
                 }));
-        assertFalse(TaskScope.isActive());
+        assertThat(TaskScope.isActive()).isFalse();
     }
 
     @Test
@@ -73,7 +76,7 @@ public class TaskScopeExecutionContextTest {
 
         for (int i = 0; i < 100; i++) {
             futures.add(executorService.submit(() -> executionContext.execute(() -> {
-                assertTrue(TaskScope.isActive());
+                assertThat(TaskScope.isActive()).isTrue();
                 try {
                     Thread.sleep(10);
                 } catch (InterruptedException ex) {
@@ -87,16 +90,16 @@ public class TaskScopeExecutionContextTest {
             results.add(future.get());
         }
         executorService.shutdownNow();
-        assertFalse(TaskScope.isActive());
+        assertThat(TaskScope.isActive()).isFalse();
 
         // distinct components per task
-        assertEquals(results.size(), results.stream().distinct().count());
+        assertThat(results.stream().distinct().count()).isEqualTo(results.size());
     }
 
     @Test
     public void testInheritInThread() throws ExecutionException, InterruptedException {
         TaskScope.init();
-        final String uuid = taskScopedComponent.getUuid();
+        String uuid = taskScopedComponent.getUuid();
         TaskScope.ExecutionContext executionContext = TaskScope.currentExecutionContext();
 
         ExecutorService executorService = Executors.newFixedThreadPool(8);
@@ -104,7 +107,7 @@ public class TaskScopeExecutionContextTest {
 
         for (int i = 0; i < 100; i++) {
             futures.add(executorService.submit(() -> executionContext.execute(() -> {
-                assertTrue(TaskScope.isActive());
+                assertThat(TaskScope.isActive()).isTrue();
                 try {
                     Thread.sleep(10);
                 } catch (InterruptedException ex) {
@@ -118,16 +121,16 @@ public class TaskScopeExecutionContextTest {
             results.add(future.get());
         }
         executorService.shutdownNow();
-        assertTrue(TaskScope.isActive());
+        assertThat(TaskScope.isActive()).isTrue();
 
         // same component in each task
-        results.forEach(result -> assertEquals(uuid, result));
+        assertThat(results).allSatisfy(result -> assertThat(result).isEqualTo(uuid));
     }
 
     @Test
     public void testScopeInParallelStream() {
 
-        assertFalse(TaskScope.isActive());
+        assertThat(TaskScope.isActive()).isFalse();
 
         TaskScope.ExecutionContext executionContext = TaskScope.newExecutionContext();
 
@@ -136,16 +139,16 @@ public class TaskScopeExecutionContextTest {
                 .mapToObj(x -> executionContext.execute(taskScopedComponent::getUuid))
                 .collect(Collectors.toList());
 
-        assertFalse(TaskScope.isActive());
+        assertThat(TaskScope.isActive()).isFalse();
         // distinct components per task
-        assertEquals(results.size(), results.stream().distinct().count());
+        assertThat(results.stream().distinct().count()).isEqualTo(results.size());
     }
 
     @Test
     public void testInheritInParallelStream() {
         TaskScope.init();
 
-        final String uuid = taskScopedComponent.getUuid();
+        String uuid = taskScopedComponent.getUuid();
         TaskScope.ExecutionContext executionContext = TaskScope.currentExecutionContext();
 
         List<String> results = IntStream.range(0, 100)
@@ -153,15 +156,15 @@ public class TaskScopeExecutionContextTest {
                 .mapToObj(x -> executionContext.execute(taskScopedComponent::getUuid))
                 .collect(Collectors.toList());
 
-        assertTrue(TaskScope.isActive());
-        assertEquals(uuid, taskScopedComponent.getUuid());
+        assertThat(TaskScope.isActive()).isTrue();
+        assertThat(taskScopedComponent.getUuid()).isEqualTo(uuid);
         // same component in each task
-        results.forEach(result -> assertEquals(uuid, result));
+        assertThat(results).allSatisfy(result -> assertThat(result).isEqualTo(uuid));
     }
 
     @Test
     public void testCurrentExecutionContextFailsWhenNoneActive() {
-        assertThrows(IllegalStateException.class, () -> TaskScope.currentExecutionContext());
+        assertThatThrownBy(() -> TaskScope.currentExecutionContext()).isInstanceOf(IllegalStateException.class);
     }
 
     @Test
@@ -172,7 +175,7 @@ public class TaskScopeExecutionContextTest {
         executionContext.execute(() -> taskScopedComponent.getUuid());
         TaskScope.destroy();
 
-        assertThrows(IllegalStateException.class, () -> executionContext.execute(() -> taskScopedComponent.getUuid()));
+        assertThatThrownBy(() -> executionContext.execute(() -> taskScopedComponent.getUuid())).isInstanceOf(IllegalStateException.class);
     }
 
     @Test
@@ -182,54 +185,54 @@ public class TaskScopeExecutionContextTest {
         TaskScope.destroy();
 
         TaskScope.init();
-        assertThrows(IllegalStateException.class, () -> executionContext.execute(() -> taskScopedComponent.getUuid()));
+        assertThatThrownBy(() -> executionContext.execute(() -> taskScopedComponent.getUuid())).isInstanceOf(IllegalStateException.class);
     }
 
     @Test
     public void testExecuteInActiveContextThread() {
 
         TaskScope.init();
-        final String uuid1 = taskScopedComponent.getUuid();
-        final String uuid2 = TaskScope.currentExecutionContext().execute(() -> taskScopedComponent.getUuid());
-        final String uuid3 = taskScopedComponent.getUuid();
+        String uuid1 = taskScopedComponent.getUuid();
+        String uuid2 = TaskScope.currentExecutionContext().execute(() -> taskScopedComponent.getUuid());
+        String uuid3 = taskScopedComponent.getUuid();
 
-        assertEquals(uuid1, uuid2);
-        assertEquals(uuid1, uuid3);
+        assertThat(uuid2).isEqualTo(uuid1);
+        assertThat(uuid3).isEqualTo(uuid1);
     }
 
     @Test
     public void testNestedTaskScopes() {
 
-        final Set<String> preDestroyed = new HashSet<>();
+        Set<String> preDestroyed = new HashSet<>();
 
         TaskScope.init();
-        final String uuid1 = taskScopedComponent.getUuid();
+        String uuid1 = taskScopedComponent.getUuid();
         taskScopedComponent.setPreDestroyCallback(() -> preDestroyed.add(uuid1));
 
         TaskScope.newExecutionContext().execute(() -> {
-            final String uuid2 = taskScopedComponent.getUuid();
+            String uuid2 = taskScopedComponent.getUuid();
             assertNotEquals(uuid1, uuid2);
             taskScopedComponent.setPreDestroyCallback(() -> preDestroyed.add(uuid2));
 
             TaskScope.newExecutionContext().execute(() -> {
-                final String uuid3 = taskScopedComponent.getUuid();
+                String uuid3 = taskScopedComponent.getUuid();
                 assertNotEquals(uuid1, uuid3);
                 assertNotEquals(uuid2, uuid3);
                 taskScopedComponent.setPreDestroyCallback(() -> preDestroyed.add(uuid3));
             });
-            assertEquals(uuid2, taskScopedComponent.getUuid());
-            assertEquals(1, preDestroyed.size());
+            assertThat(taskScopedComponent.getUuid()).isEqualTo(uuid2);
+            assertThat(preDestroyed.size()).isEqualTo(1);
         });
-        assertEquals(uuid1, taskScopedComponent.getUuid());
-        assertEquals(2, preDestroyed.size());
+        assertThat(taskScopedComponent.getUuid()).isEqualTo(uuid1);
+        assertThat(preDestroyed.size()).isEqualTo(2);
         TaskScope.destroy();
-        assertEquals(3, preDestroyed.size());
+        assertThat(preDestroyed.size()).isEqualTo(3);
     }
 
     @Test
     public void testRequiresRunnable() {
-        final TaskScope.CheckedRunnable runnable = null;
-        assertThrows(IllegalArgumentException.class, () -> TaskScope.newExecutionContext().execute(runnable));
+        TaskScope.CheckedRunnable runnable = null;
+        assertThatThrownBy(() -> TaskScope.newExecutionContext().execute(runnable)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -254,8 +257,8 @@ public class TaskScopeExecutionContextTest {
 
     @Test
     public void testRequiresSupplier() {
-        final TaskScope.CheckedSupplier<String> supplier = null;
-        assertThrows(IllegalArgumentException.class, () -> TaskScope.newExecutionContext().execute(supplier));
+        TaskScope.CheckedSupplier<String> supplier = null;
+        assertThatThrownBy(() -> TaskScope.newExecutionContext().execute(supplier)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test

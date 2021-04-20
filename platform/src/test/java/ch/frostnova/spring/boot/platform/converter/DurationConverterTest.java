@@ -4,8 +4,6 @@ import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
-import java.time.OffsetDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -14,7 +12,14 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static java.time.Duration.parse;
+import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoUnit.HOURS;
+import static java.time.temporal.ChronoUnit.MILLIS;
+import static java.time.temporal.ChronoUnit.MINUTES;
+import static java.time.temporal.ChronoUnit.SECONDS;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class DurationConverterTest {
 
@@ -22,31 +27,30 @@ public class DurationConverterTest {
 
     @Test
     public void testEmpty() {
-        assertNull(durationConverter.convert(null));
-
+        assertThat(durationConverter.convert(null)).isNull();
     }
 
     @Test
     public void testTrivial() {
-        assertEquals(Duration.ZERO, durationConverter.convert(""));
+        assertThat(durationConverter.convert("")).isEqualTo(Duration.ZERO);
     }
 
     @Test
     public void testConversionSuccessful() {
-        assertEquals(Duration.parse("P123D"), durationConverter.convert("123d"));
-        assertEquals(Duration.parse("P-123D"), durationConverter.convert("-123d"));
+        assertThat(durationConverter.convert("123d")).isEqualTo(parse("P123D"));
+        assertThat(durationConverter.convert("-123d")).isEqualTo(parse("P-123D"));
 
-        assertEquals(Duration.parse("PT12H34M56S"), durationConverter.convert("12H34M56S"));
-        assertEquals(Duration.parse("PT-12H-34M-56S"), durationConverter.convert("-12H34M56S"));
+        assertThat(durationConverter.convert("12H34M56S")).isEqualTo(parse("PT12H34M56S"));
+        assertThat(durationConverter.convert("-12H34M56S")).isEqualTo(parse("PT-12H-34M-56S"));
 
-        assertEquals(Duration.parse("P1DT2H3M4.5S"), durationConverter.convert("1d2h3m4s500ms"));
-        assertEquals(Duration.parse("P-1DT-2H-3M-4.5S"), durationConverter.convert("-1d2h3m4s500ms"));
+        assertThat(durationConverter.convert("1d2h3m4s500ms")).isEqualTo(parse("P1DT2H3M4.5S"));
+        assertThat(durationConverter.convert("-1d2h3m4s500ms")).isEqualTo(parse("P-1DT-2H-3M-4.5S"));
     }
 
     @Test
     public void testIllegalFormat() {
         for (String s : List.of("foo", "123", "5.5d", "5d-3h", "77t", "1s2m3d")) {
-            assertThrows(IllegalArgumentException.class, () -> durationConverter.convert(s));
+            assertThatThrownBy(() -> durationConverter.convert(s)).isInstanceOf(IllegalArgumentException.class);
         }
     }
 
@@ -64,11 +68,11 @@ public class DurationConverterTest {
         Integer ms = randomOrEmpty.get();
 
         Duration expected = Duration.ZERO
-                .plus(numberOrZero(d), ChronoUnit.DAYS)
-                .plus(numberOrZero(h), ChronoUnit.HOURS)
-                .plus(numberOrZero(m), ChronoUnit.MINUTES)
-                .plus(numberOrZero(s), ChronoUnit.SECONDS)
-                .plus(numberOrZero(ms), ChronoUnit.MILLIS);
+                .plus(numberOrZero(d), DAYS)
+                .plus(numberOrZero(h), HOURS)
+                .plus(numberOrZero(m), MINUTES)
+                .plus(numberOrZero(s), SECONDS)
+                .plus(numberOrZero(ms), MILLIS);
         if (negative) {
             expected = Duration.ZERO.minus(expected);
         }
@@ -78,7 +82,7 @@ public class DurationConverterTest {
                         .filter(Objects::nonNull)
                         .collect(Collectors.joining());
 
-        assertEquals(expected, durationConverter.convert(text));
+        assertThat(durationConverter.convert(text)).isEqualTo(expected);
     }
 
     private int numberOrZero(Integer n) {
@@ -87,10 +91,5 @@ public class DurationConverterTest {
 
     private String suffixed(Integer n, String suffix) {
         return n != null ? n + suffix : "";
-    }
-
-    @Test
-    public void foo() {
-        System.out.println(OffsetDateTime.now());
     }
 }

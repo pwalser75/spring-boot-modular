@@ -21,9 +21,12 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
@@ -72,20 +75,20 @@ public class JWTServiceTest {
         Instant notAfter = body.getExpiration().toInstant();
         Collection<String> scopes = body.get("scope", Collection.class);
 
-        assertEquals("frostnova-platform", issuer);
-        assertEquals("test-tenant", tenant);
-        assertEquals("test-user", subject);
+        assertThat(issuer).isEqualTo("frostnova-platform");
+        assertThat(tenant).isEqualTo("test-tenant");
+        assertThat(subject).isEqualTo("test-user");
 
-        assertFalse(issuedAt.isBefore(validFrom.toInstant()));
-        assertFalse(issuedAt.isAfter(validFrom.toInstant()));
-        assertFalse(notBefore.isBefore(validFrom.toInstant()));
-        assertFalse(notBefore.isAfter(validFrom.toInstant()));
-        assertFalse(notAfter.isBefore(validFrom.toInstant().plus(duration)));
-        assertFalse(notAfter.isAfter(validFrom.toInstant().plus(duration)));
-        assertNotNull(scopes);
+        assertThat(issuedAt.isBefore(validFrom.toInstant())).isFalse();
+        assertThat(issuedAt.isAfter(validFrom.toInstant())).isFalse();
+        assertThat(notBefore.isBefore(validFrom.toInstant())).isFalse();
+        assertThat(notBefore.isAfter(validFrom.toInstant())).isFalse();
+        assertThat(notAfter.isBefore(validFrom.toInstant().plus(duration))).isFalse();
+        assertThat(notAfter.isAfter(validFrom.toInstant().plus(duration))).isFalse();
+        assertThat(scopes).isNotNull();
 
-        userInfo.getRoles().forEach(role -> assertTrue(scopes.contains(role)));
-        userInfo.getAdditionalClaims().forEach((k, v) -> assertEquals(v, body.get(k, v.getClass())));
+        assertThat(userInfo.getRoles()).allSatisfy(role -> assertThat(scopes.contains(role)).isTrue());
+        assertThat(userInfo.getAdditionalClaims()).allSatisfy((k, v) -> assertThat(body.get(k, v.getClass())).isEqualTo(v));
     }
 
     @Test
@@ -96,7 +99,7 @@ public class JWTServiceTest {
         jwtVerificationService.verify(token);
 
         Thread.sleep(2000);
-        assertThrows(ExpiredJwtException.class, () -> jwtVerificationService.verify(token));
+        assertThatThrownBy(() -> jwtVerificationService.verify(token)).isInstanceOf(ExpiredJwtException.class);
     }
 
     @Test

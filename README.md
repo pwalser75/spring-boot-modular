@@ -9,6 +9,7 @@ Spring boot project with
 * **TLS 1.2 + 1.3 enabled** and properly configured (optionally redirecting HTTP to HTTPS when enabling the HTTP port).
 * **HTTP2 enabled**
 * **JWT** authentication
+* **JUnit 5 / AssertJ / Mockito** for state-of-the-art testing
 
 Features:
 

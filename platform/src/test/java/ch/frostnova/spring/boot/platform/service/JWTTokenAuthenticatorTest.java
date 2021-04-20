@@ -15,8 +15,7 @@ import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
@@ -46,12 +45,10 @@ public class JWTTokenAuthenticatorTest {
 
         UserInfo userInfo = jwtTokenAuthenticator.authenticate(token);
 
-        assertEquals("test-tenant", userInfo.getTenant());
-        assertEquals("test-login", userInfo.getLogin());
-        assertEquals(2, userInfo.getRoles().size());
-        assertTrue(userInfo.getRoles().contains("RoleA"));
-        assertTrue(userInfo.getRoles().contains("RoleB"));
-        assertEquals("device-001", userInfo.getAdditionalClaims().get("loginDeviceId"));
-        assertEquals("web", userInfo.getAdditionalClaims().get("accessChannel"));
+        assertThat(userInfo.getTenant()).isEqualTo("test-tenant");
+        assertThat(userInfo.getLogin()).isEqualTo("test-login");
+        assertThat(userInfo.getRoles()).containsExactlyInAnyOrder("RoleA", "RoleB");
+        assertThat(userInfo.getAdditionalClaims().get("loginDeviceId")).isEqualTo("device-001");
+        assertThat(userInfo.getAdditionalClaims().get("accessChannel")).isEqualTo("web");
     }
 }

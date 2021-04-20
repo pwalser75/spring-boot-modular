@@ -8,8 +8,8 @@ import ch.frostnova.spring.boot.platform.model.UserInfo;
 import ch.frostnova.spring.boot.platform.service.TokenAuthenticator;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotFoundException;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,10 +28,9 @@ import java.util.Objects;
 import java.util.UUID;
 
 import static ch.frostnova.spring.boot.platform.model.UserInfo.aUserInfo;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -85,18 +84,18 @@ public class NoteEndpointTest {
             note.setText("Aloha");
 
             Note created = noteClient.create(note);
-            assertNotNull(created);
-            assertNotNull(created.getId());
-            assertEquals(note.getText(), created.getText());
+            assertThat(created).isNotNull();
+            assertThat(created.getId()).isNotNull();
+            assertThat(created.getText()).isEqualTo(note.getText());
             String id = created.getId();
             note = created;
 
             // read
 
             Note loaded = noteClient.get(id);
-            assertNotNull(loaded);
-            assertNotNull(loaded.getId());
-            assertEquals(note.getText(), loaded.getText());
+            assertThat(loaded).isNotNull();
+            assertThat(loaded.getId()).isNotNull();
+            assertThat(loaded.getText()).isEqualTo(note.getText());
 
             // list
 
@@ -108,9 +107,9 @@ public class NoteEndpointTest {
             noteClient.save(note);
 
             loaded = noteClient.get(id);
-            assertNotNull(loaded);
-            assertEquals(note.getId(), loaded.getId());
-            assertEquals(note.getText(), loaded.getText());
+            assertThat(loaded).isNotNull();
+            assertThat(loaded.getId()).isEqualTo(note.getId());
+            assertThat(loaded.getText()).isEqualTo(note.getText());
 
             // delete
 
@@ -122,7 +121,7 @@ public class NoteEndpointTest {
             // must not be found afterwards
             assertFalse(noteClient.list().stream().anyMatch(p -> Objects.equals(p.getId(), id)));
 
-            Assertions.assertThrows(NotFoundException.class, () -> noteClient.get(id));
+            Assertions.assertThatThrownBy(() -> noteClient.get(id)).isInstanceOf(NotFoundException.class);
         }
     }
 
@@ -138,22 +137,22 @@ public class NoteEndpointTest {
             note.setText("Welcome to Switzerland " + time + ", " + random);
             note = noteClient.create(note);
 
-            assertTrue(noteClient.find("welcome").contains(note));
-            assertFalse(noteClient.find("aloha").contains(note));
+            assertThat(noteClient.find("welcome").contains(note)).isTrue();
+            assertThat(noteClient.find("aloha").contains(note)).isFalse();
 
-            assertTrue(noteClient.find(time).contains(note));
-            assertTrue(noteClient.find(random).contains(note));
-            assertTrue(noteClient.find(note.getText()).contains(note));
+            assertThat(noteClient.find(time).contains(note)).isTrue();
+            assertThat(noteClient.find(random).contains(note)).isTrue();
+            assertThat(noteClient.find(note.getText()).contains(note)).isTrue();
             assertTrue(noteClient.find("\"" + note.getText().substring(0, note.getText().length() / 2) + "\"").contains(note));
 
-            assertFalse(noteClient.find(UUID.randomUUID().toString()).contains(note));
+            assertThat(noteClient.find(UUID.randomUUID().toString()).contains(note)).isFalse();
         }
     }
 
     @Test
     public void testValidation() {
         try (NoteClient noteClient = new NoteClient(baseURL, testToken)) {
-            assertThrows(BadRequestException.class, () -> noteClient.create(new Note()));
+            assertThatThrownBy(() -> noteClient.create(new Note())).isInstanceOf(BadRequestException.class);
         }
     }
 }

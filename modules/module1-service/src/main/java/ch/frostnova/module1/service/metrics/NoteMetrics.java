@@ -15,7 +15,7 @@ import javax.annotation.PostConstruct;
 /**
  * Metrics for the notes
  *
- * @author wap
+ * @author pwalser
  * @since 2021-04-19
  */
 @Component

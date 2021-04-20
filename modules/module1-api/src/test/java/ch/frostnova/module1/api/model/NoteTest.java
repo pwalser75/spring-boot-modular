@@ -8,16 +8,18 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import javax.validation.*;
+import javax.validation.ConstraintViolation;
+import javax.validation.Path;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests for Note model
@@ -77,10 +79,10 @@ public class NoteTest {
         System.out.println(json);
 
         Note restored = NoteTest.objectMapper().readValue(json, Note.class);
-        assertEquals(note.getText(), restored.getText());
-        assertEquals(note.getId(), restored.getId());
-        assertTrue(note.getCreated().isEqual(restored.getCreated()));
-        assertTrue(note.getUpdated().isEqual(restored.getUpdated()));
+        assertThat(restored.getText()).isEqualTo(note.getText());
+        assertThat(restored.getId()).isEqualTo(note.getId());
+        assertThat(note.getCreated().isEqual(restored.getCreated())).isTrue();
+        assertThat(note.getUpdated().isEqual(restored.getUpdated())).isTrue();
     }
 
     private static void validate(Object obj, String... expectedErrorPropertyPaths) {
@@ -92,9 +94,7 @@ public class NoteTest {
 
         errors.forEach(e -> System.out.println("- " + e.getPropertyPath() + ": " + e.getMessage()));
 
-        Stream.of(expectedErrorPropertyPaths).forEach(property ->
-                assertTrue(errorProperties.contains(property)));
-        assertEquals(expectedErrorPropertyPaths.length, errorProperties.size());
+        assertThat(errorProperties).containsExactlyInAnyOrder(expectedErrorPropertyPaths);
     }
 
     private static ObjectMapper objectMapper() {

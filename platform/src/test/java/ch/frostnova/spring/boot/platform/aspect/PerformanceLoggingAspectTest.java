@@ -1,8 +1,10 @@
 package ch.frostnova.spring.boot.platform.aspect;
 
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import static java.lang.Thread.sleep;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 /**
  * Test for {@link PerformanceLoggingAspect}
@@ -14,14 +16,14 @@ public class PerformanceLoggingAspectTest {
 
         PerformanceLoggingAspect.PerformanceLoggingContext context = PerformanceLoggingAspect.PerformanceLoggingContext.current();
 
-        Assertions.assertThrows(IllegalArgumentException.class, () ->
+        assertThatThrownBy(() ->
                 context.execute("Test.a()", () -> {
-                    Thread.sleep(50);
+                    sleep(50);
                     context.execute("Test.b()", () -> {
-                        Thread.sleep(100);
+                        sleep(100);
                         for (int i = 0; i < 3; i++) {
                             context.execute("Test.c()", () -> {
-                                Thread.sleep(10);
+                                sleep(10);
                             });
                         }
                         try {
@@ -32,18 +34,18 @@ public class PerformanceLoggingAspectTest {
                             throw new IllegalArgumentException(ex);
                         }
                     });
-                }));
+                })).isInstanceOf(IllegalArgumentException.class);
 
         context.execute("Test.e()", () -> {
-            Thread.sleep(25);
+            sleep(25);
         });
 
         context.execute("Other.x()", () -> {
-            Thread.sleep(3);
+            sleep(3);
             context.execute("Other.y()", () -> {
-                Thread.sleep(2);
+                sleep(2);
                 context.execute("Other.z()", () -> {
-                    Thread.sleep(1);
+                    sleep(1);
                 });
             });
         });

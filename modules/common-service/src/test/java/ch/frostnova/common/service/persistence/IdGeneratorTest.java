@@ -1,10 +1,10 @@
 package ch.frostnova.common.service.persistence;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.stream.IntStream;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -30,6 +30,6 @@ public class IdGeneratorTest {
                 .peek(id -> assertTrue(id.toString().length() >= 10))
                 .distinct()
                 .count();
-        Assertions.assertEquals(numberOfIdsToGenerate, numberOfDistinctIds);
+        assertThat(numberOfDistinctIds).isEqualTo(numberOfIdsToGenerate);
     }
 }

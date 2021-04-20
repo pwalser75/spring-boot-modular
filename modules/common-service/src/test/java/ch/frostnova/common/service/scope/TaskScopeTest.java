@@ -11,7 +11,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {TaskScopeConfig.class, TaskScopedComponent.class})
@@ -26,25 +27,25 @@ public class TaskScopeTest {
         if (TaskScope.isActive()) {
             TaskScope.destroy();
         }
-        assertFalse(TaskScope.isActive());
+        assertThat(TaskScope.isActive()).isFalse();
     }
 
     @Test
     public void testScopeNotActive() {
-        assertFalse(TaskScope.isActive());
-        assertNull(TaskScope.currentConversationId());
-        assertThrows(BeanCreationException.class, () -> taskScopedComponent.getUuid());
+        assertThat(TaskScope.isActive()).isFalse();
+        assertThat(TaskScope.currentConversationId()).isNull();
+        assertThatThrownBy(() -> taskScopedComponent.getUuid()).isInstanceOf(BeanCreationException.class);
     }
 
     @Test
     public void testScopeActive() {
         TaskScope.init();
         try {
-            assertTrue(TaskScope.isActive());
-            assertNotNull(TaskScope.currentConversationId());
+            assertThat(TaskScope.isActive()).isTrue();
+            assertThat(TaskScope.currentConversationId()).isNotNull();
 
-            assertNotNull(taskScopedComponent);
-            assertNotNull(taskScopedComponent.getUuid());
+            assertThat(taskScopedComponent).isNotNull();
+            assertThat(taskScopedComponent.getUuid()).isNotNull();
 
             System.out.println(taskScopedComponent.getUuid());
         } finally {
@@ -55,32 +56,32 @@ public class TaskScopeTest {
     @Test
     public void testScopeDoubleInit() {
         TaskScope.init();
-        assertThrows(IllegalStateException.class, () -> TaskScope.init());
+        assertThatThrownBy(() -> TaskScope.init()).isInstanceOf(IllegalStateException.class);
     }
 
     @Test
     public void testDestroyNotActive() {
-        assertFalse(TaskScope.isActive());
-        assertThrows(IllegalStateException.class, () -> TaskScope.destroy());
+        assertThat(TaskScope.isActive()).isFalse();
+        assertThatThrownBy(() -> TaskScope.destroy()).isInstanceOf(IllegalStateException.class);
     }
 
     @Test
     public void testScopeComponentLifecycle() {
-        assertFalse(TaskScope.isActive());
+        assertThat(TaskScope.isActive()).isFalse();
         TaskScope.init();
-        assertTrue(TaskScope.isActive());
+        assertThat(TaskScope.isActive()).isTrue();
 
         AtomicInteger callbackCount = new AtomicInteger();
         try {
-            assertTrue(taskScopedComponent.isPostConstructed());
+            assertThat(taskScopedComponent.isPostConstructed()).isTrue();
             taskScopedComponent.setPreDestroyCallback(() -> callbackCount.incrementAndGet());
-            assertEquals(0, callbackCount.get());
+            assertThat(callbackCount.get()).isEqualTo(0);
 
         } finally {
-            assertTrue(TaskScope.isActive());
+            assertThat(TaskScope.isActive()).isTrue();
             TaskScope.destroy();
-            assertFalse(TaskScope.isActive());
-            assertEquals(1, callbackCount.get());
+            assertThat(TaskScope.isActive()).isFalse();
+            assertThat(callbackCount.get()).isEqualTo(1);
         }
     }
 }

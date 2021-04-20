@@ -11,7 +11,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
@@ -28,13 +28,13 @@ public class SigningServiceTest {
         ThreadLocalRandom.current().nextBytes(data);
 
         byte[] signature = signingService.sign(data);
-        assertNotNull(signature);
-        assertTrue(signature.length > 0);
-        assertTrue(signingService.verify(data, signature));
+        assertThat(signature).isNotNull();
+        assertThat(signature.length).isGreaterThan(0);
+        assertThat(signingService.verify(data, signature)).isTrue();
 
         byte[] fakeSignature = new byte[signature.length];
         System.arraycopy(signature, 0, fakeSignature, 0, signature.length);
         fakeSignature[0] = (byte) ~signature[0];
-        assertFalse(signingService.verify(data, fakeSignature));
+        assertThat(signingService.verify(data, fakeSignature)).isFalse();
     }
 }
