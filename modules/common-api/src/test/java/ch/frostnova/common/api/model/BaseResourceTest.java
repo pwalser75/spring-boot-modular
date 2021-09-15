@@ -9,10 +9,10 @@ public class BaseResourceTest {
     @Test
     public void testEqualsWithNewResources() {
 
-        BaseResource newResource = new ExampleResource();
-        BaseResource otherNewResource = new ExampleResource();
-        BaseResource newResourceDifferentType = new OtherExampleResource();
-        BaseResource existingResource = new ExampleResource(123L);
+        BaseResource<?> newResource = new ExampleResource();
+        BaseResource<?> otherNewResource = new ExampleResource();
+        BaseResource<?> newResourceDifferentType = new OtherExampleResource();
+        BaseResource<?> existingResource = new ExampleResource(123L);
 
         assertEqualsAndHashcode(newResource, newResource);
         assertNotEqualsAndHashcode(newResource, otherNewResource);
@@ -23,11 +23,11 @@ public class BaseResourceTest {
     @Test
     public void testEqualsWithExistingResources() {
 
-        BaseResource resource = new ExampleResource(123L);
-        BaseResource sameResource = new ExampleResource(123L);
-        BaseResource otherResourceSameTypeDifferentId = new ExampleResource(456L);
-        BaseResource otherResourceSameIdDifferentType = new OtherExampleResource(123L);
-        BaseResource newResource = new ExampleResource();
+        BaseResource<?> resource = new ExampleResource(123L);
+        BaseResource<?> sameResource = new ExampleResource(123L);
+        BaseResource<?> otherResourceSameTypeDifferentId = new ExampleResource(456L);
+        BaseResource<?> otherResourceSameIdDifferentType = new OtherExampleResource(123L);
+        BaseResource<?> newResource = new ExampleResource();
 
         assertEqualsAndHashcode(resource, resource);
         assertEqualsAndHashcode(resource, sameResource);
@@ -35,6 +35,23 @@ public class BaseResourceTest {
         assertNotEqualsAndHashcode(resource, newResource);
         assertNotEqualsAndHashcode(resource, otherResourceSameTypeDifferentId);
         assertNotEqualsAndHashcode(resource, otherResourceSameIdDifferentType);
+    }
+
+    private void assertEqualsAndHashcode(Object a, Object b) {
+        assertThat(a).isNotNull();
+        assertThat(b).isNotNull();
+        assertThat(a.equals(b)).isTrue();
+        assertThat(b.equals(a)).isTrue();
+        assertThat(a.hashCode() == b.hashCode()).isTrue();
+    }
+
+    private void assertNotEqualsAndHashcode(Object a, Object b) {
+        if (a != null) {
+            assertThat(a.equals(b)).isFalse();
+        }
+        if (b != null) {
+            assertThat(b.equals(a)).isFalse();
+        }
     }
 
     private static class ExampleResource extends BaseResource<Long> {
@@ -54,23 +71,6 @@ public class BaseResourceTest {
 
         public OtherExampleResource(Long id) {
             setId(id);
-        }
-    }
-
-    private void assertEqualsAndHashcode(Object a, Object b) {
-        assertThat(a).isNotNull();
-        assertThat(b).isNotNull();
-        assertThat(a.equals(b)).isTrue();
-        assertThat(b.equals(a)).isTrue();
-        assertThat(a.hashCode() == b.hashCode()).isTrue();
-    }
-
-    private void assertNotEqualsAndHashcode(Object a, Object b) {
-        if (a != null) {
-            assertThat(a.equals(b)).isFalse();
-        }
-        if (b != null) {
-            assertThat(b.equals(a)).isFalse();
         }
     }
 }

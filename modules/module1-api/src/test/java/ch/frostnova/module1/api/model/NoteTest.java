@@ -31,6 +31,27 @@ public class NoteTest {
         Locale.setDefault(Locale.ENGLISH);
     }
 
+    private static void validate(Object obj, String... expectedErrorPropertyPaths) {
+
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+        Set<ConstraintViolation<Object>> errors = validator.validate(obj);
+        Set<String> errorProperties = errors.stream().map(ConstraintViolation::getPropertyPath).map(Path::toString).collect(Collectors.toSet());
+
+        errors.forEach(e -> System.out.println("- " + e.getPropertyPath() + ": " + e.getMessage()));
+
+        assertThat(errorProperties).containsExactlyInAnyOrder(expectedErrorPropertyPaths);
+    }
+
+    private static ObjectMapper objectMapper() {
+        return new ObjectMapper()
+                .setAnnotationIntrospector(new JacksonAnnotationIntrospector())
+                .registerModule(new JavaTimeModule())
+                .setDateFormat(new StdDateFormat())
+                .enable(SerializationFeature.INDENT_OUTPUT)
+                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    }
+
     @Test
     public void testValidate() {
 
@@ -50,9 +71,7 @@ public class NoteTest {
 
         // text length <= 2048 chars
         StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < 2048; i++) {
-            builder.append('#');
-        }
+        builder.append("#".repeat(2048));
         note.setText(builder.toString());
         validate(note);
         builder.append('#');
@@ -83,26 +102,5 @@ public class NoteTest {
         assertThat(restored.getId()).isEqualTo(note.getId());
         assertThat(note.getCreated().isEqual(restored.getCreated())).isTrue();
         assertThat(note.getUpdated().isEqual(restored.getUpdated())).isTrue();
-    }
-
-    private static void validate(Object obj, String... expectedErrorPropertyPaths) {
-
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        Validator validator = factory.getValidator();
-        Set<ConstraintViolation<Object>> errors = validator.validate(obj);
-        Set<String> errorProperties = errors.stream().map(ConstraintViolation::getPropertyPath).map(Path::toString).collect(Collectors.toSet());
-
-        errors.forEach(e -> System.out.println("- " + e.getPropertyPath() + ": " + e.getMessage()));
-
-        assertThat(errorProperties).containsExactlyInAnyOrder(expectedErrorPropertyPaths);
-    }
-
-    private static ObjectMapper objectMapper() {
-        return new ObjectMapper()
-                .setAnnotationIntrospector(new JacksonAnnotationIntrospector())
-                .registerModule(new JavaTimeModule())
-                .setDateFormat(new StdDateFormat())
-                .enable(SerializationFeature.INDENT_OUTPUT)
-                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
 }

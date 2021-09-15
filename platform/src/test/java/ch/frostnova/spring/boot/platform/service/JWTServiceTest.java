@@ -22,7 +22,6 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,7 +33,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @EnableConfigurationProperties
 public class JWTServiceTest {
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private JWTSigningService jwtSigningService;
@@ -42,8 +41,8 @@ public class JWTServiceTest {
     @Autowired
     private JWTVerificationService jwtVerificationService;
 
-    @Autowired
-    private Optional<CacheManager> cacheManager;
+    @Autowired(required = false)
+    private CacheManager cacheManager;
 
     @Test
     public void testGenerateJWT() {
@@ -57,7 +56,7 @@ public class JWTServiceTest {
                 .role("RoleA")
                 .role("RoleB")
                 .role("RoleC")
-                .additionalClaim("loginDeviceId",UUID.randomUUID().toString())
+                .additionalClaim("loginDeviceId", UUID.randomUUID().toString())
                 .additionalClaim("accessChannel", "mobile")
                 .build();
 

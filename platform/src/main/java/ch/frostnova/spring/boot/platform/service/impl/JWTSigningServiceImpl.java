@@ -13,7 +13,11 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.time.Duration;
 import java.time.OffsetDateTime;
-import java.util.*;
+import java.util.Date;
+import java.util.Map;
+import java.util.Optional;
+import java.util.TreeSet;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,7 +37,7 @@ public class JWTSigningServiceImpl implements JWTSigningService {
     private String appName;
 
     @PostConstruct
-    public void init() throws Exception {
+    public void init() {
 
         signingConfig.requirePublicKey();
         logger.warn("{} is activated, service can issue self-signed JWT security tokens - do not use in production", getClass().getSimpleName());

@@ -164,7 +164,7 @@ public class TaskScopeExecutionContextTest {
 
     @Test
     public void testCurrentExecutionContextFailsWhenNoneActive() {
-        assertThatThrownBy(() -> TaskScope.currentExecutionContext()).isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(TaskScope::currentExecutionContext).isInstanceOf(IllegalStateException.class);
     }
 
     @Test
@@ -241,7 +241,6 @@ public class TaskScopeExecutionContextTest {
             if (1 > 0) {
                 throw new ArithmeticException();
             }
-            return;
         }));
     }
 
@@ -251,7 +250,6 @@ public class TaskScopeExecutionContextTest {
             if (1 > 0) {
                 throw new IOException();
             }
-            return;
         }));
     }
 

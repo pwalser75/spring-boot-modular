@@ -73,7 +73,7 @@ public class BaseResource<ID> implements Serializable {
         if (id == null) {
             return false;
         }
-        BaseResource that = (BaseResource) o;
+        BaseResource<?> that = (BaseResource<?>) o;
         return Objects.equals(id, that.id);
     }
 

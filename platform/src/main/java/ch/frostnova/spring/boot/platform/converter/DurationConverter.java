@@ -8,7 +8,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.time.Duration.ZERO;
-import static java.time.temporal.ChronoUnit.*;
+import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoUnit.HOURS;
+import static java.time.temporal.ChronoUnit.MILLIS;
+import static java.time.temporal.ChronoUnit.MINUTES;
+import static java.time.temporal.ChronoUnit.SECONDS;
 
 @Component
 public class DurationConverter implements Converter<String, Duration> {
@@ -30,8 +34,7 @@ public class DurationConverter implements Converter<String, Duration> {
         int minutes = parseInt(matcher.group(4));
         int seconds = parseInt(matcher.group(5));
         int milliseconds = parseInt(matcher.group(6));
-
-
+        
         Duration duration = ZERO
                 .plus(days, DAYS)
                 .plus(hours, HOURS)

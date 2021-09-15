@@ -24,7 +24,7 @@ public class NoteMetrics {
 
     private final static String NOTE_COUNT_GAUGE_NAME = "business.metrics.notes.count";
 
-    private Logger logger = LoggerFactory.getLogger(NoteMetrics.class);
+    private final Logger logger = LoggerFactory.getLogger(NoteMetrics.class);
 
     @Autowired
     private MeterRegistry meterRegistry;

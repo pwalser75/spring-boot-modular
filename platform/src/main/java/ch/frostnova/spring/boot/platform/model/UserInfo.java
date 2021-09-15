@@ -4,20 +4,27 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.text.Collator;
-import java.util.*;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.function.Consumer;
-
-import static java.util.stream.Collectors.joining;
 
 @ApiModel("UserInfo")
 public class UserInfo {
 
-    private String tenant;
-    private String login;
     private final Set<String> roles = new TreeSet<>(Collator.getInstance());
     private final Map<String, String> additionalClaims = new TreeMap<>(Collator.getInstance());
+    private String tenant;
+    private String login;
 
     private UserInfo() {
+    }
+
+    public static Builder aUserInfo() {
+        return new Builder();
     }
 
     @ApiModelProperty(notes = "tenant id for the user (multitenancy support)", example = "tenant123")
@@ -59,17 +66,13 @@ public class UserInfo {
         return "UserInfo{" +
                 "tenant='" + tenant + '\'' +
                 ", login='" + login + '\'' +
-                ", roles=" + roles.stream().collect(joining(",")) +
+                ", roles=" + String.join(",", roles) +
                 '}';
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(tenant, login, roles);
-    }
-
-    public static Builder aUserInfo() {
-        return new Builder();
     }
 
     public static class Builder {

@@ -22,9 +22,7 @@ public class PerformanceLoggingAspectTest {
                     context.execute("Test.b()", () -> {
                         sleep(100);
                         for (int i = 0; i < 3; i++) {
-                            context.execute("Test.c()", () -> {
-                                sleep(10);
-                            });
+                            context.execute("Test.c()", () -> sleep(10));
                         }
                         try {
                             context.execute("Test.d()", () -> {
@@ -36,17 +34,13 @@ public class PerformanceLoggingAspectTest {
                     });
                 })).isInstanceOf(IllegalArgumentException.class);
 
-        context.execute("Test.e()", () -> {
-            sleep(25);
-        });
+        context.execute("Test.e()", () -> sleep(25));
 
         context.execute("Other.x()", () -> {
             sleep(3);
             context.execute("Other.y()", () -> {
                 sleep(2);
-                context.execute("Other.z()", () -> {
-                    sleep(1);
-                });
+                context.execute("Other.z()", () -> sleep(1));
             });
         });
     }

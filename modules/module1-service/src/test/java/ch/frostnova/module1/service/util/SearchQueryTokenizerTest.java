@@ -5,7 +5,10 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 
 /**
  * Tests for {@link SearchQueryTokenizer}
@@ -89,7 +92,7 @@ public class SearchQueryTokenizerTest {
     @Test
     public void shouldAllowSingleQuotes() {
 
-        List<String> tokens = SearchQueryTokenizer.tokenize("\'New York\', US");
+        List<String> tokens = SearchQueryTokenizer.tokenize("'New York', US");
 
         assertThat(tokens, is(notNullValue()));
         assertThat(tokens, contains("New York", "US"));

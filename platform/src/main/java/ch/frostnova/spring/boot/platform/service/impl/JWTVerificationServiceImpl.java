@@ -27,7 +27,7 @@ public class JWTVerificationServiceImpl implements JWTVerificationService {
     private Logger logger;
 
     @Autowired
-    private Optional<CacheManager> cacheManager;
+    private CacheManager cacheManager;
 
     @Autowired
     private SigningConfig signingConfig;
@@ -35,10 +35,7 @@ public class JWTVerificationServiceImpl implements JWTVerificationService {
     @PostConstruct
     public void init() {
         signingConfig.requirePublicKey();
-        logger.info("JWT caching {}", cacheManager.map(Object::getClass)
-                .map(Class::getName)
-                .map(n -> "enabled")
-                .orElse("disabled"));
+        logger.info("JWT caching {}", cacheManager != null ? "enabled" : "disabled");
     }
 
     @Override
@@ -71,6 +68,6 @@ public class JWTVerificationServiceImpl implements JWTVerificationService {
     }
 
     private Optional<Cache> getCache() {
-        return cacheManager.map(cm -> cm.getCache(CACHE_NAME));
+        return Optional.ofNullable(cacheManager).map(cm -> cm.getCache(CACHE_NAME));
     }
 }

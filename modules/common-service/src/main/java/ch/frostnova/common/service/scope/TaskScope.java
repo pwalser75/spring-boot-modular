@@ -87,6 +87,25 @@ public class TaskScope implements Scope {
         return scopeInstance.get();
     }
 
+    /**
+     * Creates an {@link ExecutionContext} which executes code withing the current task scope.
+     *
+     * @return new execution context which runs code in the current task scope.
+     * @throws IllegalStateException when no current task scope is active.
+     */
+    public static ExecutionContext currentExecutionContext() {
+        return new ExecutionContext(scopeInstance());
+    }
+
+    /**
+     * Creates a new {@link ExecutionContext} which executes code within a dedicated task scope (per execution).
+     *
+     * @return new execution context with dedicated task scopes per execution.
+     */
+    public static ExecutionContext newExecutionContext() {
+        return new ExecutionContext();
+    }
+
     @Override
     public Object get(String name, ObjectFactory<?> objectFactory) {
         TaskScope.checkScopeActive();
@@ -112,6 +131,62 @@ public class TaskScope implements Scope {
     @Override
     public String getConversationId() {
         return scopeInstance().conversationId();
+    }
+
+    /**
+     * Functional interface for a runnable which can throw a checked exception.
+     */
+    @FunctionalInterface
+    public interface CheckedRunnable {
+
+        /**
+         * Functional contract
+         *
+         * @throws Exception optional exception
+         */
+        void run() throws Throwable;
+
+
+        /**
+         * Unchecked execution: execute checked and rethrow any exception as {@link RuntimeException}.
+         */
+        default void runUnchecked() {
+            try {
+                run();
+            } catch (RuntimeException ex) {
+                throw ex;
+            } catch (Throwable ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+    }
+
+    /**
+     * Functional interface for a supplier which can throw a checked exception. (same as {@link Callable}).
+     */
+    @FunctionalInterface
+    public interface CheckedSupplier<T> {
+
+        /**
+         * Functional contract
+         *
+         * @return return value
+         * @throws Exception optional exception
+         */
+        T supply() throws Throwable;
+
+        /**
+         * Unchecked execution: execute checked and rethrow any exception as {@link RuntimeException}.
+         */
+        default T supplyUnchecked() {
+            try {
+                return supply();
+            } catch (RuntimeException ex) {
+                throw ex;
+            } catch (Throwable ex) {
+                throw new RuntimeException(ex);
+            }
+        }
     }
 
     /**
@@ -152,25 +227,6 @@ public class TaskScope implements Scope {
     }
 
     /**
-     * Creates an {@link ExecutionContext} which executes code withing the current task scope.
-     *
-     * @return new execution context which runs code in the current task scope.
-     * @throws IllegalStateException when no current task scope is active.
-     */
-    public static ExecutionContext currentExecutionContext() {
-        return new ExecutionContext(scopeInstance());
-    }
-
-    /**
-     * Creates a new {@link ExecutionContext} which executes code within a dedicated task scope (per execution).
-     *
-     * @return new execution context with dedicated task scopes per execution.
-     */
-    public static ExecutionContext newExecutionContext() {
-        return new ExecutionContext();
-    }
-
-    /**
      * An execution context which can execute code fragments ({@link Runnable}, {@link Callable},
      * {@link CheckedRunnable} or {@link CheckedSupplier}).
      * Particularly useful for asynchronous or parallel processing (using {@link ExecutorService},
@@ -196,7 +252,7 @@ public class TaskScope implements Scope {
         }
 
         /**
-         * Execute a {@link CheckedRunnable} (compatible with {@link Runnable} in the task scope of the execution context.
+         * Execute a {@link CheckedRunnable} (compatible with {@link Runnable}) in the task scope of the execution context.
          *
          * @param runnable runnable, required
          */
@@ -231,66 +287,6 @@ public class TaskScope implements Scope {
                 if (scope == null) {
                     executionScope.destroy();
                 }
-            }
-        }
-    }
-
-    /**
-     * Functional interface for a runnable which can throw a checked exception.
-     */
-    @FunctionalInterface
-    public interface CheckedRunnable {
-
-        /**
-         * Functional contract
-         *
-         * @throws Exception optional exception
-         */
-        void run() throws Throwable;
-
-
-        /**
-         * Unchecked execution: execute checked and rethrow any exception as {@link RuntimeException}.
-         */
-        default void runUnchecked() {
-            try {
-                run();
-            } catch (RuntimeException ex) {
-                throw ex;
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            } catch (Throwable ex) {
-                throw new RuntimeException(ex);
-            }
-        }
-    }
-
-    /**
-     * Functional interface for a supplier which can throw a checked exception. (same as {@link Callable}).
-     */
-    @FunctionalInterface
-    public interface CheckedSupplier<T> {
-
-        /**
-         * Functional contract
-         *
-         * @return return value
-         * @throws Exception optional exception
-         */
-        T supply() throws Throwable;
-
-        /**
-         * Unchecked execution: execute checked and rethrow any exception as {@link RuntimeException}.
-         */
-        default T supplyUnchecked() {
-            try {
-                return supply();
-            } catch (RuntimeException ex) {
-                throw ex;
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            } catch (Throwable ex) {
-                throw new RuntimeException(ex);
             }
         }
     }

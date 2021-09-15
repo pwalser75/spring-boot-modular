@@ -10,8 +10,6 @@ import jakarta.ws.rs.core.Response;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Note client API
@@ -40,7 +38,7 @@ public class LoginClient implements AutoCloseable {
      */
     public String login(String tenant, String login, Set<String> roles) {
         Invocation invocation = client
-                .target(Stream.of(baseURL, tenant, login).collect(Collectors.joining("/")))
+                .target(String.join("/", baseURL, tenant, login))
                 .queryParam("roles", Optional.ofNullable(roles).orElseGet(HashSet::new).toArray())
                 .request()
                 .buildGet();

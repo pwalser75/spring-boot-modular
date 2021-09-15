@@ -24,6 +24,14 @@ public class PersistenceConfig {
     protected final static String AUDITOR_PROVIDER_ID = "internal-auditor-provider";
     protected final static String ANONYMOUS_USER_NAME = "anonymous";
 
+    private static String resolveUserName() {
+
+        return Optional.ofNullable(SecurityContextHolder.getContext())
+                .map(SecurityContext::getAuthentication)
+                .map(Principal::getName)
+                .orElse(ANONYMOUS_USER_NAME);
+    }
+
     @Bean(OFFSET_DATE_TIME_PROVIDER_ID)
     public DateTimeProvider dateTimeProvider() {
         return () -> Optional.of(OffsetDateTime.now());
@@ -32,13 +40,5 @@ public class PersistenceConfig {
     @Bean(AUDITOR_PROVIDER_ID)
     public AuditorAware<String> auditorProvider() {
         return () -> Optional.of(resolveUserName());
-    }
-
-    private static String resolveUserName() {
-
-        return Optional.ofNullable(SecurityContextHolder.getContext())
-                .map(SecurityContext::getAuthentication)
-                .map(Principal::getName)
-                .orElse(ANONYMOUS_USER_NAME);
     }
 }

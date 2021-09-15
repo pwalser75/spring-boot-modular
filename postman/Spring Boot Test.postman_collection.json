@@ -1,1648 +1,1648 @@
 {
-	"info": {
-		"_postman_id": "4ec31907-447c-4ebc-834b-a24eb9b03693",
-		"name": "Spring Boot Test",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-	},
-	"item": [
-		{
-			"name": "01 - App",
-			"item": [
-				{
-					"name": "Get App Info CPU Memory",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var expectedStatus=200;\r",
-									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
-									"\r",
-									"if (responseCode.code === expectedStatus){\r",
-									"    \r",
-									"    var info = pm.response.json();\r",
-									"    var notBlank = s => s && s.trim().length > 0;\r",
-									"    \r",
-									"    tests[\"name: \"+info.name] = notBlank(info.name);\r",
-									"    tests[\"description: \"+info.description] =  notBlank(info.description);\r",
-									"    tests[\"version: \"+info.version] =  notBlank(info.version);\r",
-									"    \r",
-									"    tests[\"cpu usage\"] = info.cpu && info.cpu.usage !== undefined;\r",
-									"    tests[\"memory usage\"] = info.memory && info.memory.usage !== undefined;\r",
-									"    tests[\"memory used\"] = info.memory && info.memory.used !== undefined;\r",
-									"    tests[\"memory allocated\"] = info.memory && info.memory.allocated !== undefined;\r",
-									"    \r",
-									"}"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{HOST}}/info",
-							"host": [
-								"{{HOST}}"
-							],
-							"path": [
-								"info"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Actuator App Info",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var expectedStatus=200;\r",
-									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
-									"\r",
-									"if (responseCode.code === expectedStatus){\r",
-									"    var info = pm.response.json();\r",
-									"    \r",
-									"    var app = info.app;\r",
-									"    tests[\"has app info\"] = app;\r",
-									"    if (app) {\r",
-									"         tests[\"name: \"+app.name] = app.name;\r",
-									"         tests[\"description: \"+app.description] = app.description;\r",
-									"         tests[\"version: \"+app.version] = app.version;\r",
-									"    }\r",
-									"}"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{HOST}}/actuator/info",
-							"host": [
-								"{{HOST}}"
-							],
-							"path": [
-								"actuator",
-								"info"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Actuator Health",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var expectedStatus=200;\r",
-									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
-									"\r",
-									"if (responseCode.code === expectedStatus){\r",
-									"    \r",
-									"    var health = pm.response.json();\r",
-									"    \r",
-									"    var optional = (v,f1, f2, f3, f4, f5) => {\r",
-									"        for (var f of [f1,f2,f3,f4,f5]) {\r",
-									"            if (f) {\r",
-									"                v = f? (v? f(v) : undefined) : v;\r",
-									"            }\r",
-									"        }\r",
-									"        return v;\r",
-									"    };\r",
-									"    \r",
-									"    var details = health.details;\r",
-									"    var db = optional(details, x => x.db);\r",
-									"    \r",
-									"    tests[\"status is UP\"] = health.status === 'UP';\r",
-									"    tests[\"db status is UP\"]  = optional(health, x=>x.components, x=>x.db, x=>x.status) === 'UP';\r",
-									"}"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{HOST}}/actuator/health",
-							"host": [
-								"{{HOST}}"
-							],
-							"path": [
-								"actuator",
-								"health"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Actuator Metrics Uptime",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var expectedStatus=200;\r",
-									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
-									"\r",
-									"if (responseCode.code === expectedStatus){\r",
-									"    \r",
-									"    var metrics = pm.response.json();\r",
-									"    var uptime = metrics.measurements? metrics.measurements[0].value : undefined;\r",
-									"    \r",
-									"    tests[\"uptime: \"+uptime+\" \"+metrics.baseUnit] = uptime >= 0;\r",
-									"}"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{HOST}}/actuator/metrics/process.uptime",
-							"host": [
-								"{{HOST}}"
-							],
-							"path": [
-								"actuator",
-								"metrics",
-								"process.uptime"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Actuator Metrics Notes Gauge",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var expectedStatus=200;\r",
-									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
-									"\r",
-									"if (responseCode.code === expectedStatus){\r",
-									"    \r",
-									"    var metrics = pm.response.json();\r",
-									"    var uptime = metrics.measurements? metrics.measurements[0].value : undefined;\r",
-									"    \r",
-									"    tests[\"notes count: \"+uptime] = uptime >= 0;\r",
-									"}"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{HOST}}/actuator/metrics/business.metrics.notes.count",
-							"host": [
-								"{{HOST}}"
-							],
-							"path": [
-								"actuator",
-								"metrics",
-								"business.metrics.notes.count"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Actuator Prometheus",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var expectedStatus=200;\r",
-									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
-									"\r",
-									"if (responseCode.code === expectedStatus){\r",
-									"    \r",
-									"    var prometheusData = pm.response.text();\r",
-									"}"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{HOST}}/actuator/prometheus",
-							"host": [
-								"{{HOST}}"
-							],
-							"path": [
-								"actuator",
-								"prometheus"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Actuator Prometheus Notes Gauge",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var expectedStatus=200;\r",
-									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
-									"\r",
-									"if (responseCode.code === expectedStatus){\r",
-									"    \r",
-									"    var prometheusData = pm.response.text();\r",
-									"    var lines = prometheusData.split('\\n');\r",
-									"    var gaugeLine = lines.find(l=> l.match(/^business_metrics_notes_count (\\d+(?:\\.\\d+)?)$/));\r",
-									"\r",
-									"    tests[\"contains notes gauge \"+gaugeLine] = gaugeLine\r",
-									"}"
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{HOST}}/actuator/prometheus?includedNames=business_metrics_notes_count",
-							"host": [
-								"{{HOST}}"
-							],
-							"path": [
-								"actuator",
-								"prometheus"
-							],
-							"query": [
-								{
-									"key": "includedNames",
-									"value": "business_metrics_notes_count"
-								}
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "02 - Login",
-			"item": [
-				{
-					"name": "Request JWT",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"pm.globals.set(\"tenant\", \"frostnova\");",
-									"pm.globals.set(\"login\", \"pwalser\");",
-									"pm.globals.set(\"roles\", \"A,B,C\");",
-									"",
-									"pm.globals.unset(\"jwt\");"
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var expectedStatus=200;\r",
-									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
-									"\r",
-									"if (responseCode.code === expectedStatus){\r",
-									"    \r",
-									"    var jwt = pm.response.text();\r",
-									"    var parts = jwt.split(\".\");\r",
-									"    tests[\"JWT has 3 parts\"] =parts.length = 3;\r",
-									"    \r",
-									"    var json = atob(parts[1]);\r",
-									"    tests[\"Content: \"+json] = json;\r",
-									"    var content = JSON.parse(json);\r",
-									"    \r",
-									"    tests[\"Tenant: \" +content.tenant] = content.tenant === pm.globals.get(\"tenant\");\r",
-									"    tests[\"Subject: \"+content.sub] = content.sub === pm.globals.get(\"login\");\r",
-									"    tests[\"Scope: \"+content.scope] = content.scope;\r",
-									"\r",
-									"    \r",
-									"    pm.globals.set(\"jwt\", jwt);\r",
-									"}"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{HOST}}/login/{{tenant}}/{{login}}?roles={{roles}}",
-							"host": [
-								"{{HOST}}"
-							],
-							"path": [
-								"login",
-								"{{tenant}}",
-								"{{login}}"
-							],
-							"query": [
-								{
-									"key": "roles",
-									"value": "{{roles}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Request expired JWT",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"pm.globals.set(\"tenant\", \"frostnova\");",
-									"pm.globals.set(\"login\", \"pwalser\");",
-									"pm.globals.set(\"roles\", \"A,B,C\");",
-									"",
-									"pm.globals.unset(\"expired-jwt\");"
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var expectedStatus=200;\r",
-									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
-									"\r",
-									"if (responseCode.code === expectedStatus){\r",
-									"    \r",
-									"    var jwt = pm.response.text();\r",
-									"    var parts = jwt.split(\".\");\r",
-									"    tests[\"JWT has 3 parts\"] =parts.length = 3;\r",
-									"    \r",
-									"    var json = atob(parts[1]);\r",
-									"    tests[\"Content: \"+json] = json;\r",
-									"    var content = JSON.parse(json);\r",
-									"    \r",
-									"    tests[\"Tenant: \" +content.tenant] = content.tenant === pm.globals.get(\"tenant\");\r",
-									"    tests[\"Subject: \"+content.sub] = content.sub === pm.globals.get(\"login\");\r",
-									"    tests[\"Scope: \"+content.scope] = content.scope;\r",
-									"    tests[\"Issued at: \"+new Date(content.iat*1000)] = content.iat;\r",
-									"    tests[\"Valid from: \"+new Date(content.nbf*1000)] = content.nbf === 946813556;\r",
-									"    tests[\"Valid to: \"+new Date(content.exp*1000)] = content.exp === 994770592;\r",
-									"\r",
-									"    \r",
-									"    pm.globals.set(\"expired-jwt\", jwt);\r",
-									"}"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{HOST}}/login/{{tenant}}/{{login}}?roles={{roles}}&cnl=postman&ldid=9999&foo=bla,arg&valid-from=2000-01-02T12:45:56%2B01:00&duration=555d1h23m56s",
-							"host": [
-								"{{HOST}}"
-							],
-							"path": [
-								"login",
-								"{{tenant}}",
-								"{{login}}"
-							],
-							"query": [
-								{
-									"key": "roles",
-									"value": "{{roles}}"
-								},
-								{
-									"key": "cnl",
-									"value": "postman"
-								},
-								{
-									"key": "ldid",
-									"value": "9999"
-								},
-								{
-									"key": "foo",
-									"value": "bla,arg"
-								},
-								{
-									"key": "valid-from",
-									"value": "2000-01-02T12:45:56%2B01:00"
-								},
-								{
-									"key": "duration",
-									"value": "555d1h23m56s"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get authorization info",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var expectedStatus=200;\r",
-									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
-									"\r",
-									"if (responseCode.code === expectedStatus){\r",
-									"    \r",
-									"    var json = pm.response.json();\r",
-									"    \r",
-									"   // tests[\"Tenant: \" +json.tenant] = json.tenant === pm.globals.get(\"tenant\");\r",
-									"    tests[\"Login: \"+json.login] = json.login === pm.globals.get(\"login\");\r",
-									"    tests[\"Roles: \"+json.roles] = json.roles;\r",
-									"   \r",
-									"}"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{jwt}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{HOST}}/authorization/",
-							"host": [
-								"{{HOST}}"
-							],
-							"path": [
-								"authorization",
-								""
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get authorization info (unauthenticated)",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var expectedStatus=403;\r",
-									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
-									"\r",
-									"if (responseCode.code === expectedStatus){\r",
-									"    var error = pm.response.json();\r",
-									"    \r",
-									"    tests[\"error\"] = error.error === 'Forbidden';\r",
-									"}"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{HOST}}/authorization/",
-							"host": [
-								"{{HOST}}"
-							],
-							"path": [
-								"authorization",
-								""
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get authorization info (expired JWT)",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var expectedStatus=403;\r",
-									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
-									"\r",
-									"if (responseCode.code === expectedStatus){\r",
-									"}"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{expired-jwt}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{HOST}}/authorization/",
-							"host": [
-								"{{HOST}}"
-							],
-							"path": [
-								"authorization",
-								""
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "03 - Notes",
-			"item": [
-				{
-					"name": "Add Note",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"var text = \"Lorem ipsum \"+new Date().toISOString();\r",
-									"pm.globals.set(\"note-text\", text);\r",
-									"\r",
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var expectedStatus=201;\r",
-									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
-									"\r",
-									"if (responseCode.code === expectedStatus){\r",
-									"    var note = pm.response.json();\r",
-									"    \r",
-									"    var content=note.content;\r",
-									"    tests[\"has id\"] = note.id;\r",
-									"    tests[\"has created\"] = note.created;\r",
-									"    tests[\"has updated\"] = note.updated;\r",
-									"    tests[\"has text\"] = note.text;\r",
-									"    tests[\"has correct text\"] = note.text === pm.globals.get(\"note-text\");\r",
-									"    \r",
-									"    pm.globals.set(\"note-id\", note.id);\r",
-									"}\r",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/json"
-							},
-							{
-								"key": "Authorization",
-								"value": "Bearer {{jwt}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"text\": \"{{note-text}}\"\n}"
-						},
-						"url": {
-							"raw": "{{HOST}}/api/notes",
-							"host": [
-								"{{HOST}}"
-							],
-							"path": [
-								"api",
-								"notes"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Note",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var expectedStatus=200;\r",
-									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
-									"\r",
-									"if (responseCode.code === expectedStatus){\r",
-									"    var note = pm.response.json();\r",
-									"    \r",
-									"    var content=note.content;\r",
-									"    tests[\"has correct id\"] = note.id ===  pm.globals.get(\"note-id\");\r",
-									"    tests[\"has created\"] = note.created;\r",
-									"    tests[\"has updated\"] = note.updated;\r",
-									"    tests[\"has correct text\"] = note.text === pm.globals.get(\"note-text\");\r",
-									"}\r",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{jwt}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{HOST}}/api/notes/{{note-id}}?=",
-							"host": [
-								"{{HOST}}"
-							],
-							"path": [
-								"api",
-								"notes",
-								"{{note-id}}"
-							],
-							"query": [
-								{
-									"key": "",
-									"value": ""
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "List Notes",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var expectedStatus=200;\r",
-									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
-									"\r",
-									"if (responseCode.code === expectedStatus){\r",
-									"    var notes = pm.response.json();\r",
-									"    \r",
-									"    tests[\"has notes\"] = notes.length > 0;\r",
-									"    \r",
-									"    var note = notes.find(n=>n.id === pm.globals.get(\"note-id\"));\r",
-									"    \r",
-									"    tests[\"contains note:\"] = note;\r",
-									"    if (note) {\r",
-									"      tests[\"has correct id\"] = note.id ===  pm.globals.get(\"note-id\")\r",
-									"      tests[\"has created\"] = note.created;\r",
-									"      tests[\"has updated\"] = note.updated;\r",
-									"      tests[\"has text\"] = note.text;\r",
-									"      tests[\"has correct text\"] = note.text === pm.globals.get(\"note-text\");\r",
-									"    }\r",
-									"}\r",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{jwt}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{HOST}}/api/notes",
-							"host": [
-								"{{HOST}}"
-							],
-							"path": [
-								"api",
-								"notes"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update Note",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"var text = \"Changed test \"+new Date().toISOString();\r",
-									"pm.globals.set(\"note-text\", text);\r",
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var expectedStatus=204;\r",
-									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/json"
-							},
-							{
-								"key": "Authorization",
-								"value": "Bearer {{jwt}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"text\": \"{{note-text}}\"\n}"
-						},
-						"url": {
-							"raw": "{{HOST}}/api/notes/{{note-id}}",
-							"host": [
-								"{{HOST}}"
-							],
-							"path": [
-								"api",
-								"notes",
-								"{{note-id}}"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Check Note Updated",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var expectedStatus=200;\r",
-									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
-									"\r",
-									"if (responseCode.code === expectedStatus){\r",
-									"    var note = pm.response.json();\r",
-									"    \r",
-									"    var content=note.content;\r",
-									"    tests[\"has correct id\"] = note.id ===  pm.globals.get(\"note-id\")\r",
-									"    tests[\"has created\"] = note.created;\r",
-									"    tests[\"has updated\"] = note.updated;\r",
-									"    tests[\"has correct text\"] = note.text === pm.globals.get(\"note-text\");\r",
-									"}\r",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{jwt}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{HOST}}/api/notes/{{note-id}}",
-							"host": [
-								"{{HOST}}"
-							],
-							"path": [
-								"api",
-								"notes",
-								"{{note-id}}"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Note",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var expectedStatus=204;\r",
-									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{jwt}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{HOST}}/api/notes/{{note-id}}",
-							"host": [
-								"{{HOST}}"
-							],
-							"path": [
-								"api",
-								"notes",
-								"{{note-id}}"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Check Note Deleted",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var expectedStatus=404;\r",
-									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{jwt}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{HOST}}/api/notes/{{note-id}}",
-							"host": [
-								"{{HOST}}"
-							],
-							"path": [
-								"api",
-								"notes",
-								"{{note-id}}"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Check Note Removed",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var expectedStatus=200;\r",
-									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
-									"\r",
-									"if (responseCode.code === expectedStatus){\r",
-									"    var notes = pm.response.json();\r",
-									"    var note = notes.find(n=>n.id === pm.globals.get(\"note-id\"));\r",
-									"    \r",
-									"    tests[\"does not contain note: \"] = !note ;\r",
-									"}\r",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{jwt}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{HOST}}/api/notes",
-							"host": [
-								"{{HOST}}"
-							],
-							"path": [
-								"api",
-								"notes"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Note Validation - Not Null",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var expectedStatus=400;\r",
-									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
-									"\r",
-									"if (responseCode.code === expectedStatus){\r",
-									"    var error = pm.response.json();\r",
-									"    \r",
-									"    tests[\"errorCode\"] = error.errorCode === 'BAD_REQUEST';\r",
-									"    tests[\"error\"] = error.error === 'CONSTRAINT_VIOLATION_EXCEPTION';\r",
-									"    tests[\"reason\"] = error.reason !== undefined;\r",
-									"    \r",
-									"    tests[\"NotBlank\"] = error.reason.find(e => e.code.indexOf('NotBlank') >= 0);\r",
-									"}\r",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/json"
-							},
-							{
-								"key": "Authorization",
-								"value": "Bearer {{jwt}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n}"
-						},
-						"url": {
-							"raw": "{{HOST}}/api/notes",
-							"host": [
-								"{{HOST}}"
-							],
-							"path": [
-								"api",
-								"notes"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Note Validation - Not Blank",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var expectedStatus=400;\r",
-									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
-									"\r",
-									"if (responseCode.code === expectedStatus){\r",
-									"    var error = pm.response.json();\r",
-									"    \r",
-									"    tests[\"errorCode\"] = error.errorCode === 'BAD_REQUEST';\r",
-									"    tests[\"error\"] = error.error === 'CONSTRAINT_VIOLATION_EXCEPTION';\r",
-									"    tests[\"reason\"] = error.reason !== undefined;\r",
-									"    \r",
-									"    tests[\"NotBlank\"] = error.reason.find(e => e.code.indexOf('NotBlank') >= 0);\r",
-									"}\r",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/json"
-							},
-							{
-								"key": "Authorization",
-								"value": "Bearer {{jwt}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"text\": \"  \"\n}"
-						},
-						"url": {
-							"raw": "{{HOST}}/api/notes",
-							"host": [
-								"{{HOST}}"
-							],
-							"path": [
-								"api",
-								"notes"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Note Validation - Text too long",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var expectedStatus=400;\r",
-									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
-									"\r",
-									"if (responseCode.code === expectedStatus){\r",
-									"    var error = pm.response.json();\r",
-									"    \r",
-									"    tests[\"errorCode\"] = error.errorCode === 'BAD_REQUEST';\r",
-									"    tests[\"error\"] = error.error === 'CONSTRAINT_VIOLATION_EXCEPTION';\r",
-									"    tests[\"reason\"] = error.reason !== undefined;\r",
-									"    \r",
-									"    tests[\"Size\"] = error.reason.find(e => e.code.indexOf('Size') >= 0);\r",
-									"}\r",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/json"
-							},
-							{
-								"key": "Authorization",
-								"value": "Bearer {{jwt}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"text\": \"01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789x\"\n}"
-						},
-						"url": {
-							"raw": "{{HOST}}/api/notes",
-							"host": [
-								"{{HOST}}"
-							],
-							"path": [
-								"api",
-								"notes"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Error handling - no JSON",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var expectedStatus=400;\r",
-									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
-									"\r",
-									"if (responseCode.code === expectedStatus){\r",
-									"    var error = pm.response.json();\r",
-									"    \r",
-									"    tests[\"errorCode\"] = error.errorCode === 'BAD_REQUEST';\r",
-									"    tests[\"error\"] = error.error === \"HTTP_MESSAGE_NOT_READABLE_EXCEPTION\";\r",
-									"    tests[\"message\"] = error.message.indexOf(\"Required request body is missing\")>=0;\r",
-									"}\r",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							},
-							{
-								"key": "Authorization",
-								"value": "Bearer {{jwt}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{HOST}}/api/notes",
-							"host": [
-								"{{HOST}}"
-							],
-							"path": [
-								"api",
-								"notes"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Error handling - broken JSON",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var expectedStatus=400;\r",
-									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
-									"\r",
-									"if (responseCode.code === expectedStatus){\r",
-									"    var error = pm.response.json();\r",
-									"    \r",
-									"    tests[\"errorCode\"] = error.errorCode === 'BAD_REQUEST';\r",
-									"    tests[\"error\"] = error.error === \"HTTP_MESSAGE_NOT_READABLE_EXCEPTION\";\r",
-									"    tests[\"message\"] = error.message.indexOf(\"JSON parse error\")>=0;\r",
-									"}\r",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/json"
-							},
-							{
-								"key": "Authorization",
-								"value": "Bearer {{jwt}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "<json>\nBroken by design"
-						},
-						"url": {
-							"raw": "{{HOST}}/api/notes",
-							"host": [
-								"{{HOST}}"
-							],
-							"path": [
-								"api",
-								"notes"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Error handling - resource not found",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var expectedStatus=404;\r",
-									"tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
-									"\r",
-									"if (responseCode.code === expectedStatus){\r",
-									"    var error = pm.response.json();\r",
-									"    \r",
-									"    tests[\"errorCode\"] = error.errorCode === 'NOT_FOUND';\r",
-									"    tests[\"error\"] = error.error === \"RESOURCE_NOT_FOUND_EXCEPTION\";\r",
-									"    tests[\"message\"] = error.message.indexOf(\"Not found\")>=0;\r",
-									"}\r",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{jwt}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{HOST}}/api/notes/99999999999",
-							"host": [
-								"{{HOST}}"
-							],
-							"path": [
-								"api",
-								"notes",
-								"99999999999"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		}
-	]
+  "info": {
+    "_postman_id": "4ec31907-447c-4ebc-834b-a24eb9b03693",
+    "name": "Spring Boot Test",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "01 - App",
+      "item": [
+        {
+          "name": "Get App Info CPU Memory",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var expectedStatus=200;\r",
+                  "tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
+                  "\r",
+                  "if (responseCode.code === expectedStatus){\r",
+                  "    \r",
+                  "    var info = pm.response.json();\r",
+                  "    var notBlank = s => s && s.trim().length > 0;\r",
+                  "    \r",
+                  "    tests[\"name: \"+info.name] = notBlank(info.name);\r",
+                  "    tests[\"description: \"+info.description] =  notBlank(info.description);\r",
+                  "    tests[\"version: \"+info.version] =  notBlank(info.version);\r",
+                  "    \r",
+                  "    tests[\"cpu usage\"] = info.cpu && info.cpu.usage !== undefined;\r",
+                  "    tests[\"memory usage\"] = info.memory && info.memory.usage !== undefined;\r",
+                  "    tests[\"memory used\"] = info.memory && info.memory.used !== undefined;\r",
+                  "    tests[\"memory allocated\"] = info.memory && info.memory.allocated !== undefined;\r",
+                  "    \r",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{HOST}}/info",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "info"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Actuator App Info",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var expectedStatus=200;\r",
+                  "tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
+                  "\r",
+                  "if (responseCode.code === expectedStatus){\r",
+                  "    var info = pm.response.json();\r",
+                  "    \r",
+                  "    var app = info.app;\r",
+                  "    tests[\"has app info\"] = app;\r",
+                  "    if (app) {\r",
+                  "         tests[\"name: \"+app.name] = app.name;\r",
+                  "         tests[\"description: \"+app.description] = app.description;\r",
+                  "         tests[\"version: \"+app.version] = app.version;\r",
+                  "    }\r",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{HOST}}/actuator/info",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "actuator",
+                "info"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Actuator Health",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var expectedStatus=200;\r",
+                  "tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
+                  "\r",
+                  "if (responseCode.code === expectedStatus){\r",
+                  "    \r",
+                  "    var health = pm.response.json();\r",
+                  "    \r",
+                  "    var optional = (v,f1, f2, f3, f4, f5) => {\r",
+                  "        for (var f of [f1,f2,f3,f4,f5]) {\r",
+                  "            if (f) {\r",
+                  "                v = f? (v? f(v) : undefined) : v;\r",
+                  "            }\r",
+                  "        }\r",
+                  "        return v;\r",
+                  "    };\r",
+                  "    \r",
+                  "    var details = health.details;\r",
+                  "    var db = optional(details, x => x.db);\r",
+                  "    \r",
+                  "    tests[\"status is UP\"] = health.status === 'UP';\r",
+                  "    tests[\"db status is UP\"]  = optional(health, x=>x.components, x=>x.db, x=>x.status) === 'UP';\r",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{HOST}}/actuator/health",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "actuator",
+                "health"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Actuator Metrics Uptime",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var expectedStatus=200;\r",
+                  "tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
+                  "\r",
+                  "if (responseCode.code === expectedStatus){\r",
+                  "    \r",
+                  "    var metrics = pm.response.json();\r",
+                  "    var uptime = metrics.measurements? metrics.measurements[0].value : undefined;\r",
+                  "    \r",
+                  "    tests[\"uptime: \"+uptime+\" \"+metrics.baseUnit] = uptime >= 0;\r",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{HOST}}/actuator/metrics/process.uptime",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "actuator",
+                "metrics",
+                "process.uptime"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Actuator Metrics Notes Gauge",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var expectedStatus=200;\r",
+                  "tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
+                  "\r",
+                  "if (responseCode.code === expectedStatus){\r",
+                  "    \r",
+                  "    var metrics = pm.response.json();\r",
+                  "    var uptime = metrics.measurements? metrics.measurements[0].value : undefined;\r",
+                  "    \r",
+                  "    tests[\"notes count: \"+uptime] = uptime >= 0;\r",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{HOST}}/actuator/metrics/business.metrics.notes.count",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "actuator",
+                "metrics",
+                "business.metrics.notes.count"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Actuator Prometheus",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var expectedStatus=200;\r",
+                  "tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
+                  "\r",
+                  "if (responseCode.code === expectedStatus){\r",
+                  "    \r",
+                  "    var prometheusData = pm.response.text();\r",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{HOST}}/actuator/prometheus",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "actuator",
+                "prometheus"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Actuator Prometheus Notes Gauge",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var expectedStatus=200;\r",
+                  "tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
+                  "\r",
+                  "if (responseCode.code === expectedStatus){\r",
+                  "    \r",
+                  "    var prometheusData = pm.response.text();\r",
+                  "    var lines = prometheusData.split('\\n');\r",
+                  "    var gaugeLine = lines.find(l=> l.match(/^business_metrics_notes_count (\\d+(?:\\.\\d+)?)$/));\r",
+                  "\r",
+                  "    tests[\"contains notes gauge \"+gaugeLine] = gaugeLine\r",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{HOST}}/actuator/prometheus?includedNames=business_metrics_notes_count",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "actuator",
+                "prometheus"
+              ],
+              "query": [
+                {
+                  "key": "includedNames",
+                  "value": "business_metrics_notes_count"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "02 - Login",
+      "item": [
+        {
+          "name": "Request JWT",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "pm.globals.set(\"tenant\", \"frostnova\");",
+                  "pm.globals.set(\"login\", \"pwalser\");",
+                  "pm.globals.set(\"roles\", \"A,B,C\");",
+                  "",
+                  "pm.globals.unset(\"jwt\");"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var expectedStatus=200;\r",
+                  "tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
+                  "\r",
+                  "if (responseCode.code === expectedStatus){\r",
+                  "    \r",
+                  "    var jwt = pm.response.text();\r",
+                  "    var parts = jwt.split(\".\");\r",
+                  "    tests[\"JWT has 3 parts\"] =parts.length = 3;\r",
+                  "    \r",
+                  "    var json = atob(parts[1]);\r",
+                  "    tests[\"Content: \"+json] = json;\r",
+                  "    var content = JSON.parse(json);\r",
+                  "    \r",
+                  "    tests[\"Tenant: \" +content.tenant] = content.tenant === pm.globals.get(\"tenant\");\r",
+                  "    tests[\"Subject: \"+content.sub] = content.sub === pm.globals.get(\"login\");\r",
+                  "    tests[\"Scope: \"+content.scope] = content.scope;\r",
+                  "\r",
+                  "    \r",
+                  "    pm.globals.set(\"jwt\", jwt);\r",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{HOST}}/login/{{tenant}}/{{login}}?roles={{roles}}",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "login",
+                "{{tenant}}",
+                "{{login}}"
+              ],
+              "query": [
+                {
+                  "key": "roles",
+                  "value": "{{roles}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Request expired JWT",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "pm.globals.set(\"tenant\", \"frostnova\");",
+                  "pm.globals.set(\"login\", \"pwalser\");",
+                  "pm.globals.set(\"roles\", \"A,B,C\");",
+                  "",
+                  "pm.globals.unset(\"expired-jwt\");"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var expectedStatus=200;\r",
+                  "tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
+                  "\r",
+                  "if (responseCode.code === expectedStatus){\r",
+                  "    \r",
+                  "    var jwt = pm.response.text();\r",
+                  "    var parts = jwt.split(\".\");\r",
+                  "    tests[\"JWT has 3 parts\"] =parts.length = 3;\r",
+                  "    \r",
+                  "    var json = atob(parts[1]);\r",
+                  "    tests[\"Content: \"+json] = json;\r",
+                  "    var content = JSON.parse(json);\r",
+                  "    \r",
+                  "    tests[\"Tenant: \" +content.tenant] = content.tenant === pm.globals.get(\"tenant\");\r",
+                  "    tests[\"Subject: \"+content.sub] = content.sub === pm.globals.get(\"login\");\r",
+                  "    tests[\"Scope: \"+content.scope] = content.scope;\r",
+                  "    tests[\"Issued at: \"+new Date(content.iat*1000)] = content.iat;\r",
+                  "    tests[\"Valid from: \"+new Date(content.nbf*1000)] = content.nbf === 946813556;\r",
+                  "    tests[\"Valid to: \"+new Date(content.exp*1000)] = content.exp === 994770592;\r",
+                  "\r",
+                  "    \r",
+                  "    pm.globals.set(\"expired-jwt\", jwt);\r",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{HOST}}/login/{{tenant}}/{{login}}?roles={{roles}}&cnl=postman&ldid=9999&foo=bla,arg&valid-from=2000-01-02T12:45:56%2B01:00&duration=555d1h23m56s",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "login",
+                "{{tenant}}",
+                "{{login}}"
+              ],
+              "query": [
+                {
+                  "key": "roles",
+                  "value": "{{roles}}"
+                },
+                {
+                  "key": "cnl",
+                  "value": "postman"
+                },
+                {
+                  "key": "ldid",
+                  "value": "9999"
+                },
+                {
+                  "key": "foo",
+                  "value": "bla,arg"
+                },
+                {
+                  "key": "valid-from",
+                  "value": "2000-01-02T12:45:56%2B01:00"
+                },
+                {
+                  "key": "duration",
+                  "value": "555d1h23m56s"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get authorization info",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var expectedStatus=200;\r",
+                  "tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
+                  "\r",
+                  "if (responseCode.code === expectedStatus){\r",
+                  "    \r",
+                  "    var json = pm.response.json();\r",
+                  "    \r",
+                  "   // tests[\"Tenant: \" +json.tenant] = json.tenant === pm.globals.get(\"tenant\");\r",
+                  "    tests[\"Login: \"+json.login] = json.login === pm.globals.get(\"login\");\r",
+                  "    tests[\"Roles: \"+json.roles] = json.roles;\r",
+                  "   \r",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{HOST}}/authorization/",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "authorization",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get authorization info (unauthenticated)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var expectedStatus=403;\r",
+                  "tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
+                  "\r",
+                  "if (responseCode.code === expectedStatus){\r",
+                  "    var error = pm.response.json();\r",
+                  "    \r",
+                  "    tests[\"error\"] = error.error === 'Forbidden';\r",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{HOST}}/authorization/",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "authorization",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get authorization info (expired JWT)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var expectedStatus=403;\r",
+                  "tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
+                  "\r",
+                  "if (responseCode.code === expectedStatus){\r",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{expired-jwt}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{HOST}}/authorization/",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "authorization",
+                ""
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "03 - Notes",
+      "item": [
+        {
+          "name": "Add Note",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "var text = \"Lorem ipsum \"+new Date().toISOString();\r",
+                  "pm.globals.set(\"note-text\", text);\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var expectedStatus=201;\r",
+                  "tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
+                  "\r",
+                  "if (responseCode.code === expectedStatus){\r",
+                  "    var note = pm.response.json();\r",
+                  "    \r",
+                  "    var content=note.content;\r",
+                  "    tests[\"has id\"] = note.id;\r",
+                  "    tests[\"has created\"] = note.created;\r",
+                  "    tests[\"has updated\"] = note.updated;\r",
+                  "    tests[\"has text\"] = note.text;\r",
+                  "    tests[\"has correct text\"] = note.text === pm.globals.get(\"note-text\");\r",
+                  "    \r",
+                  "    pm.globals.set(\"note-id\", note.id);\r",
+                  "}\r",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "type": "text",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"text\": \"{{note-text}}\"\n}"
+            },
+            "url": {
+              "raw": "{{HOST}}/api/notes",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "api",
+                "notes"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Note",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var expectedStatus=200;\r",
+                  "tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
+                  "\r",
+                  "if (responseCode.code === expectedStatus){\r",
+                  "    var note = pm.response.json();\r",
+                  "    \r",
+                  "    var content=note.content;\r",
+                  "    tests[\"has correct id\"] = note.id ===  pm.globals.get(\"note-id\");\r",
+                  "    tests[\"has created\"] = note.created;\r",
+                  "    tests[\"has updated\"] = note.updated;\r",
+                  "    tests[\"has correct text\"] = note.text === pm.globals.get(\"note-text\");\r",
+                  "}\r",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{HOST}}/api/notes/{{note-id}}?=",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "api",
+                "notes",
+                "{{note-id}}"
+              ],
+              "query": [
+                {
+                  "key": "",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Notes",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var expectedStatus=200;\r",
+                  "tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
+                  "\r",
+                  "if (responseCode.code === expectedStatus){\r",
+                  "    var notes = pm.response.json();\r",
+                  "    \r",
+                  "    tests[\"has notes\"] = notes.length > 0;\r",
+                  "    \r",
+                  "    var note = notes.find(n=>n.id === pm.globals.get(\"note-id\"));\r",
+                  "    \r",
+                  "    tests[\"contains note:\"] = note;\r",
+                  "    if (note) {\r",
+                  "      tests[\"has correct id\"] = note.id ===  pm.globals.get(\"note-id\")\r",
+                  "      tests[\"has created\"] = note.created;\r",
+                  "      tests[\"has updated\"] = note.updated;\r",
+                  "      tests[\"has text\"] = note.text;\r",
+                  "      tests[\"has correct text\"] = note.text === pm.globals.get(\"note-text\");\r",
+                  "    }\r",
+                  "}\r",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{HOST}}/api/notes",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "api",
+                "notes"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Note",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "var text = \"Changed test \"+new Date().toISOString();\r",
+                  "pm.globals.set(\"note-text\", text);\r",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var expectedStatus=204;\r",
+                  "tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "type": "text",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"text\": \"{{note-text}}\"\n}"
+            },
+            "url": {
+              "raw": "{{HOST}}/api/notes/{{note-id}}",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "api",
+                "notes",
+                "{{note-id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Check Note Updated",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var expectedStatus=200;\r",
+                  "tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
+                  "\r",
+                  "if (responseCode.code === expectedStatus){\r",
+                  "    var note = pm.response.json();\r",
+                  "    \r",
+                  "    var content=note.content;\r",
+                  "    tests[\"has correct id\"] = note.id ===  pm.globals.get(\"note-id\")\r",
+                  "    tests[\"has created\"] = note.created;\r",
+                  "    tests[\"has updated\"] = note.updated;\r",
+                  "    tests[\"has correct text\"] = note.text === pm.globals.get(\"note-text\");\r",
+                  "}\r",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{HOST}}/api/notes/{{note-id}}",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "api",
+                "notes",
+                "{{note-id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Note",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var expectedStatus=204;\r",
+                  "tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{HOST}}/api/notes/{{note-id}}",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "api",
+                "notes",
+                "{{note-id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Check Note Deleted",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var expectedStatus=404;\r",
+                  "tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{HOST}}/api/notes/{{note-id}}",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "api",
+                "notes",
+                "{{note-id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Check Note Removed",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var expectedStatus=200;\r",
+                  "tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
+                  "\r",
+                  "if (responseCode.code === expectedStatus){\r",
+                  "    var notes = pm.response.json();\r",
+                  "    var note = notes.find(n=>n.id === pm.globals.get(\"note-id\"));\r",
+                  "    \r",
+                  "    tests[\"does not contain note: \"] = !note ;\r",
+                  "}\r",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{HOST}}/api/notes",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "api",
+                "notes"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Note Validation - Not Null",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var expectedStatus=400;\r",
+                  "tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
+                  "\r",
+                  "if (responseCode.code === expectedStatus){\r",
+                  "    var error = pm.response.json();\r",
+                  "    \r",
+                  "    tests[\"errorCode\"] = error.errorCode === 'BAD_REQUEST';\r",
+                  "    tests[\"error\"] = error.error === 'CONSTRAINT_VIOLATION_EXCEPTION';\r",
+                  "    tests[\"reason\"] = error.reason !== undefined;\r",
+                  "    \r",
+                  "    tests[\"NotBlank\"] = error.reason.find(e => e.code.indexOf('NotBlank') >= 0);\r",
+                  "}\r",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "type": "text",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n}"
+            },
+            "url": {
+              "raw": "{{HOST}}/api/notes",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "api",
+                "notes"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Note Validation - Not Blank",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var expectedStatus=400;\r",
+                  "tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
+                  "\r",
+                  "if (responseCode.code === expectedStatus){\r",
+                  "    var error = pm.response.json();\r",
+                  "    \r",
+                  "    tests[\"errorCode\"] = error.errorCode === 'BAD_REQUEST';\r",
+                  "    tests[\"error\"] = error.error === 'CONSTRAINT_VIOLATION_EXCEPTION';\r",
+                  "    tests[\"reason\"] = error.reason !== undefined;\r",
+                  "    \r",
+                  "    tests[\"NotBlank\"] = error.reason.find(e => e.code.indexOf('NotBlank') >= 0);\r",
+                  "}\r",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "type": "text",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"text\": \"  \"\n}"
+            },
+            "url": {
+              "raw": "{{HOST}}/api/notes",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "api",
+                "notes"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Note Validation - Text too long",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var expectedStatus=400;\r",
+                  "tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
+                  "\r",
+                  "if (responseCode.code === expectedStatus){\r",
+                  "    var error = pm.response.json();\r",
+                  "    \r",
+                  "    tests[\"errorCode\"] = error.errorCode === 'BAD_REQUEST';\r",
+                  "    tests[\"error\"] = error.error === 'CONSTRAINT_VIOLATION_EXCEPTION';\r",
+                  "    tests[\"reason\"] = error.reason !== undefined;\r",
+                  "    \r",
+                  "    tests[\"Size\"] = error.reason.find(e => e.code.indexOf('Size') >= 0);\r",
+                  "}\r",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "type": "text",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n\t\"text\": \"01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789x\"\n}"
+            },
+            "url": {
+              "raw": "{{HOST}}/api/notes",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "api",
+                "notes"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Error handling - no JSON",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var expectedStatus=400;\r",
+                  "tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
+                  "\r",
+                  "if (responseCode.code === expectedStatus){\r",
+                  "    var error = pm.response.json();\r",
+                  "    \r",
+                  "    tests[\"errorCode\"] = error.errorCode === 'BAD_REQUEST';\r",
+                  "    tests[\"error\"] = error.error === \"HTTP_MESSAGE_NOT_READABLE_EXCEPTION\";\r",
+                  "    tests[\"message\"] = error.message.indexOf(\"Required request body is missing\")>=0;\r",
+                  "}\r",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{HOST}}/api/notes",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "api",
+                "notes"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Error handling - broken JSON",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var expectedStatus=400;\r",
+                  "tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
+                  "\r",
+                  "if (responseCode.code === expectedStatus){\r",
+                  "    var error = pm.response.json();\r",
+                  "    \r",
+                  "    tests[\"errorCode\"] = error.errorCode === 'BAD_REQUEST';\r",
+                  "    tests[\"error\"] = error.error === \"HTTP_MESSAGE_NOT_READABLE_EXCEPTION\";\r",
+                  "    tests[\"message\"] = error.message.indexOf(\"JSON parse error\")>=0;\r",
+                  "}\r",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "name": "Content-Type",
+                "type": "text",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "<json>\nBroken by design"
+            },
+            "url": {
+              "raw": "{{HOST}}/api/notes",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "api",
+                "notes"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Error handling - resource not found",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var expectedStatus=404;\r",
+                  "tests[\"Expecting response code \"+expectedStatus+\", got: \"+responseCode.code] = responseCode.code === expectedStatus;\r",
+                  "\r",
+                  "if (responseCode.code === expectedStatus){\r",
+                  "    var error = pm.response.json();\r",
+                  "    \r",
+                  "    tests[\"errorCode\"] = error.errorCode === 'NOT_FOUND';\r",
+                  "    tests[\"error\"] = error.error === \"RESOURCE_NOT_FOUND_EXCEPTION\";\r",
+                  "    tests[\"message\"] = error.message.indexOf(\"Not found\")>=0;\r",
+                  "}\r",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{HOST}}/api/notes/99999999999",
+              "host": [
+                "{{HOST}}"
+              ],
+              "path": [
+                "api",
+                "notes",
+                "99999999999"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
 }

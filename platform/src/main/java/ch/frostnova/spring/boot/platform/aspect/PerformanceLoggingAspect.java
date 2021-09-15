@@ -64,19 +64,18 @@ public class PerformanceLoggingAspect {
      *
      * @param joinPoint aspect join point
      * @return invocation result
-     * @throws Throwable invocation exception
      */
     @Around("!@within(ch.frostnova.spring.boot.platform.aspect.NoPerformanceLogging) && " +
             "(@within(ch.frostnova.spring.boot.platform.aspect.PerformanceLogging)" +
             "|| @within(org.springframework.stereotype.Service)" +
-          //  "|| @within(org.springframework.stereotype.Controller)" +
+            //  "|| @within(org.springframework.stereotype.Controller)" +
             "|| @within(org.springframework.scheduling.annotation.Scheduled)" +
             "|| @within(org.springframework.web.bind.annotation.RestController))"
     )
     public static Object around(ProceedingJoinPoint joinPoint) {
 
         String invocation = joinPoint.getSignature().toShortString();
-        return PerformanceLoggingContext.current().execute(invocation, () -> joinPoint.proceed());
+        return PerformanceLoggingContext.current().execute(invocation, (CheckedSupplier<Object>) joinPoint::proceed);
     }
 
     /**
@@ -93,6 +92,36 @@ public class PerformanceLoggingAspect {
             return around(joinPoint);
         }
         return joinPoint.proceed();
+    }
+
+    /**
+     * Functional interface for a runnable which can throw a checked exception.
+     */
+    @FunctionalInterface
+    public interface CheckedRunnable {
+
+        /**
+         * Functional contract
+         *
+         * @throws Exception optional exception
+         */
+        void run() throws Throwable;
+    }
+
+
+    /**
+     * Functional interface for a supplier which can throw a checked exception. (same as {@link Callable}).
+     */
+    @FunctionalInterface
+    public interface CheckedSupplier<T> {
+
+        /**
+         * Functional contract
+         *
+         * @return return value
+         * @throws Exception optional exception
+         */
+        T supply() throws Throwable;
     }
 
     public static class PerformanceLoggingContext {
@@ -220,14 +249,13 @@ public class PerformanceLoggingAspect {
         }
     }
 
-
     private static class InvocationInfo {
 
-        private int mergeCount = 1;
         private final int level;
+        private final String invocation;
+        private int mergeCount = 1;
         private long startTimeNs;
         private long endTimeNs;
-        private final String invocation;
         private String result;
         private long nestedTimeNs;
 
@@ -235,6 +263,10 @@ public class PerformanceLoggingAspect {
             this.level = level;
             this.startTimeNs = startTimeNs;
             this.invocation = invocation;
+        }
+
+        private static String formatTimeMs(long timeNs) {
+            return BigDecimal.valueOf(timeNs * 0.000001).setScale(2, RoundingMode.HALF_EVEN) + " ms";
         }
 
         void done(long endTimeNs, String result) {
@@ -267,9 +299,7 @@ public class PerformanceLoggingAspect {
 
             StringBuilder builder = new StringBuilder();
             if (level > 0) {
-                for (int i = 0; i < level; i++) {
-                    builder.append("  ");
-                }
+                builder.append("  ".repeat(level));
                 builder.append(SYMBOL_INDENTATION);
                 builder.append(SYMBOL_SPACE);
             }
@@ -292,38 +322,5 @@ public class PerformanceLoggingAspect {
             }
             return builder.toString();
         }
-
-        private static String formatTimeMs(long timeNs) {
-            return BigDecimal.valueOf(timeNs * 0.000001).setScale(2, RoundingMode.HALF_EVEN) + " ms";
-        }
-    }
-
-    /**
-     * Functional interface for a runnable which can throw a checked exception.
-     */
-    @FunctionalInterface
-    public interface CheckedRunnable {
-
-        /**
-         * Functional contract
-         *
-         * @throws Exception optional exception
-         */
-        void run() throws Throwable;
-    }
-
-    /**
-     * Functional interface for a supplier which can throw a checked exception. (same as {@link Callable}).
-     */
-    @FunctionalInterface
-    public interface CheckedSupplier<T> {
-
-        /**
-         * Functional contract
-         *
-         * @return return value
-         * @throws Exception optional exception
-         */
-        T supply() throws Throwable;
     }
 }

@@ -19,7 +19,6 @@ import org.springframework.security.web.authentication.preauth.PreAuthenticatedA
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -44,8 +43,21 @@ public class BearerTokenAuthenticationFilter extends OncePerRequestFilter {
         this.objectMapper = objectMapper;
     }
 
+    private static Authentication authentication(UserInfo userInfo) {
+        if (userInfo == null) {
+            return null;
+        }
+        Set<SimpleGrantedAuthority> grantedAuthorities = userInfo.getRoles().stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toSet());
+
+        PreAuthenticatedAuthenticationToken authentication = new PreAuthenticatedAuthenticationToken(userInfo.getLogin(), null, grantedAuthorities);
+        authentication.setDetails(userInfo);
+        return authentication;
+    }
+
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException {
 
         UserInfo userInfo = null;
         try {
@@ -77,19 +89,6 @@ public class BearerTokenAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(null);
             }
         }
-    }
-
-    private static Authentication authentication(UserInfo userInfo) {
-        if (userInfo == null) {
-            return null;
-        }
-        Set<SimpleGrantedAuthority> grantedAuthorities = userInfo.getRoles().stream()
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toSet());
-
-        PreAuthenticatedAuthenticationToken authentication = new PreAuthenticatedAuthenticationToken(userInfo.getLogin(), null, grantedAuthorities);
-        authentication.setDetails(userInfo);
-        return authentication;
     }
 
     private UserInfo authenticate(HttpServletRequest request) throws AuthenticationException {

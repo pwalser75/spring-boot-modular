@@ -6,7 +6,12 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.*;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -39,6 +44,10 @@ public class AccessLogFilter implements Filter {
 
     private final static Logger logger = LoggerFactory.getLogger(AccessLogFilter.class);
 
+    private static String formatDuration(long durationNs) {
+        return BigDecimal.valueOf(durationNs * AccessLogFilter.NS_TO_MS_FACTOR).setScale(2, RoundingMode.HALF_UP).toString();
+    }
+
     @Override
     public void init(FilterConfig filterConfig) {
 
@@ -69,10 +78,6 @@ public class AccessLogFilter implements Filter {
 
             AccessLogFilter.logger.info("{} {} -> {} {}, {} ms", method, uri, responseStatusCode, responseStatus, AccessLogFilter.formatDuration(durationNs));
         }
-    }
-
-    private static String formatDuration(long durationNs) {
-        return BigDecimal.valueOf(durationNs * AccessLogFilter.NS_TO_MS_FACTOR).setScale(2, RoundingMode.HALF_UP).toString();
     }
 
 }

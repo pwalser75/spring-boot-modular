@@ -21,26 +21,39 @@ public class AppInfo {
 
     private final static NumberFormat PERCENT_FORMAT = new DecimalFormat("0.00%");
     private final static NumberFormat NUMBER_FORMAT = new DecimalFormat("0.##");
-
+    @JsonProperty("cpu")
+    @ApiModelProperty(notes = "CPU usage information", position = 4)
+    private final Cpu cpu = new Cpu();
+    @JsonProperty("memory")
+    @ApiModelProperty(notes = "Memory usage information", position = 4)
+    private final Memory memory = new Memory();
     @JsonProperty("name")
     @ApiModelProperty(notes = "application name", example = "spring-multi-module", position = 1)
     private String name;
-
     @JsonProperty("description")
     @ApiModelProperty(notes = "application description", example = "Spring Boot Multi Module Project", position = 2)
     private String description;
-
     @JsonProperty("version")
     @ApiModelProperty(notes = "application version", example = "1.0.0-SNAPSHOT", position = 3)
     private String version;
 
-    @JsonProperty("cpu")
-    @ApiModelProperty(notes = "CPU usage information", position = 4)
-    private final Cpu cpu = new Cpu();
+    private static String formatMemory(long memory) {
 
-    @JsonProperty("memory")
-    @ApiModelProperty(notes = "Memory usage information", position = 4)
-    private final Memory memory = new Memory();
+        if (memory < 0) {
+            return "-" + formatMemory(-memory);
+        }
+
+        String[] units = {"Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"};
+
+        double value = (double) memory;
+        for (String unit : units) {
+            if (value <= 1024) {
+                return NUMBER_FORMAT.format(value) + unit;
+            }
+            value /= 1024;
+        }
+        return value + "YB";
+    }
 
     public Cpu getCpu() {
         return cpu;
@@ -146,23 +159,5 @@ public class AppInfo {
         public String getAllocatedDisplay() {
             return formatMemory(allocated);
         }
-    }
-
-    private static String formatMemory(long memory) {
-
-        if (memory < 0) {
-            return "-" + formatMemory(-memory);
-        }
-
-        String[] units = {"Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"};
-
-        double value = (double) memory;
-        for (int i = 0; i < units.length; i++) {
-            if (value <= 1024) {
-                return NUMBER_FORMAT.format(value) + units[i];
-            }
-            value /= 1024;
-        }
-        return value + "YB";
     }
 }

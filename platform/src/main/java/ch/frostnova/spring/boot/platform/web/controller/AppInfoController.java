@@ -31,8 +31,8 @@ import java.util.stream.Stream;
         maxAge = 1209600)
 public class AppInfoController {
 
-    @Autowired
-    private Optional<MetricsEndpoint> metricsEndpoint;
+    @Autowired(required = false)
+    private MetricsEndpoint metricsEndpoint;
 
     @Value("${info.app.name}")
     private String appName;
@@ -56,21 +56,20 @@ public class AppInfoController {
         appInfo.setDescription(appDescription);
         appInfo.setVersion(appVersion);
 
-        metricsEndpoint.ifPresent(metrics -> {
+        if (metricsEndpoint != null) {
 
             Function<String, Number> getMetricValue = key ->
-                    Optional.ofNullable(metrics.metric(key, Collections.emptyList()))
+                    Optional.ofNullable(metricsEndpoint.metric(key, Collections.emptyList()))
                             .map(MetricsEndpoint.MetricResponse::getMeasurements)
                             .map(Collection::stream)
                             .flatMap(Stream::findFirst)
                             .map(MetricsEndpoint.Sample::getValue)
                             .orElse(Double.NaN);
 
-
             appInfo.getCpu().setUsage(getMetricValue.apply("process.cpu.usage").doubleValue());
             appInfo.getMemory().setUsed(getMetricValue.apply("jvm.memory.used").longValue());
             appInfo.getMemory().setAllocated(getMetricValue.apply("jvm.memory.committed").longValue());
-        });
+        }
 
         return appInfo;
     }

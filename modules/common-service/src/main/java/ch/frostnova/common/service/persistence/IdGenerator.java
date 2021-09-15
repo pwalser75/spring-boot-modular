@@ -29,11 +29,6 @@ public class IdGenerator implements IdentifierGenerator {
     private final static String ALPHABET = createAlphabet();
     private final static int ID_BIT_LENGTH = 128;
 
-    @Override
-    public Serializable generate(SharedSessionContractImplementor session, Object object) throws HibernateException {
-        return generateAlphaNumericKey(ID_BIT_LENGTH);
-    }
-
     private static String generateAlphaNumericKey(int bits) {
 
         BigInteger value = new BigInteger(bits, ThreadLocalRandom.current());
@@ -58,5 +53,10 @@ public class IdGenerator implements IdentifierGenerator {
                 .flatMap(IntStream::boxed)
                 .map(i -> String.valueOf((char) i.intValue()))
                 .collect(Collectors.joining());
+    }
+
+    @Override
+    public Serializable generate(SharedSessionContractImplementor session, Object object) throws HibernateException {
+        return generateAlphaNumericKey(ID_BIT_LENGTH);
     }
 }

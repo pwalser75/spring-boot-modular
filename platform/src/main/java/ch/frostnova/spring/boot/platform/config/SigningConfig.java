@@ -30,6 +30,47 @@ public class SigningConfig {
     private PrivateKey resolvedPrivateKey;
     private PublicKey resolvedPublicKey;
 
+    public static PrivateKey loadPrivateKey(String keyType, URL resource) {
+        try {
+            if (keyType == null) {
+                throw new IllegalArgumentException("keyType is required");
+            }
+            if (resource == null) {
+                throw new IllegalArgumentException("resource is required");
+            }
+            KeyFactory kf = KeyFactory.getInstance(keyType);
+            return kf.generatePrivate(new PKCS8EncodedKeySpec(loadPEM(resource)));
+        } catch (Exception ex) {
+            throw new RuntimeException("Unable to load private key: " + resource, ex);
+        }
+    }
+
+    public static PublicKey loadPublicKey(String keyType, URL resource) {
+        try {
+            if (keyType == null) {
+                throw new IllegalArgumentException("keyType is required");
+            }
+            if (resource == null) {
+                throw new IllegalArgumentException("resource is required");
+            }
+            KeyFactory kf = KeyFactory.getInstance(keyType);
+            return kf.generatePublic(new X509EncodedKeySpec(loadPEM(resource)));
+        } catch (Exception ex) {
+            throw new RuntimeException("Unable to load public key: " + resource, ex);
+        }
+    }
+
+    private static byte[] loadPEM(URL resource) throws IOException {
+        try (InputStream in = resource.openStream()) {
+            String pem = new String(in.readAllBytes(), StandardCharsets.ISO_8859_1);
+            Pattern parse = Pattern.compile("(?m)(?s)^---*BEGIN.*---*$(.*)^---*END.*---*$.*");
+            String encoded = parse.matcher(pem).replaceFirst("$1");
+            return Base64.getMimeDecoder().decode(encoded);
+        } catch (Exception ex) {
+            throw new IOException("Could not read PEM from " + resource, ex);
+        }
+    }
+
     @PostConstruct
     private void init() throws IOException {
         if (privateKey != null) {
@@ -114,47 +155,6 @@ public class SigningConfig {
 
         public String getKeyType() {
             return keyType;
-        }
-    }
-
-    public static PrivateKey loadPrivateKey(String keyType, URL resource) {
-        try {
-            if (keyType == null) {
-                throw new IllegalArgumentException("keyType is required");
-            }
-            if (resource == null) {
-                throw new IllegalArgumentException("resource is required");
-            }
-            KeyFactory kf = KeyFactory.getInstance(keyType);
-            return kf.generatePrivate(new PKCS8EncodedKeySpec(loadPEM(resource)));
-        } catch (Exception ex) {
-            throw new RuntimeException("Unable to load private key: " + resource, ex);
-        }
-    }
-
-    public static PublicKey loadPublicKey(String keyType, URL resource) {
-        try {
-            if (keyType == null) {
-                throw new IllegalArgumentException("keyType is required");
-            }
-            if (resource == null) {
-                throw new IllegalArgumentException("resource is required");
-            }
-            KeyFactory kf = KeyFactory.getInstance(keyType);
-            return kf.generatePublic(new X509EncodedKeySpec(loadPEM(resource)));
-        } catch (Exception ex) {
-            throw new RuntimeException("Unable to load public key: " + resource, ex);
-        }
-    }
-
-    private static byte[] loadPEM(URL resource) throws IOException {
-        try (InputStream in = resource.openStream()) {
-            String pem = new String(in.readAllBytes(), StandardCharsets.ISO_8859_1);
-            Pattern parse = Pattern.compile("(?m)(?s)^---*BEGIN.*---*$(.*)^---*END.*---*$.*");
-            String encoded = parse.matcher(pem).replaceFirst("$1");
-            return Base64.getMimeDecoder().decode(encoded);
-        } catch (Exception ex) {
-            throw new IOException("Could not read PEM from " + resource, ex);
         }
     }
 }

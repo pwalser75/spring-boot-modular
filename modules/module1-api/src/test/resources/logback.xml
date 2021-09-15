@@ -3,7 +3,8 @@
     <!-- console appender -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} %-5level %replace(| %X{tenant}/%X{user} ){'\| / ',''}| %logger{40} - %msg%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} %-5level %replace(| %X{tenant}/%X{user} ){'\| / ',''}| %logger{40} - %msg%n
+            </pattern>
         </encoder>
     </appender>
 

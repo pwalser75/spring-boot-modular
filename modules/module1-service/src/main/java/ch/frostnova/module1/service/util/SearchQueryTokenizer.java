@@ -13,18 +13,14 @@ import java.util.function.Predicate;
 public final class SearchQueryTokenizer {
 
     private final Predicate<Character> isSeparator = c -> Character.isWhitespace(c) || c == ',' || c == ';';
-
-    private enum State {
-        SCAN_FOR_VALUE,
-        READING_UNQUOTED_VALUE,
-        READING_SINGLE_QUOTED_VALUE,
-        READING_DOUBLE_QUOTED_VALUE
-    }
-
     private State state = State.SCAN_FOR_VALUE;
 
     private SearchQueryTokenizer() {
 
+    }
+
+    public static List<String> tokenize(String query) {
+        return new SearchQueryTokenizer().parse(query);
     }
 
     private List<String> parse(String query) {
@@ -82,8 +78,11 @@ public final class SearchQueryTokenizer {
         return tokens;
     }
 
-    public static List<String> tokenize(String query) {
-        return new SearchQueryTokenizer().parse(query);
+    private enum State {
+        SCAN_FOR_VALUE,
+        READING_UNQUOTED_VALUE,
+        READING_SINGLE_QUOTED_VALUE,
+        READING_DOUBLE_QUOTED_VALUE
     }
 
 }

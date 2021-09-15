@@ -18,7 +18,7 @@ public class ValidationErrors {
     private final List<ValidationError> errors = new LinkedList<>();
 
     public ValidationErrors(ConstraintViolationException ex) {
-        for (ConstraintViolation error : ex.getConstraintViolations()) {
+        for (ConstraintViolation<?> error : ex.getConstraintViolations()) {
             errors.add(new ValidationError(error));
         }
     }

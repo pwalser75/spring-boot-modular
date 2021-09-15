@@ -55,7 +55,7 @@ public class LoginController {
                         @ApiParam(value = "Set of granted roles (optional)")
                         @RequestParam(value = "roles", required = false) Set<String> roles,
                         @ApiParam(value = "Valid from, in ISO date time format, e.g. 2020-01-01T12:34:56+01:00 (optional, defaults to now)")
-                        @RequestParam(value = "valid-from", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Optional<OffsetDateTime> validFrom,
+                        @RequestParam(value = "valid-from", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime validFrom,
                         @ApiParam(value = "Validity (duration, optional (default: 1h) in ?d?h?m?s?ms format, e.g. 5d, or 5m30s, or 1h23m56s")
                         @RequestParam(value = "duration", required = false, defaultValue = "1h") Duration duration,
                         HttpServletRequest request) {
@@ -72,6 +72,6 @@ public class LoginController {
 
         UserInfo userInfo = UserInfo.aUserInfo().tenant(tenant).login(login).roles(roles).additionalClaims(additionalClaims).build();
 
-        return jwtSigningService.createJWT(userInfo, validFrom.orElse(OffsetDateTime.now()), duration);
+        return jwtSigningService.createJWT(userInfo, Optional.ofNullable(validFrom).orElse(OffsetDateTime.now()), duration);
     }
 }

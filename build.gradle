@@ -15,8 +15,6 @@ allprojects {
     group = 'ch.frostnova.spring-multimodule'
 
     repositories {
-        jcenter()
-        mavenLocal()
         mavenCentral()
     }
 }
@@ -112,7 +110,7 @@ ext {
     jjwtVersion = '0.9.1'
     javaCacheVersion = '1.1.1'
     ehcacheVersion = '3.9.6'
-    
+
     javaxAnnotationVersion = '1.3.2'
 
     libs = [

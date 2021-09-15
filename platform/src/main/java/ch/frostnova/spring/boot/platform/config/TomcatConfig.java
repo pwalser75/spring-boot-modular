@@ -32,18 +32,6 @@ public class TomcatConfig {
         return tomcat;
     }
 
-    static class TomcatFactory extends TomcatServletWebServerFactory {
-        @Override
-        protected void postProcessContext(Context context) {
-            SecurityConstraint securityConstraint = new SecurityConstraint();
-            securityConstraint.setUserConstraint("CONFIDENTIAL");
-            SecurityCollection collection = new SecurityCollection();
-            collection.addPattern("/*");
-            securityConstraint.addCollection(collection);
-            context.addConstraint(securityConstraint);
-        }
-    }
-
     private Optional<Connector> createHttpConnector() {
 
         return Optional.ofNullable(serverPortHttp).map(httpPort -> {
@@ -54,5 +42,17 @@ public class TomcatConfig {
             connector.setRedirectPort(serverPortHttps);
             return connector;
         });
+    }
+
+    static class TomcatFactory extends TomcatServletWebServerFactory {
+        @Override
+        protected void postProcessContext(Context context) {
+            SecurityConstraint securityConstraint = new SecurityConstraint();
+            securityConstraint.setUserConstraint("CONFIDENTIAL");
+            SecurityCollection collection = new SecurityCollection();
+            collection.addPattern("/*");
+            securityConstraint.addCollection(collection);
+            context.addConstraint(securityConstraint);
+        }
     }
 }

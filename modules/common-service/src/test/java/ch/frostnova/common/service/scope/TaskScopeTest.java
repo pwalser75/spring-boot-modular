@@ -56,13 +56,13 @@ public class TaskScopeTest {
     @Test
     public void testScopeDoubleInit() {
         TaskScope.init();
-        assertThatThrownBy(() -> TaskScope.init()).isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(TaskScope::init).isInstanceOf(IllegalStateException.class);
     }
 
     @Test
     public void testDestroyNotActive() {
         assertThat(TaskScope.isActive()).isFalse();
-        assertThatThrownBy(() -> TaskScope.destroy()).isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(TaskScope::destroy).isInstanceOf(IllegalStateException.class);
     }
 
     @Test
@@ -74,7 +74,7 @@ public class TaskScopeTest {
         AtomicInteger callbackCount = new AtomicInteger();
         try {
             assertThat(taskScopedComponent.isPostConstructed()).isTrue();
-            taskScopedComponent.setPreDestroyCallback(() -> callbackCount.incrementAndGet());
+            taskScopedComponent.setPreDestroyCallback(callbackCount::incrementAndGet);
             assertThat(callbackCount.get()).isEqualTo(0);
 
         } finally {
