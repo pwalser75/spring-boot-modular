@@ -53,7 +53,7 @@ Do not enter a password (not required).
 
 * **For EC 256 key:**
    ```bash  
-  ssh-keygen -t ec -b 256 -m PEM -f jwt.key  
+  ssh-keygen -t ecdsa -b 256 -m PEM -f jwt.key  
   openssl ec -in jwt.key -pubout -outform PEM -out jwt.pub.pem  
   ```  
 
