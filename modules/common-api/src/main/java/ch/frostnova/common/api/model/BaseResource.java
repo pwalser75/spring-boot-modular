@@ -2,14 +2,14 @@ package ch.frostnova.common.api.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.validation.constraints.PastOrPresent;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
-import static io.swagger.annotations.ApiModelProperty.AccessMode.READ_ONLY;
+import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY;
 
 @JsonPropertyOrder({"id", "createdOn", "updatedOn"})
 public class BaseResource<ID> implements Serializable {
@@ -17,16 +17,16 @@ public class BaseResource<ID> implements Serializable {
     private final String EXAMPLE_ID = "12345";
     private final String EXAMPLE_OFFSET_DATE_TIME = "2019-08-07T16:54:32+01:00";
 
-    @ApiModelProperty(name = "id", notes = "identifier (generated)", accessMode = READ_ONLY, example = EXAMPLE_ID)
+    @Schema(name = "id", description = "identifier (generated)", accessMode = READ_ONLY, example = EXAMPLE_ID)
     @JsonProperty("id")
     private ID id;
 
-    @ApiModelProperty(name = "created", position = 1, notes = "creation date (generated)", accessMode = READ_ONLY, example = EXAMPLE_OFFSET_DATE_TIME)
+    @Schema(name = "created", description = "creation date (generated)", accessMode = READ_ONLY, example = EXAMPLE_OFFSET_DATE_TIME)
     @JsonProperty("created")
     @PastOrPresent
     private OffsetDateTime created;
 
-    @ApiModelProperty(name = "updated", position = 2, notes = "last modification date (generated)", accessMode = READ_ONLY, example = EXAMPLE_OFFSET_DATE_TIME)
+    @Schema(name = "updated", description = "last modification date (generated)", accessMode = READ_ONLY, example = EXAMPLE_OFFSET_DATE_TIME)
     @JsonProperty("updated")
     @PastOrPresent
     private OffsetDateTime updated;

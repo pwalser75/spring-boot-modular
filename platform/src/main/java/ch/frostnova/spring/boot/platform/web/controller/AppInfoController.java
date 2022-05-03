@@ -1,11 +1,9 @@
 package ch.frostnova.spring.boot.platform.web.controller;
 
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.metrics.MetricsEndpoint;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +21,7 @@ import java.util.stream.Stream;
  * App Info controller
  */
 @RestController
-@ConditionalOnProperty("info.app.name")
+//@ConditionalOnProperty("info.app.name")
 @RequestMapping(path = "info")
 @CrossOrigin(origins = "*",
         allowedHeaders = "origin, content-type, accept, authorization",
@@ -46,9 +44,7 @@ public class AppInfoController {
     private String appVersion;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "ok")
-    })
+    @ApiResponse(responseCode = "200", description = "ok")
     public AppInfo info() {
 
         AppInfo appInfo = new AppInfo();

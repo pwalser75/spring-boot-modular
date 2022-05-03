@@ -2,8 +2,7 @@ package ch.frostnova.module1.api.model;
 
 import ch.frostnova.common.api.model.BaseResource;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -11,12 +10,11 @@ import javax.validation.constraints.Size;
 /**
  * DTO for Note
  */
-@ApiModel("Note")
 public class Note extends BaseResource<String> {
 
     @NotBlank
     @Size(max = 2048)
-    @ApiModelProperty(name = "text", notes = "text of the note, up to 2048 characters", example = "Si vis pacem para bellum", required = true)
+    @Schema(name = "text", description = "text of the note, up to 2048 characters", example = "Si vis pacem para bellum", required = true)
     @JsonProperty("text")
     private String text;
 

@@ -2,11 +2,10 @@ package ch.frostnova.module1.web.controller;
 
 import ch.frostnova.module1.api.model.Note;
 import ch.frostnova.module1.api.service.NoteService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -33,11 +31,7 @@ import java.util.NoSuchElementException;
  */
 @RestController
 @RequestMapping(path = "api/notes")
-@CrossOrigin(origins = "*",
-        allowedHeaders = "origin, content-type, accept, authorization",
-        methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS, RequestMethod.HEAD},
-        maxAge = 1209600)
-@Api(value = "Notes resource", produces = "application/json")
+@CrossOrigin(origins = "*", allowedHeaders = "origin, content-type, accept, authorization", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS, RequestMethod.HEAD}, maxAge = 1209600)
 public class NotesController {
 
     @Autowired
@@ -50,13 +44,10 @@ public class NotesController {
      * @return list of notes (never null)
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Lists all notes, or find by query (fulltext search)", response = Note.class)
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "ok")
-    })
-    public List<Note> list(@ApiParam(value = "optional query text (space or comma-separated tokens, single/double quoting supported")
-                           @RequestParam(value = "query", required = false) @NotBlank String query) {
-        if (query != null) {
+    @Operation(summary = "Lists all notes, or find by query (fulltext search)")
+    @ApiResponse(responseCode = "200", description = "ok")
+    public List<Note> list(@Parameter(description = "optional query text (space or comma-separated tokens, single/double quoting supported") @RequestParam(value = "query", required = false) String query) {
+        if (query != null && !query.isBlank()) {
             return noteService.find(query);
         }
         return noteService.list();
@@ -69,12 +60,9 @@ public class NotesController {
      * @return record
      */
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Get a specific note", response = Note.class)
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "ok"),
-            @ApiResponse(code = 404, message = "not found")
-    })
-    public Note get(@ApiParam(value = "ID of the note to fetch", required = true) @PathVariable("id") String id) {
+    @Operation(summary = "Get a specific note")
+    @ApiResponses({@ApiResponse(responseCode = "200", description = "ok"), @ApiResponse(responseCode = "404", description = "not found")})
+    public Note get(@Parameter(description = "ID of the note to fetch", required = true) @PathVariable("id") String id) {
         Note result = noteService.get(id);
         if (result != null) {
             return result;
@@ -90,12 +78,9 @@ public class NotesController {
      */
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    @ApiOperation(value = "Create a new note", response = Note.class)
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "ok"),
-            @ApiResponse(code = 400, message = "bad request")
-    })
-    public Note create(@ApiParam(value = "Note to create", required = true) @RequestBody Note note) {
+    @Operation(summary = "Create a new note")
+    @ApiResponses({@ApiResponse(responseCode = "200", description = "ok"), @ApiResponse(responseCode = "400", description = "bad request")})
+    public Note create(@Parameter(description = "Note to create", required = true) @RequestBody Note note) {
         note.setId(null);
         return noteService.save(note);
     }
@@ -108,14 +93,9 @@ public class NotesController {
      */
     @PutMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @ApiOperation(value = "Update an existing note", response = Note.class)
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 400, message = "bad request"),
-            @ApiResponse(code = 404, message = "not found")
-    })
-    public void update(@ApiParam(value = "ID of the note to update", required = true) @PathVariable("id") String id,
-                       @ApiParam(value = "Note data to update", required = true) @RequestBody Note note) {
+    @Operation(summary = "Update an existing note")
+    @ApiResponses({@ApiResponse(responseCode = "200", description = "ok"), @ApiResponse(responseCode = "400", description = "bad request"), @ApiResponse(responseCode = "404", description = "not found")})
+    public void update(@Parameter(description = "ID of the note to update", required = true) @PathVariable("id") String id, @Parameter(description = "Note data to update", required = true) @RequestBody Note note) {
         note.setId(id);
         noteService.save(note);
     }
@@ -127,8 +107,8 @@ public class NotesController {
      */
     @DeleteMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @ApiOperation(value = "Delete a note", response = Note.class)
-    public void delete(@ApiParam(value = "ID of the note to delete", required = true) @PathVariable("id") String id) {
+    @Operation(summary = "Delete a note")
+    public void delete(@Parameter(description = "ID of the note to delete", required = true) @PathVariable("id") String id) {
         noteService.delete(id);
     }
 }

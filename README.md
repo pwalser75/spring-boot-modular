@@ -10,6 +10,7 @@ Spring boot project with
 * **HTTP2 enabled**
 * **JWT** authentication
 * **JUnit 5 / AssertJ / Mockito** for state-of-the-art testing
+* **OpenAPI 3** with *Springdoc*
 
 Features:
 
@@ -93,9 +94,13 @@ To start this project with Gradle:
 
     ./gradlew start  
 
-## API Documentation (Swagger)
+## OpenAPI 3 Documentation (Springdoc)
 
-API documentation available at [https://localhost:8443/swagger-ui.html]().
+The OpenAPI 3 schema is available at: [https://localhost:8443/v3/api-docs]()
+
+The Swagger UI is available at: [https://localhost:8443/swagger-ui/index.html]()
+
+## Authentication
 
 The note endpoint requires **authentication using JWT** (header: Authorization: Bearer {jwt}).
 
@@ -105,7 +110,24 @@ which can issue arbitrary valid JWT tokens. (WARNING: only configure this for te
 
 ## Actuator Endpoints
 
-* Info: https://localhost:8443/actuator/info
+Info endpoint: https://localhost:8443/info
+
+```json
+{
+  "name": "spring-multi-module",
+  "description": "Spring Boot Multi Module Project",
+  "version": "1.0.0-SNAPSHOT",
+  "cpu": {
+    "usage": "0.01%"
+  },
+  "memory": {
+    "used": "605.73MB",
+    "allocated": "2.41GB",
+    "usage": "24.56%"
+  }
+}
+```
+
 * Health: https://localhost:8443/actuator/health
 * Metrics: https://localhost:8443/actuator/metrics
 * HTTP request metrics: https://localhost:8443/actuator/metrics/http.server.requests

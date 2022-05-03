@@ -3,8 +3,7 @@ package ch.frostnova.spring.boot.platform.web.controller;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -15,26 +14,25 @@ import java.text.NumberFormat;
  * @author pwalser
  * @since 19.06.2019
  */
-@ApiModel("AppInfo")
 @JsonPropertyOrder({"name", "description", "version", "cpu", "memory"})
 public class AppInfo {
 
     private final static NumberFormat PERCENT_FORMAT = new DecimalFormat("0.00%");
     private final static NumberFormat NUMBER_FORMAT = new DecimalFormat("0.##");
     @JsonProperty("cpu")
-    @ApiModelProperty(notes = "CPU usage information", position = 4)
+    @Schema(description = "CPU usage information")
     private final Cpu cpu = new Cpu();
     @JsonProperty("memory")
-    @ApiModelProperty(notes = "Memory usage information", position = 4)
+    @Schema(description = "Memory usage information")
     private final Memory memory = new Memory();
     @JsonProperty("name")
-    @ApiModelProperty(notes = "application name", example = "spring-multi-module", position = 1)
+    @Schema(description = "application name", example = "spring-multi-module")
     private String name;
     @JsonProperty("description")
-    @ApiModelProperty(notes = "application description", example = "Spring Boot Multi Module Project", position = 2)
+    @Schema(description = "application description", example = "Spring Boot Multi Module Project")
     private String description;
     @JsonProperty("version")
-    @ApiModelProperty(notes = "application version", example = "1.0.0-SNAPSHOT", position = 3)
+    @Schema(description = "application version", example = "1.0.0-SNAPSHOT")
     private String version;
 
     private static String formatMemory(long memory) {
@@ -87,7 +85,7 @@ public class AppInfo {
         this.version = version;
     }
 
-    @ApiModel(value = "AppInfo-CPU", description = "CPU usage information")
+    @Schema(name = "AppInfo-CPU", description = "CPU usage information")
     public static class Cpu {
 
         @JsonIgnore
@@ -102,13 +100,13 @@ public class AppInfo {
         }
 
         @JsonProperty("usage")
-        @ApiModelProperty(notes = "CPU usage [%]", example = "5.7%")
+        @Schema(description = "CPU usage [%]", example = "5.7%")
         public String getUsagePercent() {
             return PERCENT_FORMAT.format(usage);
         }
     }
 
-    @ApiModel(value = "AppInfo-Memory", description = "Memory usage information")
+    @Schema(name = "AppInfo-Memory", description = "Memory usage information")
     @JsonPropertyOrder({"used", "allocated", "usage"})
     public static class Memory {
 
@@ -143,19 +141,19 @@ public class AppInfo {
         }
 
         @JsonProperty("usage")
-        @ApiModelProperty(notes = "Memory usage [%]", example = "36.94%", position = 1)
+        @Schema(description = "Memory usage [%]", example = "36.94%")
         public String getUsagePercent() {
             return PERCENT_FORMAT.format(getUsage());
         }
 
         @JsonProperty("used")
-        @ApiModelProperty(notes = "Memory used by the VM", example = "360.5MB", position = 2)
+        @Schema(description = "Memory used by the VM", example = "360.5MB")
         public String getUsedDisplay() {
             return formatMemory(used);
         }
 
         @JsonProperty("allocated")
-        @ApiModelProperty(notes = "Memory allocated by the VM", example = "976.02MB", position = 3)
+        @Schema(description = "Memory allocated by the VM", example = "976.02MB")
         public String getAllocatedDisplay() {
             return formatMemory(allocated);
         }

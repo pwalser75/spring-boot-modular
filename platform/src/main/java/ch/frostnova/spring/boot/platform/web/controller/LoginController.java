@@ -2,11 +2,10 @@ package ch.frostnova.spring.boot.platform.web.controller;
 
 import ch.frostnova.spring.boot.platform.model.UserInfo;
 import ch.frostnova.spring.boot.platform.service.JWTSigningService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -32,7 +31,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @ConditionalOnBean(JWTSigningService.class)
-@Api(value = "Login Controller - use for testing only, never in production")
+@Schema(name = "Login Controller - use for testing only, never in production")
 @RequestMapping(path = "login")
 @CrossOrigin(origins = "*",
         allowedHeaders = "origin, content-type, accept, authorization",
@@ -43,20 +42,18 @@ public class LoginController {
     @Autowired
     private JWTSigningService jwtSigningService;
 
-    @ApiOperation(value = "Issue a JWT for the given tenant/user and claims", response = String.class)
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "ok")
-    })
+    @Operation(summary = "Issue a JWT for the given tenant/user and claims")
+    @ApiResponse(responseCode = "200", description = "ok")
     @GetMapping(path = "/{tenant}/{user}", produces = MediaType.TEXT_PLAIN_VALUE)
-    public String login(@ApiParam(value = "Tenant id, required")
+    public String login(@Parameter(description = "Tenant id, required", example = "test-tenant")
                         @PathVariable("tenant") @NotBlank String tenant,
-                        @ApiParam(value = "User id (subject), required")
+                        @Parameter(description = "User id (subject), required", example = "USER01")
                         @PathVariable("user") @NotBlank String login,
-                        @ApiParam(value = "Set of granted roles (optional)")
+                        @Parameter(description = "Set of granted roles (optional)")
                         @RequestParam(value = "roles", required = false) Set<String> roles,
-                        @ApiParam(value = "Valid from, in ISO date time format, e.g. 2020-01-01T12:34:56+01:00 (optional, defaults to now)")
+                        @Parameter(description = "Valid from, in ISO date time format, e.g. 2020-01-01T12:34:56+01:00 (optional, defaults to now)")
                         @RequestParam(value = "valid-from", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime validFrom,
-                        @ApiParam(value = "Validity (duration, optional (default: 1h) in ?d?h?m?s?ms format, e.g. 5d, or 5m30s, or 1h23m56s")
+                        @Parameter(description = "Validity (duration, optional (default: 1h) in ?d?h?m?s?ms format, e.g. 5d, or 5m30s, or 1h23m56s", example = "1h")
                         @RequestParam(value = "duration", required = false, defaultValue = "1h") Duration duration,
                         HttpServletRequest request) {
 

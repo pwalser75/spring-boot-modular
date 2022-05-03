@@ -1,7 +1,6 @@
 package ch.frostnova.spring.boot.platform.model;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.text.Collator;
 import java.util.Collections;
@@ -12,7 +11,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.function.Consumer;
 
-@ApiModel("UserInfo")
+@Schema
 public class UserInfo {
 
     private final Set<String> roles = new TreeSet<>(Collator.getInstance());
@@ -27,22 +26,22 @@ public class UserInfo {
         return new Builder();
     }
 
-    @ApiModelProperty(notes = "tenant id for the user (multitenancy support)", example = "tenant123")
+    @Schema(description = "tenant id for the user (multitenancy support)", example = "tenant123")
     public String getTenant() {
         return tenant;
     }
 
-    @ApiModelProperty(notes = "login id of the user", example = "USER123")
+    @Schema(description = "login id of the user", example = "USER123")
     public String getLogin() {
         return login;
     }
 
-    @ApiModelProperty(notes = "set of granted roles", example = "foo, bla")
+    @Schema(description = "set of granted roles", example = "foo, bla")
     public Set<String> getRoles() {
         return Collections.unmodifiableSet(roles);
     }
 
-    @ApiModelProperty(notes = "map of additional claims")
+    @Schema(description = "map of additional claims")
     public Map<String, String> getAdditionalClaims() {
         return additionalClaims;
     }
