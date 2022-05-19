@@ -23,7 +23,7 @@ scrape_configs:
     scheme: https
     tls_config:
       insecure_skip_verify: true
-    metrics_path: '/actuator/prometheus'
+    metrics_path: '/prometheus'
     scrape_interval: 5s
     static_configs:
       - targets: [ 'spring-boot-modular:443' ]

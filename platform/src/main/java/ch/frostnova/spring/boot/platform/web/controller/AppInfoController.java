@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.metrics.MetricsEndpoint;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +22,7 @@ import java.util.stream.Stream;
  * App Info controller
  */
 @RestController
-//@ConditionalOnProperty("info.app.name")
+@ConditionalOnProperty("info.app.name")
 @RequestMapping(path = "info")
 @CrossOrigin(origins = "*",
         allowedHeaders = "origin, content-type, accept, authorization",

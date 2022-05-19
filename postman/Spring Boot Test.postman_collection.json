@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "f2a85151-d981-4788-bad4-89a088c6420e",
+		"_postman_id": "e4ce8aaf-3bde-48f1-a52f-53b505792807",
 		"name": "Spring Boot Test",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -176,12 +176,11 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{HOST}}/actuator/health",
+							"raw": "{{HOST}}/health",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
-								"actuator",
 								"health"
 							]
 						}
@@ -230,12 +229,11 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{HOST}}/actuator/metrics/process.uptime",
+							"raw": "{{HOST}}/metrics/process.uptime",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
-								"actuator",
 								"metrics",
 								"process.uptime"
 							]
@@ -285,12 +283,11 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{HOST}}/actuator/metrics/business.metrics.notes.count",
+							"raw": "{{HOST}}/metrics/business.metrics.notes.count",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
-								"actuator",
 								"metrics",
 								"business.metrics.notes.count"
 							]
@@ -337,12 +334,11 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{HOST}}/actuator/prometheus",
+							"raw": "{{HOST}}/prometheus",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
-								"actuator",
 								"prometheus"
 							]
 						}
@@ -392,12 +388,11 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{HOST}}/actuator/prometheus?includedNames=business_metrics_notes_count",
+							"raw": "{{HOST}}/prometheus?includedNames=business_metrics_notes_count",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
-								"actuator",
 								"prometheus"
 							],
 							"query": [

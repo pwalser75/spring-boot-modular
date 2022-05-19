@@ -129,13 +129,13 @@ Info endpoint: https://localhost:8443/info
 }
 ```
 
-* Health: https://localhost:8443/actuator/health
-* Metrics: https://localhost:8443/actuator/metrics
-* HTTP request metrics: https://localhost:8443/actuator/metrics/http.server.requests
-* Prometheus: https://localhost:8443/actuator/prometheus
+* Health: https://localhost:8443/health
+* Metrics: https://localhost:8443/metrics
+* HTTP request metrics: https://localhost:8443/metrics/http.server.requests
+* Prometheus: https://localhost:8443/prometheus
 * Metrics, custom gauge (number of notes in the DB): <br>
-  https://localhost:8443/actuator/metrics/business.metrics.notes.count<br>
-  https://localhost:8443/actuator/prometheus?includedNames=business_metrics_notes_count
+  https://localhost:8443/metrics/business.metrics.notes.count<br>
+  https://localhost:8443/prometheus?includedNames=business_metrics_notes_count
 
 ## Docker
 
