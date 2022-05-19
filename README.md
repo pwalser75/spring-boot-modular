@@ -5,7 +5,7 @@
 Spring boot project with
 
 * **Java 11**
-* **Spring Boot 2.4+**
+* **Spring Boot 2.6+**
 * **TLS 1.2 + 1.3 enabled** and properly configured (optionally redirecting HTTP to HTTPS when enabling the HTTP port).
 * **HTTP2 enabled**
 * **JWT** authentication
@@ -22,6 +22,7 @@ Features:
 
 * **Access Log** filter, logging all requests (method, URI, response status and execution time)
 * **Performance Logging** filter, logging performance tree of nested service calls
+* **Logging of all endpoints** on startup
 * **Docker support** (Docker and Docker-Compose files), with **Prometheus** monitoring / **Grafana** dashboard.
 
 * **Business metrics**: custom Micrometer *gauge* to expose number of records (notes)
